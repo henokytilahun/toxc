@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "toxc"
+version = "0.1.0"
+description = "Fast CLI toxicity and sentiment analysis for text"
+readme = "README.md"
+requires-python = ">=3.9"
+license = "MIT"
+keywords = ["toxicity", "sentiment", "nlp", "cli", "text-analysis"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Environment :: Console",
+]
+dependencies = [
+    "typer>=0.9",
+    "rich>=13",
+    "vaderSentiment>=3.3",
+    "detoxify>=0.5",
+]
+
+[project.scripts]
+toxc = "toxc.cli:run"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["toxc*"]
