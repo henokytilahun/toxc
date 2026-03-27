@@ -104,7 +104,18 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .section-hdr{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin-bottom:.7rem;padding-bottom:.35rem;border-bottom:1px solid var(--border)}
 
 /* ── Signals ───────────────────────────────────────────── */
-.signals-list{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1rem}
+.sig-tier{margin-bottom:.55rem}
+.sig-tier-hdr{font-size:.6rem;text-transform:uppercase;letter-spacing:.09em;padding:.22rem .65rem;border-radius:4px 4px 0 0;font-weight:700}
+.sig-tier-high .sig-tier-hdr{background:var(--red-d);color:var(--red);border:1px solid rgba(239,68,68,.22);border-bottom:none}
+.sig-tier-med .sig-tier-hdr{background:var(--yel-d);color:var(--yel);border:1px solid rgba(245,158,11,.2);border-bottom:none}
+.sig-tier-pat .sig-tier-hdr{background:var(--surface);color:var(--text2);border:1px solid var(--border);border-bottom:none}
+.sig-full-row{display:flex;align-items:center;justify-content:space-between;padding:.42rem .65rem;font-size:.78rem;border:1px solid;border-top:none;line-height:1.35}
+.sig-full-row:last-child{border-radius:0 0 4px 4px}
+.sig-tier-high .sig-full-row{background:var(--red-d);border-color:rgba(239,68,68,.22);color:var(--red)}
+.sig-tier-med .sig-full-row{background:var(--yel-d);border-color:rgba(245,158,11,.2);color:var(--yel)}
+.sig-tier-pat .sig-full-row{background:var(--bg2);border-color:var(--border);color:var(--text2)}
+.sig-val{font-family:var(--mono);font-size:.68rem;opacity:.65;margin-left:.5rem;white-space:nowrap}
+/* legacy badge (kept for fallback) */
 .sig-row{display:inline-flex;align-items:center;gap:.35rem;font-size:.75rem;padding:.3rem .6rem;border-radius:5px;border:1px solid}
 .sig-high{background:var(--red-d);border-color:rgba(239,68,68,.22);color:var(--red)}
 .sig-medium{background:var(--yel-d);border-color:rgba(245,158,11,.2);color:var(--yel)}
@@ -3755,7 +3766,7 @@ const REPORT = {
     "url": "https://www.youtube.com/watch?v=50p39zPR7JY&t=3s",
     "duration": 1101,
     "thumbnail": "https://i.ytimg.com/vi/50p39zPR7JY/maxresdefault.jpg",
-    "_tmpdir": "/var/folders/9m/sb9grr0x2jvg62_d3bk_x0_r0000gn/T/toxc_yt_dowz6hrn"
+    "_tmpdir": "/var/folders/9m/sb9grr0x2jvg62_d3bk_x0_r0000gn/T/toxc_yt_aco1pl1h"
   }
 };
 
@@ -3880,6 +3891,7 @@ function renderSidebar(R){
     +(R.channel&&R.channel.financial&&R.channel.financial.revenue_per_video?'<a class="nav-link" data-sec="sec-finance" onclick="scrollToSec(\'sec-finance\')">Financial Impact</a>':'')
     +'<a class="nav-link" data-sec="sec-consequence" onclick="scrollToSec(\'sec-consequence\')">Consequences</a>'
     +'<a class="nav-link" data-sec="sec-fix" onclick="scrollToSec(\'sec-fix\')">What to Fix</a>'
+    +'<a class="nav-link" data-sec="sec-signals" onclick="scrollToSec(\'sec-signals\')">Risk Signals</a>'
     +'<a class="nav-link active" data-sec="sec-tl" onclick="scrollToSec(\'sec-tl\')">Timeline</a>'
     +'<a class="nav-link" data-sec="sec-charts" onclick="scrollToSec(\'sec-charts\')">Analysis</a>'
     +(R.fast?'':'<a class="nav-link" data-sec="sec-hm" onclick="scrollToSec(\'sec-hm\')">Heatmap</a>')
@@ -4044,36 +4056,30 @@ function renderWhatToFix(R){
 function renderSignalsRecs(R){
   const M=R.monetization||{};
   const signals=M.signals||[];
-  const recs=M.recommendations||[];
-  if(!signals.length&&!recs.length)return'';
+  if(!signals.length)return'';
 
-  let html='<div class="section">';
+  const TIER1=['hate_speech','threats','severe'];
+  const TIER2=['profanity'];
+  const t1=signals.filter(s=>TIER1.includes(s.signal));
+  const t2=signals.filter(s=>TIER2.includes(s.signal));
+  const t3=signals.filter(s=>!TIER1.includes(s.signal)&&!TIER2.includes(s.signal));
 
-  if(signals.length){
-    html+='<div class="section-hdr">Risk Signals</div>'
-      +'<div class="signals-list">'
-      +signals.map(function(s){
-        const cls=s.severity==='high'?'sig-high':s.severity==='medium'?'sig-medium':'sig-low';
-        const ic=s.severity==='high'?'\u26a0':s.severity==='medium'?'\u00b7':'\u2713';
-        return'<span class="sig-row '+cls+'">'+ic+' '+s.label+'</span>';
-      }).join('')
-      +'</div>';
+  function sigRow(s){
+    const valHtml=s.value>0?`<span class="sig-val">${s.value.toFixed(3)}</span>`:'';
+    return`<div class="sig-full-row"><span>${s.label}</span>${valHtml}</div>`;
   }
 
-  if(recs.length){
-    const iconMap={pass:'\u2713',warning:'\u26a0',edit:'\u2192'};
-    const clsMap={pass:'rec-pass',warning:'rec-warning',edit:'rec-edit'};
-    html+='<div class="recs-card">'
-      +recs.map(function(r){
-        return'<div class="rec"><span class="rec-icon '+clsMap[r.type]+'">'+(iconMap[r.type]||'\u00b7')+'</span>'
-          +'<div><div>'+r.text+'</div>'
-          +(r.snippet?'<div class="rec-snippet">\u201c'+r.snippet+'\u201d</div>':'')
-          +'</div></div>';
-      }).join('')
-      +'</div>';
+  function tier(cls,label,rows){
+    if(!rows.length)return'';
+    return`<div class="sig-tier ${cls}"><div class="sig-tier-hdr">${label}</div>${rows.map(sigRow).join('')}</div>`;
   }
 
-  return html+'</div>';
+  return'<div class="section" id="sec-signals">'
+    +'<div class="section-hdr">Risk Signals</div>'
+    +tier('sig-tier-high','\u26a0 Instant demonetization',t1)
+    +tier('sig-tier-med','\u00b7 Limited ads (yellow icon)',t2)
+    +tier('sig-tier-pat','Pattern & context',t3)
+    +'</div>';
 }
 
 /* ── Timeline ─────────────────────────────────────────── */
@@ -4334,7 +4340,7 @@ function setupTips(R){
 
 /* ── Active State Tracking ────────────────────────────── */
 function setupActive(R){
-  const secs=['sec-channel','sec-finance','sec-consequence','sec-fix','sec-tl','sec-charts','sec-hm','sec-mom','sec-all'];
+  const secs=['sec-channel','sec-finance','sec-consequence','sec-fix','sec-signals','sec-tl','sec-charts','sec-hm','sec-mom','sec-all'];
   const secObs=new IntersectionObserver(function(entries){
     entries.forEach(function(entry){
       if(entry.isIntersecting){

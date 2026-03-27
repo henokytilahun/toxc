@@ -5,9 +5,26 @@ from pathlib import Path
 DIMS = ["insult", "obscene", "threat", "identity_attack", "severe_toxicity"]
 
 # Default thresholds (overridden per category by profile.get_thresholds)
+#
+# Signal hierarchy matches YouTube's actual advertiser-friendliness policy:
+#
+#   identity_attack  — hate speech / slurs. Brands will not appear next to this.
+#                      Instant demonetization at very low scores. Lowest threshold.
+#   threat           — incitement / violent language. Also instant demonetization.
+#   severe_toxicity  — extreme degrading content. Instant demonetization.
+#   obscene          — profanity. Usually → limited ads (yellow), NOT full demonetization
+#                      unless extremely heavy. Higher threshold, lower severity ceiling.
+#   flagged_rate     — density of flagged sentences. High density = pattern, not slip.
+#
 _DEFAULT_THRESHOLDS = {
-    "high_tox": 0.60, "medium_tox": 0.28,
-    "identity": 0.25, "threat": 0.25, "obscene": 0.30, "flagged_rate": 0.15,
+    "high_tox":       0.60,
+    "medium_tox":     0.28,
+    "identity":       0.08,   # hate speech — fires HIGH at very low scores
+    "threat":         0.12,   # violent language — also fires HIGH early
+    "severe":         0.15,   # extreme content — fires HIGH
+    "obscene_high":   0.55,   # heavy profanity → HIGH (full demonetization)
+    "obscene_medium": 0.12,   # mild profanity → MEDIUM (limited ads only)
+    "flagged_rate":   0.15,
 }
 
 
@@ -145,27 +162,56 @@ def monetization_risk(data: dict, profile: dict | None = None) -> dict:
     identity     = dims.get("identity_attack", 0)
     threat       = dims.get("threat", 0)
     obscene      = dims.get("obscene", 0)
+    severe       = dims.get("severe_toxicity", 0)
     flagged_rate = breakdown.get("rate", 0)
 
     # First-7-seconds rule — historically YouTube's strictest window
     first7_hits = [s for s in sentences if s.get("start", 99) < 7 and s["toxicity"] >= 0.35]
 
-    # Build individual risk signals
+    # Build signals in priority order, reflecting YouTube's actual demonetization hierarchy:
+    # identity_attack > threat > severe_toxicity > obscene (high) > obscene (mild) > density
     signals = []
+
+    # Tier 1 — instant demonetization signals (brands will not appear next to these)
     if identity >= T["identity"]:
-        signals.append({"signal": "hate_speech",  "severity": "high",   "label": "Hate speech / slurs detected",         "value": round(identity, 3)})
+        signals.append({"signal": "hate_speech", "severity": "high",
+                        "label": "Hate speech / identity attacks — instant demonetization risk",
+                        "value": round(identity, 3)})
+
     if threat >= T["threat"]:
-        signals.append({"signal": "threats",      "severity": "high",   "label": "Threats / violent language",            "value": round(threat, 3)})
-    if obscene >= T["obscene"]:
-        signals.append({"signal": "profanity",    "severity": "high",   "label": "Heavy profanity",                       "value": round(obscene, 3)})
-    elif obscene >= T["obscene"] * 0.4:
-        signals.append({"signal": "profanity",    "severity": "medium", "label": "Mild profanity",                        "value": round(obscene, 3)})
+        signals.append({"signal": "threats", "severity": "high",
+                        "label": "Threats or incitement to violence",
+                        "value": round(threat, 3)})
+
+    if severe >= T["severe"]:
+        signals.append({"signal": "severe", "severity": "high",
+                        "label": "Severely toxic content",
+                        "value": round(severe, 3)})
+
+    # Tier 2 — profanity (usually limited ads, not full demonetization)
+    if obscene >= T["obscene_high"]:
+        signals.append({"signal": "profanity", "severity": "high",
+                        "label": "Heavy profanity throughout — full demonetization likely",
+                        "value": round(obscene, 3)})
+    elif obscene >= T["obscene_medium"]:
+        signals.append({"signal": "profanity", "severity": "medium",
+                        "label": "Profanity present — limited ads (yellow icon likely)",
+                        "value": round(obscene, 3)})
+
+    # Tier 3 — density / pattern signals
     if flagged_rate >= T["flagged_rate"]:
-        signals.append({"signal": "density",      "severity": "high",   "label": f"{flagged_rate:.0%} of sentences flagged — focal-point risk", "value": round(flagged_rate, 3)})
+        signals.append({"signal": "density", "severity": "high",
+                        "label": f"{flagged_rate:.0%} of sentences flagged — pattern risk",
+                        "value": round(flagged_rate, 3)})
     elif flagged_rate >= T["flagged_rate"] * 0.33:
-        signals.append({"signal": "density",      "severity": "medium", "label": f"{flagged_rate:.0%} of sentences flagged", "value": round(flagged_rate, 3)})
+        signals.append({"signal": "density", "severity": "medium",
+                        "label": f"{flagged_rate:.0%} of sentences flagged",
+                        "value": round(flagged_rate, 3)})
+
     if first7_hits:
-        signals.append({"signal": "first7",       "severity": "medium", "label": "Flagged content in first 7 seconds",   "value": round(first7_hits[0]["toxicity"], 3)})
+        signals.append({"signal": "first7", "severity": "medium",
+                        "label": "Flagged content in first 7 seconds",
+                        "value": round(first7_hits[0]["toxicity"], 3)})
 
     # Category context signal
     if profile:
@@ -193,7 +239,6 @@ def monetization_risk(data: dict, profile: dict | None = None) -> dict:
         ad_detail  = "Content appears advertiser-friendly."
 
     # Consequence breakdown
-    severe = dims.get("severe_toxicity", 0)
 
     # Monetization status label
     mono_status = {"HIGH": "NO ADS", "MEDIUM": "LIMITED ADS", "LOW": "FULL MONETIZATION"}[risk_level]

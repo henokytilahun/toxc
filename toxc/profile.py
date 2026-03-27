@@ -21,14 +21,17 @@ CATEGORY_CPM_DEFAULTS = {
     "education":  8.0,   # High — strong purchase intent, professional audience
 }
 
-# How strict each category is — lower = stricter thresholds for demonetization risk
+# Per-category thresholds. The identity/threat/severe tiers are universally strict
+# because hate speech and threats are brand-safety issues regardless of category.
+# Obscene thresholds vary more — gaming/commentary audiences expect stronger language.
 CATEGORY_THRESHOLDS = {
-    "kids":        {"high_tox": 0.25, "medium_tox": 0.10, "identity": 0.10, "threat": 0.10, "obscene": 0.10, "flagged_rate": 0.03},
-    "education":   {"high_tox": 0.45, "medium_tox": 0.18, "identity": 0.20, "threat": 0.20, "obscene": 0.20, "flagged_rate": 0.08},
-    "news":        {"high_tox": 0.60, "medium_tox": 0.28, "identity": 0.25, "threat": 0.25, "obscene": 0.30, "flagged_rate": 0.15},
-    "commentary":  {"high_tox": 0.60, "medium_tox": 0.28, "identity": 0.25, "threat": 0.25, "obscene": 0.30, "flagged_rate": 0.15},
-    "gaming":      {"high_tox": 0.68, "medium_tox": 0.32, "identity": 0.28, "threat": 0.28, "obscene": 0.38, "flagged_rate": 0.18},
-    "other":       {"high_tox": 0.60, "medium_tox": 0.28, "identity": 0.25, "threat": 0.25, "obscene": 0.30, "flagged_rate": 0.15},
+    #                  high_tox  med_tox  identity  threat  severe  obscene_high  obscene_med  flagged_rate
+    "kids":       dict(high_tox=0.20, medium_tox=0.08, identity=0.04, threat=0.06, severe=0.08, obscene_high=0.15, obscene_medium=0.05, flagged_rate=0.03),
+    "education":  dict(high_tox=0.45, medium_tox=0.18, identity=0.06, threat=0.10, severe=0.12, obscene_high=0.35, obscene_medium=0.10, flagged_rate=0.08),
+    "news":       dict(high_tox=0.60, medium_tox=0.28, identity=0.08, threat=0.12, severe=0.15, obscene_high=0.55, obscene_medium=0.12, flagged_rate=0.15),
+    "commentary": dict(high_tox=0.60, medium_tox=0.28, identity=0.08, threat=0.12, severe=0.15, obscene_high=0.55, obscene_medium=0.12, flagged_rate=0.15),
+    "gaming":     dict(high_tox=0.68, medium_tox=0.32, identity=0.08, threat=0.12, severe=0.15, obscene_high=0.68, obscene_medium=0.18, flagged_rate=0.18),
+    "other":      dict(high_tox=0.60, medium_tox=0.28, identity=0.08, threat=0.12, severe=0.15, obscene_high=0.55, obscene_medium=0.12, flagged_rate=0.15),
 }
 
 _SIZE_LABELS = [
