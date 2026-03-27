@@ -51,32 +51,35 @@ def render_single(result: dict):
     lines.append(f"{sentiment:+.2f}  ", style=sent_color + " bold")
     lines.append(sent_label + "\n", style=sent_color)
 
-    # Dimensions
-    dims = result["dimensions"]
-    dim_labels = {
-        "severe_toxicity": "Severe     ",
-        "obscene":         "Obscene    ",
-        "threat":          "Threat     ",
-        "insult":          "Insult     ",
-        "identity_attack": "Identity   ",
-    }
+    # Dimensions (Detoxify only)
+    if not result.get("fast"):
+        dims = result["dimensions"]
+        dim_labels = {
+            "severe_toxicity": "Severe     ",
+            "obscene":         "Obscene    ",
+            "threat":          "Threat     ",
+            "insult":          "Insult     ",
+            "identity_attack": "Identity   ",
+        }
 
-    lines.append("\n")
-    for key, label in dim_labels.items():
-        score = dims.get(key, 0)
-        if score > 0.05:
-            color = "red" if score > 0.5 else "yellow" if score > 0.2 else "dim"
-            lines.append(f"  {_bar(score, 8)}  ", style="dim")
-            lines.append(label, style="bold")
-            lines.append(f"{score:.2f}\n", style=color)
+        lines.append("\n")
+        for key, label in dim_labels.items():
+            score = dims.get(key, 0)
+            if score > 0.05:
+                color = "red" if score > 0.5 else "yellow" if score > 0.2 else "dim"
+                lines.append(f"  {_bar(score, 8)}  ", style="dim")
+                lines.append(label, style="bold")
+                lines.append(f"{score:.2f}\n", style=color)
 
     lines.append(f"\n  Verdict: ", style="bold")
     lines.append(f"{verdict}", style=verdict_color)
     lines.append(f" — {detail}\n", style="dim")
 
+    model_label = "vader" if result.get("fast") else "toxic-bert"
     panel = Panel(
         lines,
         title="[bold]toxc[/bold]",
+        subtitle=f"[dim]{model_label}[/dim]",
         border_style=tox_color,
         padding=(0, 1),
     )

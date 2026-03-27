@@ -22,7 +22,7 @@ def _vader_fallback_tox(vader: dict) -> dict:
     }
 
 
-def _build_result(text: str, vader: dict, tox: dict) -> dict:
+def _build_result(text: str, vader: dict, tox: dict, fast: bool = False) -> dict:
     sentiment_score = vader["compound"]
     toxicity = tox.get("toxicity", 0)
 
@@ -56,6 +56,7 @@ def _build_result(text: str, vader: dict, tox: dict) -> dict:
         },
         "verdict": verdict,
         "detail": detail,
+        "fast": fast,
     }
 
 
@@ -72,11 +73,11 @@ def analyze(text: str, use_detoxify: bool = True) -> dict:
     if use_detoxify:
         try:
             tox = {k: float(v) for k, v in _load_detoxify().predict(text).items()}
+            return _build_result(text, vader, tox, fast=False)
         except Exception:
-            tox = _vader_fallback_tox(vader)
-    else:
-        tox = _vader_fallback_tox(vader)
-    return _build_result(text, vader, tox)
+            pass
+    tox = _vader_fallback_tox(vader)
+    return _build_result(text, vader, tox, fast=True)
 
 
 def analyze_batch(texts: list[str], use_detoxify: bool = True) -> list[dict]:
@@ -93,7 +94,8 @@ def analyze_batch(texts: list[str], use_detoxify: bool = True) -> list[dict]:
         vader = _vader.polarity_scores(text)
         if model is not None:
             tox = {k: float(v) for k, v in model.predict(text).items()}
+            results.append(_build_result(text, vader, tox, fast=False))
         else:
             tox = _vader_fallback_tox(vader)
-        results.append(_build_result(text, vader, tox))
+            results.append(_build_result(text, vader, tox, fast=True))
     return results
