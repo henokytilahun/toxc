@@ -159,8 +159,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .s-table{width:100%;border-collapse:collapse}
 .s-table thead th{font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);text-align:left;padding:.45rem .65rem;border-bottom:1px solid var(--border);white-space:nowrap}
 .s-table tbody tr{transition:background .1s}
-.s-table tbody tr:hover{background:var(--surface-h)}
-.s-table td{padding:.45rem .65rem;border-bottom:1px solid var(--border);vertical-align:top}
+.s-table tbody tr:hover{background:var(--surface-h)!important}
 .col-time{font-family:var(--mono);font-size:.78rem;color:var(--muted);white-space:nowrap;cursor:pointer}
 .col-text{max-width:440px;line-height:1.4;color:var(--text2)}
 .col-score{font-family:var(--mono);font-weight:700;white-space:nowrap}
@@ -247,6 +246,40 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .cv-medium{background:var(--yel-d);color:var(--yel)}
 .cv-low{background:var(--grn-d);color:var(--grn)}
 
+/* ── Tabs ──────────────────────────────────────────────── */
+.tab-bar{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:2rem;position:sticky;top:0;z-index:5;background:var(--bg);padding-top:.65rem}
+.tab-btn{padding:.5rem 1.25rem;font-size:.8rem;font-weight:600;border:none;background:none;cursor:pointer;color:var(--text2);border-bottom:2px solid transparent;margin-bottom:-2px;transition:color .15s,border-color .15s;letter-spacing:.02em}
+.tab-btn:hover{color:var(--text)}
+.tab-btn.active{color:var(--text);border-bottom-color:var(--blu)}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+
+/* ── Hero Cards ────────────────────────────────────────── */
+.hero-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-bottom:2rem}
+.hero-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1rem 1.1rem;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:.15rem;transition:box-shadow .15s}
+.hero-card:hover{box-shadow:var(--shadow-lg)}
+.hero-ic{color:var(--muted);margin-bottom:.15rem;line-height:1}
+.hero-val{font-size:1.55rem;font-weight:800;font-family:var(--mono);line-height:1;letter-spacing:-.02em}
+.hero-label{font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-top:.2rem}
+.hero-sub{font-size:.72rem;color:var(--text2);margin-top:.1rem}
+
+/* ── Accordion sections ─────────────────────────────────── */
+details.acc{margin-bottom:2.5rem}
+details.acc>summary{list-style:none;cursor:pointer;font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);padding-bottom:.35rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;user-select:none;transition:color .12s}
+details.acc>summary::-webkit-details-marker{display:none}
+details.acc>summary .acc-toggle{font-size:1rem;font-weight:300;opacity:.45;transition:transform .2s;display:inline-block;line-height:1}
+details.acc[open]>summary .acc-toggle{transform:rotate(45deg)}
+details.acc>summary:hover{color:var(--text2)}
+details.acc[open]>summary{margin-bottom:.7rem}
+.acc-body{animation:acc-in .15s ease-out}
+@keyframes acc-in{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── Sentence Table: sticky headers & zebra ────────────── */
+.s-table-wrap{overflow-x:auto}
+.s-table thead th{position:sticky;top:0;background:var(--surface-h);z-index:3}
+.s-table tbody tr:nth-child(even){background:var(--bg2)}
+.s-table td{padding:.6rem .65rem;border-bottom:1px solid var(--border);vertical-align:top}
+
 /* ── Responsive ────────────────────────────────────────── */
 @media(max-width:860px){
   .layout{flex-direction:column}
@@ -256,6 +289,9 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
   .main{padding:1.25rem}
   .sb-nav,.sb-moments{display:none}
   .charts-grid{grid-template-columns:1fr}
+  .hero-cards{grid-template-columns:1fr 1fr}
+  .tab-btn{padding:.4rem .85rem;font-size:.75rem}
+  .fin-scenario{grid-template-columns:1fr}
 }
 </style>
 </head>
@@ -3766,7 +3802,7 @@ const REPORT = {
     "url": "https://www.youtube.com/watch?v=50p39zPR7JY&t=3s",
     "duration": 1101,
     "thumbnail": "https://i.ytimg.com/vi/50p39zPR7JY/maxresdefault.jpg",
-    "_tmpdir": "/var/folders/9m/sb9grr0x2jvg62_d3bk_x0_r0000gn/T/toxc_yt_aco1pl1h"
+    "_tmpdir": "/var/folders/9m/sb9grr0x2jvg62_d3bk_x0_r0000gn/T/toxc_yt_cj3totsr"
   }
 };
 
@@ -3794,18 +3830,38 @@ function updIcon(){
   if(b) b.innerHTML=document.documentElement.dataset.theme==='dark'?SUN:MOON;
 }
 
+/* ── Tabs ─────────────────────────────────────────────── */
+const SEC_TAB={
+  'sec-channel':'overview','sec-finance':'overview','sec-consequence':'overview',
+  'sec-fix':'overview','sec-signals':'overview',
+  'sec-tl':'viz','sec-charts':'viz','sec-hm':'viz','sec-mom':'viz',
+  'sec-all':'transcript'
+};
+function switchTab(name){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active',b.dataset.tab===name));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.toggle('active',p.id==='tab-'+name));
+}
+
 /* ── Navigation ───────────────────────────────────────── */
 function scrollToSent(idx){
-  const el=document.getElementById('sent-'+idx);
-  if(!el)return;
-  el.scrollIntoView({behavior:'smooth',block:'center'});
-  el.classList.remove('sent-hl');
-  void el.offsetWidth;
-  el.classList.add('sent-hl');
+  switchTab('transcript');
+  setTimeout(function(){
+    const el=document.getElementById('sent-'+idx);
+    if(!el)return;
+    el.scrollIntoView({behavior:'smooth',block:'center'});
+    el.classList.remove('sent-hl');
+    void el.offsetWidth;
+    el.classList.add('sent-hl');
+  },50);
 }
 function scrollToSec(id){
+  const tab=SEC_TAB[id];
+  if(tab)switchTab(tab);
   const el=document.getElementById(id);
-  if(el)el.scrollIntoView({behavior:'smooth'});
+  if(!el)return;
+  const det=el.closest('details.acc');
+  if(det&&!det.open)det.open=true;
+  setTimeout(()=>el.scrollIntoView({behavior:'smooth'}),tab?60:0);
 }
 
 /* ── Score Breakdown ──────────────────────────────────── */
@@ -3818,6 +3874,28 @@ function renderScoreBreakdown(b){
     +pill('Peak',b.peak,'Mean of top 5% most toxic sentences (50%)')
     +pill('Rate',b.rate,'Fraction of sentences classified Toxic >=0.7 (25%)')
     +'</div>';
+}
+
+/* ── Hero Cards ───────────────────────────────────────── */
+function renderHero(R){
+  const O=R.overall;
+  const M=R.monetization||{};
+  const rl=M.risk_level||'';
+  const flaggedCount=R.sentences.filter(s=>s.toxicity>=0.7).length;
+  const flaggedPct=R.sentences.length?((flaggedCount/R.sentences.length)*100).toFixed(0):0;
+  const rlColor=rl==='HIGH'?'var(--red)':rl==='MEDIUM'?'var(--yel)':'var(--grn)';
+  const SCORE_IC='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>';
+  const AD_IC='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>';
+  const FLAG_IC='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>';
+  const SENT_IC='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>';
+  function card(ic,val,valColor,label,sub){
+    return`<div class="hero-card"><div class="hero-ic">${ic}</div><div class="hero-val" style="color:${valColor}">${val}</div><div class="hero-label">${label}</div>${sub?`<div class="hero-sub">${sub}</div>`:''}</div>`;
+  }
+  let cards=card(SCORE_IC,O.toxicity.toFixed(2),vc(O.verdict),'Toxicity Score',O.verdict);
+  if(rl)cards+=card(AD_IC,rl,rlColor,'Ad Safety',M.ad_verdict||'');
+  cards+=card(FLAG_IC,String(flaggedCount),flaggedCount>0?'var(--red)':'var(--grn)','Flagged Sentences',flaggedPct+'% of total');
+  cards+=card(SENT_IC,sign(O.sentiment),sc(O.sentiment),'Avg Sentiment',O.sentiment>0.05?'Positive':O.sentiment<-0.05?'Negative':'Neutral');
+  return`<div class="hero-cards">${cards}</div>`;
 }
 
 /* ── Sidebar ──────────────────────────────────────────── */
@@ -4095,9 +4173,10 @@ function renderTimeline(R){
 
   const labels=[0,.25,.5,.75,1].map(function(t){return'<span>'+fmt(t*dur)+'</span>'}).join('');
 
-  return'<div class="section" id="sec-tl">'
-    +'<div class="section-hdr">Timeline'+(dur>7?' <span style="font-size:.6rem;opacity:.5;font-family:var(--mono)">\u258f= first 7s</span>':'')+'</div>'
-    +'<div class="tl-wrap">'
+  return'<details class="acc" id="sec-tl" open>'
+    +'<summary>Timeline'+(dur>7?' <span style="font-size:.6rem;opacity:.5;font-family:var(--mono);margin-left:.4rem">\u258f= first 7s</span>':'')
+    +'<span class="acc-toggle">+</span></summary>'
+    +'<div class="acc-body"><div class="tl-wrap">'
     +'<div class="tl-bars-outer">'+zone7+'<div class="tl-bars">'+bars+'</div></div>'
     +'<div class="tl-labels">'+labels+'</div>'
     +'<div class="tl-legend">'
@@ -4105,7 +4184,7 @@ function renderTimeline(R){
     +'<span><i style="background:var(--yel)"></i> Borderline</span>'
     +'<span><i style="background:var(--grn)"></i> Clean</span>'
     +'</div>'
-    +'</div></div>';
+    +'</div></div></details>';
 }
 
 /* ── Smooth SVG path (Catmull-Rom) ─────────────────────── */
@@ -4182,12 +4261,12 @@ function renderDistribution(R){
 
 /* ── Charts Section ───────────────────────────────────── */
 function renderCharts(R){
-  return'<div class="section" id="sec-charts">'
-    +'<div class="section-hdr">Analysis</div>'
-    +'<div class="charts-grid">'
+  return'<details class="acc" id="sec-charts" open>'
+    +'<summary>Analysis<span class="acc-toggle">+</span></summary>'
+    +'<div class="acc-body"><div class="charts-grid">'
     +'<div class="chart-card"><div class="chart-title">Toxicity &amp; Sentiment Over Time</div>'+renderLineChart(R)+'</div>'
     +'<div class="chart-card"><div class="chart-title">Score Distribution</div>'+renderDistribution(R)+'</div>'
-    +'</div></div>';
+    +'</div></div></details>';
 }
 
 /* ── Dimension Heatmap ────────────────────────────────── */
@@ -4211,12 +4290,12 @@ function renderHeatmap(R){
     return'<span>'+fmt(s.start)+'</span>';
   }).join('');
 
-  return'<div class="section" id="sec-hm">'
-    +'<div class="section-hdr">Dimension Heatmap</div>'
-    +'<div class="hm-wrap">'+rows
+  return'<details class="acc" id="sec-hm" open>'
+    +'<summary>Dimension Heatmap<span class="acc-toggle">+</span></summary>'
+    +'<div class="acc-body"><div class="hm-wrap">'+rows
     +'<div class="hm-time-labels">'+timeLbls+'</div>'
     +'<div class="hm-legend"><span>Low</span><div class="hm-legend-bar"></div><span>High</span></div>'
-    +'</div></div>';
+    +'</div></div></details>';
 }
 
 /* ── Moment Cards ─────────────────────────────────────── */
@@ -4250,9 +4329,9 @@ function renderMoments(R){
       +'</div></div>';
   }).join('');
 
-  return'<div class="section" id="sec-mom">'
-    +'<div class="section-hdr">Top Toxic Moments</div>'
-    +'<div class="moments">'+cards+'</div></div>';
+  return'<details class="acc" id="sec-mom" open>'
+    +'<summary>Top Toxic Moments<span class="acc-toggle">+</span></summary>'
+    +'<div class="acc-body"><div class="moments">'+cards+'</div></div></details>';
 }
 
 /* ── Sentences Table ──────────────────────────────────── */
@@ -4269,9 +4348,9 @@ function renderSentences(R){
 
   return'<div class="section" id="sec-all">'
     +'<div class="section-hdr">All Sentences</div>'
-    +'<table class="s-table"><thead><tr>'
+    +'<div class="s-table-wrap"><table class="s-table"><thead><tr>'
     +'<th>Time</th><th>Text</th><th>Toxicity</th><th>Sentiment</th><th>Verdict</th>'
-    +'</tr></thead><tbody>'+rows+'</tbody></table></div>';
+    +'</tr></thead><tbody>'+rows+'</tbody></table></div></div>';
 }
 
 /* ── Main Render ──────────────────────────────────────── */
@@ -4300,8 +4379,22 @@ function render(){
     +(ytThumb||ytChannel?ytThumb+ytChannel:'')
     +'<div class="meta">'+fmt(R.duration)+' \u00b7 '+R.overall.sentence_count+' sentences \u00b7 '+modelLabel+(R.analyzed_at?' \u00b7 '+R.analyzed_at:'')+'</div></div>';
 
+  const tabBar='<div class="tab-bar">'
+    +'<button class="tab-btn active" data-tab="overview" onclick="switchTab(\'overview\')">Overview</button>'
+    +'<button class="tab-btn" data-tab="viz" onclick="switchTab(\'viz\')">Visualizations</button>'
+    +'<button class="tab-btn" data-tab="transcript" onclick="switchTab(\'transcript\')">Transcript</button>'
+    +'</div>';
+
+  const overviewPanel=renderChannelProfile(R)+renderFinancialImpact(R)+renderConsequenceBreakdown(R)+renderWhatToFix(R)+renderSignalsRecs(R);
+  const vizPanel=renderTimeline(R)+renderCharts(R)+renderHeatmap(R)+renderMoments(R);
+  const transcriptPanel=renderSentences(R);
+
+  const panels=`<div class="tab-panel active" id="tab-overview">${overviewPanel}</div>`
+    +`<div class="tab-panel" id="tab-viz">${vizPanel}</div>`
+    +`<div class="tab-panel" id="tab-transcript">${transcriptPanel}</div>`;
+
   const sidebar=renderSidebar(R);
-  const main='<div class="main">'+hdr+renderChannelProfile(R)+renderFinancialImpact(R)+renderConsequenceBreakdown(R)+renderWhatToFix(R)+renderSignalsRecs(R)+renderTimeline(R)+renderCharts(R)+renderHeatmap(R)+renderMoments(R)+renderSentences(R)+'</div>';
+  const main='<div class="main">'+hdr+renderHero(R)+tabBar+panels+'</div>';
   document.getElementById('root').innerHTML='<div class="layout">'+sidebar+main+'</div>';
 
   updIcon();
