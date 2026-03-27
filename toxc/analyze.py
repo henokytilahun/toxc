@@ -1,6 +1,13 @@
+import os
+os.environ.setdefault("TRANSFORMERS_VERBOSITY", "error")
+os.environ.setdefault("TOKENIZERS_PARALLELISM", "false")
+os.environ.setdefault("TQDM_DISABLE", "1")
+
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
+from rich.console import Console
 
 _vader = SentimentIntensityAnalyzer()
+_console = Console(stderr=True)
 
 
 def _vader_fallback_tox(vader: dict) -> dict:
@@ -52,12 +59,19 @@ def _build_result(text: str, vader: dict, tox: dict) -> dict:
     }
 
 
+def _load_detoxify():
+    import transformers
+    transformers.logging.set_verbosity_error()
+    from detoxify import Detoxify
+    with _console.status("[dim]Loading model…[/dim]", spinner="dots"):
+        return Detoxify("original")
+
+
 def analyze(text: str, use_detoxify: bool = True) -> dict:
     vader = _vader.polarity_scores(text)
     if use_detoxify:
         try:
-            from detoxify import Detoxify
-            tox = {k: float(v) for k, v in Detoxify("original").predict(text).items()}
+            tox = {k: float(v) for k, v in _load_detoxify().predict(text).items()}
         except Exception:
             tox = _vader_fallback_tox(vader)
     else:
@@ -70,8 +84,7 @@ def analyze_batch(texts: list[str], use_detoxify: bool = True) -> list[dict]:
     model = None
     if use_detoxify:
         try:
-            from detoxify import Detoxify
-            model = Detoxify("original")
+            model = _load_detoxify()
         except Exception:
             use_detoxify = False
 
