@@ -1,3 +1,4 @@
+import os
 import typer
 import sys
 import json as _json
@@ -52,45 +53,65 @@ def analyze_cmd(
 
 @app.command("voice")
 def voice_cmd(
-    audio: Path = typer.Argument(..., help="Audio or video file to analyze"),
+    source: str = typer.Argument(..., help="Audio/video file path or YouTube URL"),
     html: Optional[Path] = typer.Option(None, "--html", help="Save HTML report to path"),
     model: str = typer.Option("small", "--model", "-m", help="Whisper model size (tiny/base/small/medium/large)"),
     fast: bool = typer.Option(False, "--fast", help="Use VADER only (no Detoxify)"),
     json: bool = typer.Option(False, "--json", help="Output as JSON"),
 ):
-    if not audio.exists():
-        typer.echo(f"File not found: {audio}", err=True)
-        raise typer.Exit(1)
-
-    from toxc.voice import transcribe_and_segment
+    from toxc.voice import transcribe_and_segment, is_youtube_url
     from toxc.report import aggregate, write_html
 
-    sentences, duration = transcribe_and_segment(str(audio), model)
+    audio_path = source
+    yt_meta: dict = {}
+    _tmp_file: Optional[str] = None
 
-    if not sentences:
-        typer.echo("No speech detected.", err=True)
-        raise typer.Exit(1)
+    if is_youtube_url(source):
+        from toxc.voice import fetch_youtube_audio
+        _tmp_file, yt_meta = fetch_youtube_audio(source)
+        audio_path = _tmp_file
+        display_name = yt_meta.get("title") or source
+    else:
+        p = Path(source)
+        if not p.exists():
+            typer.echo(f"File not found: {source}", err=True)
+            raise typer.Exit(1)
+        display_name = p.name
 
-    use_detoxify = not fast
-    texts = [s["text"] for s in sentences]
-    results = analyze_batch(texts, use_detoxify)
+    try:
+        sentences, duration = transcribe_and_segment(audio_path, model)
 
-    for result, sentence in zip(results, sentences):
-        result["start"] = sentence["start"]
-        result["end"] = sentence["end"]
+        if not sentences:
+            typer.echo("No speech detected.", err=True)
+            raise typer.Exit(1)
 
-    data = aggregate(results, str(audio), model, duration)
+        use_detoxify = not fast
+        texts = [s["text"] for s in sentences]
+        results = analyze_batch(texts, use_detoxify)
 
-    if json:
-        _output_json(data)
-        return
+        for result, sentence in zip(results, sentences):
+            result["start"] = sentence["start"]
+            result["end"] = sentence["end"]
 
-    from toxc.display import render_voice_summary
-    render_voice_summary(data)
+        data = aggregate(results, display_name, model, duration)
 
-    if html:
-        write_html(data, str(html))
-        console.print(f"\n[dim]Report saved → [bold]{html}[/bold][/dim]")
+        if yt_meta:
+            data["youtube"] = yt_meta
+
+        if json:
+            _output_json(data)
+            return
+
+        from toxc.display import render_voice_summary
+        render_voice_summary(data)
+
+        if html:
+            write_html(data, str(html))
+            console.print(f"\n[dim]Report saved → [bold]{html}[/bold][/dim]")
+
+    finally:
+        if _tmp_file and os.path.exists(_tmp_file):
+            os.unlink(_tmp_file)
 
 
 def run():

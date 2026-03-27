@@ -64,10 +64,17 @@ toxc "some text" --fast
 
 ## Voice & Video Analysis
 
-Transcribe any audio or video file and get per-sentence toxicity scores, a terminal summary, and an interactive HTML report.
+Transcribe any audio or video file — or pass a YouTube URL directly — and get per-sentence toxicity scores, a terminal summary, and an interactive HTML report.
 
 ```bash
+# Local file
 toxc voice interview.mp4 --html report.html
+
+# YouTube URL (no download needed)
+toxc voice "https://www.youtube.com/watch?v=dQw4w9WgXcQ" --html report.html
+
+# YouTube Shorts or youtu.be links also work
+toxc voice "https://youtu.be/dQw4w9WgXcQ" --html report.html
 ```
 
 ```
@@ -107,10 +114,10 @@ Light/dark theme toggle (defaults dark), scroll-to-sentence cross-linking from e
 ### Options
 
 ```
-toxc voice AUDIO [OPTIONS]
+toxc voice SOURCE [OPTIONS]
 
 Arguments:
-  AUDIO           Path to audio or video file (mp3, mp4, wav, m4a, …)
+  SOURCE          Audio/video file path OR a YouTube URL
 
 Options:
   --html PATH     Save interactive HTML report to path
@@ -134,7 +141,11 @@ Options:
 ## How it works
 
 ```
-Audio/Video
+Audio/Video file  ─OR─  YouTube URL
+    │                        │
+    │                   yt-dlp (audio only, temp file)
+    │                        │
+    └────────────────────────┘
     │
     ▼
 Whisper (transcription + word timestamps)
@@ -202,7 +213,7 @@ Text options:
   --fast          Use VADER only (no Detoxify)
 
 Voice options:
-  AUDIO           Audio or video file path
+  SOURCE          Audio/video file path or YouTube URL
   --html PATH     Save HTML report
   -m, --model     Whisper model size  [default: small]
   --fast          Use VADER only

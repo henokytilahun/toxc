@@ -1,11 +1,68 @@
 import os
 import re
+import tempfile
 os.environ.setdefault("TRANSFORMERS_VERBOSITY", "error")
 
 import nltk
 from rich.console import Console
 
 _console = Console(stderr=True)
+
+_YT_RE = re.compile(
+    r"(https?://)?(www\.)?"
+    r"(youtube\.com/(watch\?.*v=|shorts/|live/)|youtu\.be/)"
+    r"[\w\-]+"
+)
+
+
+def is_youtube_url(source: str) -> bool:
+    return bool(_YT_RE.match(source.strip()))
+
+
+def fetch_youtube_audio(url: str) -> tuple[str, dict]:
+    """
+    Download the best audio track to a temp file via yt-dlp.
+    Returns (temp_file_path, metadata_dict).
+    The caller is responsible for deleting the temp file.
+    """
+    try:
+        import yt_dlp
+    except ImportError:
+        raise RuntimeError(
+            "yt-dlp is required for YouTube support. "
+            "Install it with: pip install yt-dlp"
+        )
+
+    tmp = tempfile.NamedTemporaryFile(suffix=".mp3", delete=False)
+    tmp.close()
+
+    ydl_opts = {
+        "format": "bestaudio/best",
+        "outtmpl": tmp.name,
+        "postprocessors": [{
+            "key": "FFmpegExtractAudio",
+            "preferredcodec": "mp3",
+            "preferredquality": "128",
+        }],
+        "quiet": True,
+        "no_warnings": True,
+    }
+
+    meta: dict = {}
+    with _console.status("[dim]Fetching YouTube audio…[/dim]", spinner="dots"):
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            info = ydl.extract_info(url, download=True)
+            meta = {
+                "title": info.get("title", ""),
+                "channel": info.get("uploader", ""),
+                "url": url,
+                "duration": info.get("duration", 0),
+                "thumbnail": info.get("thumbnail", ""),
+            }
+
+    # yt-dlp appends .mp3 to the template path when post-processing
+    audio_path = tmp.name if os.path.exists(tmp.name) else tmp.name + ".mp3"
+    return audio_path, meta
 
 
 def _ensure_nltk():
