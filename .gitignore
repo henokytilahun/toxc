@@ -18,7 +18,6 @@ env/
 .DS_Store
 
 # Generated reports & test media
-*.html
 *.mp4
 *.mp3
 *.wav
