@@ -21,9 +21,10 @@ def is_youtube_url(source: str) -> bool:
 
 def fetch_youtube_audio(url: str) -> tuple[str, dict]:
     """
-    Download the best audio track to a temp file via yt-dlp.
-    Returns (temp_file_path, metadata_dict).
-    The caller is responsible for deleting the temp file.
+    Download the best audio track to a temp directory via yt-dlp.
+    Returns (audio_file_path, metadata_dict).
+    The caller is responsible for deleting the file (and its parent tmpdir).
+    No FFmpeg post-processing — Whisper decodes the native format directly.
     """
     try:
         import yt_dlp
@@ -33,17 +34,12 @@ def fetch_youtube_audio(url: str) -> tuple[str, dict]:
             "Install it with: pip install yt-dlp"
         )
 
-    tmp = tempfile.NamedTemporaryFile(suffix=".mp3", delete=False)
-    tmp.close()
+    tmpdir = tempfile.mkdtemp(prefix="toxc_yt_")
 
     ydl_opts = {
         "format": "bestaudio/best",
-        "outtmpl": tmp.name,
-        "postprocessors": [{
-            "key": "FFmpegExtractAudio",
-            "preferredcodec": "mp3",
-            "preferredquality": "128",
-        }],
+        # %(ext)s lets yt-dlp keep the native extension (.webm, .m4a, etc.)
+        "outtmpl": os.path.join(tmpdir, "audio.%(ext)s"),
         "quiet": True,
         "no_warnings": True,
     }
@@ -60,8 +56,14 @@ def fetch_youtube_audio(url: str) -> tuple[str, dict]:
                 "thumbnail": info.get("thumbnail", ""),
             }
 
-    # yt-dlp appends .mp3 to the template path when post-processing
-    audio_path = tmp.name if os.path.exists(tmp.name) else tmp.name + ".mp3"
+    # Find whatever file yt-dlp wrote (audio.webm, audio.m4a, …)
+    files = [f for f in os.listdir(tmpdir) if f.startswith("audio.")]
+    if not files:
+        raise RuntimeError("yt-dlp did not produce an audio file.")
+
+    audio_path = os.path.join(tmpdir, files[0])
+    # Stash the tmpdir so the CLI can clean up the whole directory
+    meta["_tmpdir"] = tmpdir
     return audio_path, meta
 
 

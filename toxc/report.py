@@ -5,6 +5,44 @@ from pathlib import Path
 DIMS = ["insult", "obscene", "threat", "identity_attack", "severe_toxicity"]
 
 
+def _composite_toxicity(sentences: list[dict]) -> tuple[float, dict]:
+    """
+    Peak-aware composite score so sparse-but-severe toxicity isn't buried
+    by a majority of clean filler sentences.
+
+    Components (all in [0, 1]):
+      density  (25%) — length-weighted mean across all sentences
+      peak     (50%) — mean of the top 5 % most toxic sentences
+      rate     (25%) — fraction of sentences classified as Toxic (≥ 0.7)
+
+    Returns (composite_score, breakdown_dict).
+    """
+    n = len(sentences)
+    lengths = [len(s["text"]) for s in sentences]
+    total_len = sum(lengths) or 1
+    toxicities = [s["toxicity"] for s in sentences]
+
+    # 1. Density — same length-weighted mean as before
+    density = sum(s["toxicity"] * len(s["text"]) for s in sentences) / total_len
+
+    # 2. Peak severity — mean of top 5 % (minimum 1 sentence)
+    top_n = max(1, round(n * 0.05))
+    peak = sum(sorted(toxicities, reverse=True)[:top_n]) / top_n
+
+    # 3. Rate — proportion of sentences that are Toxic
+    toxic_count = sum(1 for t in toxicities if t >= 0.7)
+    rate = toxic_count / n
+
+    composite = 0.25 * density + 0.50 * peak + 0.25 * rate
+
+    breakdown = {
+        "density": round(density, 4),
+        "peak": round(peak, 4),
+        "rate": round(rate, 4),
+    }
+    return round(min(composite, 1.0), 4), breakdown
+
+
 def aggregate(
     sentences: list[dict],
     audio_path: str,
@@ -14,16 +52,16 @@ def aggregate(
     for i, s in enumerate(sentences):
         s["idx"] = i
 
-    toxicities = [s["toxicity"] for s in sentences]
-
     lengths = [len(s["text"]) for s in sentences]
     total_len = sum(lengths) or 1
-    weighted_tox  = sum(s["toxicity"]  * len(s["text"]) for s in sentences) / total_len
+    toxicities = [s["toxicity"] for s in sentences]
+
+    composite_tox, score_breakdown = _composite_toxicity(sentences)
     weighted_sent = sum(s["sentiment"] * len(s["text"]) for s in sentences) / total_len
 
-    if weighted_tox >= 0.7:
+    if composite_tox >= 0.7:
         verdict = "Toxic"
-    elif weighted_tox >= 0.4:
+    elif composite_tox >= 0.4:
         verdict = "Borderline"
     else:
         verdict = "Clean"
@@ -50,7 +88,8 @@ def aggregate(
         "duration": duration,
         "analyzed_at": datetime.datetime.now().strftime("%b %d %Y"),
         "overall": {
-            "toxicity": weighted_tox,
+            "toxicity": composite_tox,
+            "score_breakdown": score_breakdown,
             "sentiment": weighted_sent,
             "verdict": verdict,
             "toxic_count": sum(1 for t in toxicities if t >= 0.7),

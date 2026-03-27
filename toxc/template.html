@@ -50,6 +50,10 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .sb-score{text-align:center;padding:1rem 0}
 .sb-score .big{font-size:2.8rem;font-weight:800;font-family:var(--mono);line-height:1;letter-spacing:-.03em}
 .sb-score .verdict{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;margin-top:.4rem;font-weight:600}
+.sb-breakdown{display:flex;justify-content:center;gap:.5rem;margin-top:.65rem;flex-wrap:wrap}
+.sbb{text-align:center;padding:.3rem .45rem;background:var(--bg2);border-radius:5px;min-width:52px}
+.sbb .sbv{font-size:.75rem;font-weight:700;font-family:var(--mono)}
+.sbb .sbl{font-size:.52rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-top:1px}
 
 .sb-dims{padding-top:.5rem;border-top:1px solid var(--border)}
 .sb-dims h3,.sb-nav h3,.sb-moments h3,.sb-stats-title{font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.45rem}
@@ -216,6 +220,18 @@ function scrollToSec(id){
   if(el)el.scrollIntoView({behavior:'smooth'});
 }
 
+/* ── Score Breakdown ──────────────────────────────────── */
+function renderScoreBreakdown(b, mainColor){
+  function pill(label, val, tip){
+    return '<div class="sbb" title="'+tip+'"><div class="sbv" style="color:'+tc(val)+'">'+val.toFixed(2)+'</div><div class="sbl">'+label+'</div></div>';
+  }
+  return '<div class="sb-breakdown">'
+    +pill('Density', b.density, 'Length-weighted mean toxicity across all sentences (25%)')
+    +pill('Peak',    b.peak,    'Mean of top 5% most toxic sentences (50%)')
+    +pill('Rate',    b.rate,    'Fraction of sentences classified Toxic ≥0.7 (25%)')
+    +'</div>';
+}
+
 /* ── Sidebar ──────────────────────────────────────────── */
 function renderSidebar(R){
   const O=R.overall;
@@ -253,7 +269,9 @@ function renderSidebar(R){
     '<button class="theme-btn" id="theme-btn" onclick="toggleTheme()" title="Toggle theme">'+SUN+'</button></div>'+
 
     '<div class="sb-score"><div class="big" style="color:'+ovc+'">'+O.toxicity.toFixed(2)+'</div>'+
-    '<div class="verdict" style="color:'+ovc+'">'+O.verdict+'</div></div>'+
+    '<div class="verdict" style="color:'+ovc+'">'+O.verdict+'</div>'+
+    (O.score_breakdown ? renderScoreBreakdown(O.score_breakdown, ovc) : '')+
+    '</div>'+
 
     dimHtml+
 

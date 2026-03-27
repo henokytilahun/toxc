@@ -64,12 +64,10 @@ def voice_cmd(
 
     audio_path = source
     yt_meta: dict = {}
-    _tmp_file: Optional[str] = None
 
     if is_youtube_url(source):
         from toxc.voice import fetch_youtube_audio
-        _tmp_file, yt_meta = fetch_youtube_audio(source)
-        audio_path = _tmp_file
+        audio_path, yt_meta = fetch_youtube_audio(source)
         display_name = yt_meta.get("title") or source
     else:
         p = Path(source)
@@ -110,8 +108,9 @@ def voice_cmd(
             console.print(f"\n[dim]Report saved → [bold]{html}[/bold][/dim]")
 
     finally:
-        if _tmp_file and os.path.exists(_tmp_file):
-            os.unlink(_tmp_file)
+        if yt_meta.get("_tmpdir"):
+            import shutil
+            shutil.rmtree(yt_meta["_tmpdir"], ignore_errors=True)
 
 
 def run():
