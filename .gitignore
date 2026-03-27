@@ -16,3 +16,10 @@ env/
 
 # Tools
 .DS_Store
+
+# Generated reports & test media
+*.html
+*.mp4
+*.mp3
+*.wav
+*.m4a
