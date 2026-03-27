@@ -117,3 +117,57 @@ def render_batch(results: list[dict]):
         )
 
     console.print(table)
+
+
+def render_voice_summary(data: dict):
+    O = data["overall"]
+    toxicity = O["toxicity"]
+    sentiment = O["sentiment"]
+    verdict = O["verdict"]
+
+    tox_color = "red" if toxicity >= 0.7 else "yellow" if toxicity >= 0.4 else "green"
+    verdict_color = VERDICT_COLORS.get(verdict, "white")
+    sent_label, sent_color = _sentiment_label(sentiment)
+
+    lines = Text()
+    lines.append(f"\n  {_bar(toxicity)}  ", style="dim")
+    lines.append("Toxicity   ", style="bold")
+    lines.append(f"{toxicity:.2f}  ", style=tox_color + " bold")
+    lines.append(verdict.upper() + "\n", style=verdict_color)
+
+    lines.append(f"\n  {_bar(abs(sentiment))}  ", style="dim")
+    lines.append("Sentiment  ", style="bold")
+    lines.append(f"{sentiment:+.2f}  ", style=sent_color + " bold")
+    lines.append(sent_label + "\n", style=sent_color)
+
+    lines.append(f"\n  Sentences  ", style="bold")
+    lines.append(f"{O['toxic_count']} toxic", style="red")
+    lines.append(" / ", style="dim")
+    lines.append(f"{O['sentence_count']} total\n", style="dim")
+
+    # Top 3 toxic moments
+    top = [s for s in data["top_toxic"] if s["toxicity"] >= 0.4][:3]
+    if top:
+        lines.append("\n  [bold]Top moments[/bold]\n")
+        for s in top:
+            start = s["start"]
+            m, sec = int(start // 60), int(start % 60)
+            ts = f"{m}:{sec:02d}"
+            tc = "red" if s["toxicity"] >= 0.7 else "yellow"
+            preview = s["text"][:60] + ("…" if len(s["text"]) > 60 else "")
+            lines.append(f"  {ts}  ", style="dim")
+            lines.append(f"{s['toxicity']:.2f}  ", style=tc + " bold")
+            lines.append(preview + "\n", style="dim")
+
+    lines.append(f"\n  Verdict: ", style="bold")
+    lines.append(verdict, style=verdict_color)
+    lines.append(" — voice analysis\n", style="dim")
+
+    panel = Panel(
+        lines,
+        title="[bold]toxc voice[/bold]",
+        subtitle="[dim]toxic-bert · whisper[/dim]" if not data.get("fast") else "[dim]vader · whisper[/dim]",
+        border_style=tox_color,
+        padding=(0, 1),
+    )
+    console.print(panel)

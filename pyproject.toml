@@ -22,9 +22,18 @@ dependencies = [
     "detoxify>=0.5",
 ]
 
+[project.optional-dependencies]
+voice = [
+    "openai-whisper>=20231117",
+    "nltk>=3.8",
+]
+
 [project.scripts]
 toxc = "toxc.cli:run"
 
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["toxc*"]
+
+[tool.setuptools.package-data]
+toxc = ["template.html"]

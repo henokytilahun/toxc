@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>toxc report</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d0d0d;--surface:#141414;--border:#222;
+  --text:#e0e0e0;--dim:#555;
+  --red:#f05050;--yellow:#e8a838;--green:#4caf78;--blue:#5a9fd4;
+}
+body{background:var(--bg);color:var(--text);font-family:'SF Mono','Fira Code','Cascadia Code',monospace;font-size:13px;line-height:1.6;padding:2.5rem;max-width:1100px;margin:0 auto}
+
+/* Header */
+.header{margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
+.header h1{font-size:1rem;color:#fff;letter-spacing:0.05em}
+.header h1 span{color:var(--dim);font-weight:normal}
+.meta{color:var(--dim);font-size:0.8rem;margin-top:0.3rem}
+
+/* Stats */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:1rem}
+.card .label{color:var(--dim);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em}
+.card .value{font-size:1.4rem;font-weight:bold;margin-top:0.2rem}
+.card .sub{color:var(--dim);font-size:0.75rem;margin-top:0.1rem}
+
+/* Section */
+.section{margin-bottom:2.5rem}
+.section-title{color:var(--dim);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.12em;margin-bottom:0.75rem;padding-bottom:0.4rem;border-bottom:1px solid var(--border)}
+
+/* Timeline SVG */
+.timeline-wrap{background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:1rem}
+svg text{font-family:'SF Mono','Fira Code',monospace}
+
+/* Table */
+table{width:100%;border-collapse:collapse}
+th{color:var(--dim);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.08em;text-align:left;padding:0.4rem 0.75rem;border-bottom:1px solid var(--border);white-space:nowrap}
+td{padding:0.45rem 0.75rem;border-bottom:1px solid #181818;vertical-align:top}
+tr:hover td{background:#111}
+.text-cell{max-width:420px;line-height:1.4}
+.time{color:var(--dim);white-space:nowrap;font-size:0.85em}
+.verdict-toxic{color:var(--red)}
+.verdict-borderline{color:var(--yellow)}
+.verdict-clean{color:var(--green)}
+
+/* Bar */
+.bar{display:inline-block;vertical-align:middle;width:52px;height:3px;background:#222;border-radius:2px;margin-left:6px;position:relative;top:-1px}
+.bar-fill{height:100%;border-radius:2px}
+
+/* Dims */
+.dims{margin-top:0.2rem;font-size:0.78em;color:var(--dim)}
+.dim-badge{display:inline-block;margin-right:0.5rem}
+
+/* Tooltip */
+.tip{position:fixed;background:#1e1e1e;border:1px solid #333;padding:0.4rem 0.6rem;font-size:0.75rem;pointer-events:none;max-width:280px;line-height:1.4;border-radius:2px;display:none;z-index:100}
+</style>
+</head>
+<body>
+<div class="tip" id="tip"></div>
+<div id="root"></div>
+<script>
+const REPORT = null;
+
+// ── helpers ──────────────────────────────────────────────────────────────────
+function fmt(s) {
+  const m = Math.floor(s / 60);
+  const sec = Math.floor(s % 60);
+  return `${m}:${sec.toString().padStart(2,'0')}`;
+}
+function toxColor(v) {
+  return v >= 0.7 ? 'var(--red)' : v >= 0.4 ? 'var(--yellow)' : 'var(--green)';
+}
+function sentColor(v) {
+  return v >= 0.05 ? 'var(--green)' : v <= -0.05 ? 'var(--red)' : 'var(--yellow)';
+}
+function verdictClass(v) {
+  return v === 'Toxic' ? 'verdict-toxic' : v === 'Borderline' ? 'verdict-borderline' : 'verdict-clean';
+}
+function bar(score, color) {
+  return `<span class="bar"><span class="bar-fill" style="width:${(score*100).toFixed(1)}%;background:${color}"></span></span>`;
+}
+function sign(v) { return (v >= 0 ? '+' : '') + v.toFixed(2); }
+
+// ── timeline ─────────────────────────────────────────────────────────────────
+function renderTimeline(R) {
+  const W = 1000, H = 130;
+  const PAD = { t: 12, r: 20, b: 28, l: 36 };
+  const iW = W - PAD.l - PAD.r;
+  const iH = H - PAD.t - PAD.b;
+  const dur = R.duration || 1;
+
+  const pts = R.sentences.map(s => ({
+    x: PAD.l + ((s.start + s.end) / 2 / dur) * iW,
+    y: PAD.t + (1 - s.toxicity) * iH,
+    tox: s.toxicity,
+    text: s.text,
+    start: s.start,
+    end: s.end,
+  }));
+
+  const yTox  = PAD.t + (1 - 0.7) * iH;
+  const yBord = PAD.t + (1 - 0.4) * iH;
+  const ticks = [0, 0.25, 0.5, 0.75, 1];
+
+  // smooth path via curve
+  let path = '';
+  if (pts.length > 1) {
+    path = pts.map((p, i) => i === 0 ? `M ${p.x} ${p.y}` : `L ${p.x} ${p.y}`).join(' ');
+  }
+
+  const circles = pts.map((p, i) =>
+    `<circle class="pt" cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="4.5"
+      fill="${p.tox >= 0.7 ? '#f05050' : p.tox >= 0.4 ? '#e8a838' : '#4caf78'}"
+      stroke="var(--bg)" stroke-width="1.5" style="cursor:pointer"
+      data-i="${i}"/>`
+  ).join('');
+
+  return `<div class="section">
+    <div class="section-title">Toxicity Timeline</div>
+    <div class="timeline-wrap">
+      <svg width="100%" viewBox="0 0 ${W} ${H}" id="timeline">
+        <!-- threshold lines -->
+        <line x1="${PAD.l}" y1="${yTox.toFixed(1)}" x2="${W-PAD.r}" y2="${yTox.toFixed(1)}"
+          stroke="#f05050" stroke-width="0.8" stroke-dasharray="5,5" opacity="0.35"/>
+        <line x1="${PAD.l}" y1="${yBord.toFixed(1)}" x2="${W-PAD.r}" y2="${yBord.toFixed(1)}"
+          stroke="#e8a838" stroke-width="0.8" stroke-dasharray="5,5" opacity="0.35"/>
+        <!-- y labels -->
+        <text x="${PAD.l-5}" y="${(yTox+3).toFixed(1)}" text-anchor="end" fill="#f05050" font-size="8" opacity="0.6">0.7</text>
+        <text x="${PAD.l-5}" y="${(yBord+3).toFixed(1)}" text-anchor="end" fill="#e8a838" font-size="8" opacity="0.6">0.4</text>
+        <!-- x axis -->
+        <line x1="${PAD.l}" y1="${PAD.t+iH}" x2="${W-PAD.r}" y2="${PAD.t+iH}" stroke="#222" stroke-width="1"/>
+        ${ticks.map(t => `
+          <text x="${(PAD.l + t*iW).toFixed(1)}" y="${PAD.t+iH+14}" text-anchor="middle" fill="#444" font-size="9">${fmt(t*dur)}</text>
+        `).join('')}
+        <!-- line -->
+        ${path ? `<path d="${path}" fill="none" stroke="#333" stroke-width="1.5"/>` : ''}
+        <!-- points -->
+        ${circles}
+      </svg>
+    </div>
+  </div>`;
+}
+
+// ── sentence row ──────────────────────────────────────────────────────────────
+function sentRow(s, showDims) {
+  const tc = toxColor(s.toxicity);
+  const dims = showDims && s.dimensions
+    ? Object.entries(s.dimensions)
+        .filter(([,v]) => v > 0.1)
+        .sort(([,a],[,b]) => b - a)
+        .map(([k,v]) => `<span class="dim-badge" style="color:${toxColor(v)}">${k.replace('_',' ')} ${v.toFixed(2)}</span>`)
+        .join('')
+    : '';
+  return `<tr>
+    <td class="time">${fmt(s.start)}</td>
+    <td class="text-cell">${s.text}${dims ? `<div class="dims">${dims}</div>` : ''}</td>
+    <td><span style="color:${tc};font-weight:bold">${s.toxicity.toFixed(2)}</span>${bar(s.toxicity, tc)}</td>
+    <td style="color:${sentColor(s.sentiment)}">${sign(s.sentiment)}</td>
+    <td class="${verdictClass(s.verdict)}">${s.verdict}</td>
+  </tr>`;
+}
+
+// ── main render ───────────────────────────────────────────────────────────────
+function render() {
+  const R = REPORT;
+  const O = R.overall;
+  const isFast = R.fast;
+  const modelLabel = `whisper-${R.model} · ${isFast ? 'vader' : 'toxic-bert'}`;
+
+  document.title = `toxc · ${R.audio}`;
+
+  const verdictColor = O.verdict === 'Toxic' ? 'var(--red)' : O.verdict === 'Borderline' ? 'var(--yellow)' : 'var(--green)';
+
+  const header = `<div class="header">
+    <h1>toxc <span>·</span> ${R.audio}</h1>
+    <div class="meta">${fmt(R.duration)} · ${O.sentence_count} sentences · ${modelLabel}</div>
+  </div>`;
+
+  const stats = `<div class="stats">
+    <div class="card">
+      <div class="label">Overall Toxicity</div>
+      <div class="value" style="color:${verdictColor}">${O.toxicity.toFixed(2)}</div>
+      <div class="sub">${O.verdict}</div>
+    </div>
+    <div class="card">
+      <div class="label">Sentiment</div>
+      <div class="value" style="color:${sentColor(O.sentiment)}">${sign(O.sentiment)}</div>
+    </div>
+    <div class="card">
+      <div class="label">Toxic Sentences</div>
+      <div class="value" style="color:var(--red)">${O.toxic_count}</div>
+      <div class="sub">of ${O.sentence_count}</div>
+    </div>
+    <div class="card">
+      <div class="label">Duration</div>
+      <div class="value" style="color:var(--dim);font-size:1.1rem">${fmt(R.duration)}</div>
+    </div>
+  </div>`;
+
+  const tableHead = `<thead><tr>
+    <th>Time</th><th>Text</th><th>Toxicity</th><th>Sentiment</th><th>Verdict</th>
+  </tr></thead>`;
+
+  const topSection = `<div class="section">
+    <div class="section-title">Top Toxic Moments</div>
+    <table>${tableHead}<tbody>
+      ${R.top_toxic.filter(s => s.toxicity > 0).map(s => sentRow(s, !isFast)).join('')}
+    </tbody></table>
+  </div>`;
+
+  const allSection = `<div class="section">
+    <div class="section-title">All Sentences</div>
+    <table>${tableHead}<tbody>
+      ${R.sentences.map(s => sentRow(s, false)).join('')}
+    </tbody></table>
+  </div>`;
+
+  document.getElementById('root').innerHTML =
+    header + stats + renderTimeline(R) + topSection + allSection;
+
+  // tooltip on timeline points
+  const tip = document.getElementById('tip');
+  document.querySelectorAll('#timeline .pt').forEach(el => {
+    el.addEventListener('mousemove', e => {
+      const i = +el.dataset.i;
+      const s = R.sentences[i];
+      tip.style.display = 'block';
+      tip.style.left = (e.clientX + 14) + 'px';
+      tip.style.top  = (e.clientY - 10) + 'px';
+      tip.innerHTML = `<span style="color:${toxColor(s.toxicity)}">${s.toxicity.toFixed(2)}</span> · ${fmt(s.start)}<br>${s.text}`;
+    });
+    el.addEventListener('mouseleave', () => { tip.style.display = 'none'; });
+  });
+}
+
+window.onload = render;
+</script>
+</body>
+</html>
