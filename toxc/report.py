@@ -1,8 +1,8 @@
 import json
-import statistics
+import datetime
 from pathlib import Path
 
-DIMS = ["severe_toxicity", "obscene", "threat", "insult", "identity_attack"]
+DIMS = ["insult", "obscene", "threat", "identity_attack", "severe_toxicity"]
 
 
 def aggregate(
@@ -11,13 +11,14 @@ def aggregate(
     model_size: str,
     duration: float,
 ) -> dict:
-    toxicities = [s["toxicity"] for s in sentences]
-    sentiments = [s["sentiment"] for s in sentences]
+    for i, s in enumerate(sentences):
+        s["idx"] = i
 
-    # Weight by sentence length so longer sentences count more
+    toxicities = [s["toxicity"] for s in sentences]
+
     lengths = [len(s["text"]) for s in sentences]
     total_len = sum(lengths) or 1
-    weighted_tox = sum(s["toxicity"] * len(s["text"]) for s in sentences) / total_len
+    weighted_tox  = sum(s["toxicity"]  * len(s["text"]) for s in sentences) / total_len
     weighted_sent = sum(s["sentiment"] * len(s["text"]) for s in sentences) / total_len
 
     if weighted_tox >= 0.7:
@@ -27,9 +28,16 @@ def aggregate(
     else:
         verdict = "Clean"
 
+    fast = sentences[0].get("fast", False) if sentences else False
+
+    # Weighted-average each sub-dimension across all sentences
+    agg_dims = {}
+    if not fast:
+        for dim in DIMS:
+            agg_dims[dim] = sum(s["dimensions"].get(dim, 0) * len(s["text"]) for s in sentences) / total_len
+
     top5 = sorted(sentences, key=lambda s: s["toxicity"], reverse=True)[:5]
 
-    fast = sentences[0].get("fast", False) if sentences else False
     peaks = {}
     if not fast:
         for dim in DIMS:
@@ -40,12 +48,14 @@ def aggregate(
         "audio": str(audio_path),
         "model": model_size,
         "duration": duration,
+        "analyzed_at": datetime.datetime.now().strftime("%b %d %Y"),
         "overall": {
             "toxicity": weighted_tox,
             "sentiment": weighted_sent,
             "verdict": verdict,
             "toxic_count": sum(1 for t in toxicities if t >= 0.7),
             "sentence_count": len(sentences),
+            "dimensions": agg_dims,
         },
         "sentences": sentences,
         "top_toxic": top5,

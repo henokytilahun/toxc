@@ -1,60 +1,175 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>toxc report</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --bg:#0d0d0d;--surface:#141414;--border:#222;
-  --text:#e0e0e0;--dim:#555;
-  --red:#f05050;--yellow:#e8a838;--green:#4caf78;--blue:#5a9fd4;
+:root{--sidebar-w:280px;--mono:'SF Mono',SFMono-Regular,Consolas,'Liberation Mono',Menlo,monospace}
+
+[data-theme="dark"]{
+  --bg:#09090b;--bg2:#0f0f12;--surface:#141418;--surface-h:#1c1c22;--surface-a:#26262c;
+  --border:#27272a;--border2:#333;
+  --text:#fafafa;--text2:#a1a1aa;--muted:#52525b;
+  --red:#ef4444;--red-d:rgba(239,68,68,.14);
+  --yel:#f59e0b;--yel-d:rgba(245,158,11,.12);
+  --grn:#22c55e;--grn-d:rgba(34,197,94,.1);
+  --blu:#3b82f6;--blu-d:rgba(59,130,246,.1);
+  --shadow:0 1px 3px rgba(0,0,0,.3);--shadow-lg:0 4px 14px rgba(0,0,0,.4);
 }
-body{background:var(--bg);color:var(--text);font-family:'SF Mono','Fira Code','Cascadia Code',monospace;font-size:13px;line-height:1.6;padding:2.5rem;max-width:1100px;margin:0 auto}
+[data-theme="light"]{
+  --bg:#f8fafc;--bg2:#f1f5f9;--surface:#fff;--surface-h:#f1f5f9;--surface-a:#e2e8f0;
+  --border:#e2e8f0;--border2:#cbd5e1;
+  --text:#0f172a;--text2:#475569;--muted:#94a3b8;
+  --red:#dc2626;--red-d:rgba(220,38,38,.07);
+  --yel:#d97706;--yel-d:rgba(217,119,6,.07);
+  --grn:#16a34a;--grn-d:rgba(22,163,74,.07);
+  --blu:#2563eb;--blu-d:rgba(37,99,235,.06);
+  --shadow:0 1px 3px rgba(0,0,0,.06);--shadow-lg:0 4px 14px rgba(0,0,0,.08);
+}
 
-/* Header */
-.header{margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
-.header h1{font-size:1rem;color:#fff;letter-spacing:0.05em}
-.header h1 span{color:var(--dim);font-weight:normal}
-.meta{color:var(--dim);font-size:0.8rem;margin-top:0.3rem}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',sans-serif;font-size:14px;line-height:1.6}
 
-/* Stats */
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem}
-.card{background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:1rem}
-.card .label{color:var(--dim);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em}
-.card .value{font-size:1.4rem;font-weight:bold;margin-top:0.2rem}
-.card .sub{color:var(--dim);font-size:0.75rem;margin-top:0.1rem}
+/* ── Layout ────────────────────────────────────────────── */
+.layout{display:flex;min-height:100vh}
+.sidebar{position:sticky;top:0;width:var(--sidebar-w);height:100vh;overflow-y:auto;background:var(--surface);border-right:1px solid var(--border);padding:1.25rem;flex-shrink:0;z-index:10;scrollbar-width:thin;scrollbar-color:var(--border) transparent;display:flex;flex-direction:column;gap:1rem}
+.sidebar::-webkit-scrollbar{width:4px}
+.sidebar::-webkit-scrollbar-track{background:transparent}
+.sidebar::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.main{flex:1;padding:2rem 2.5rem;min-width:0}
 
-/* Section */
+/* ── Sidebar ───────────────────────────────────────────── */
+.sb-brand{display:flex;align-items:center;justify-content:space-between;padding-bottom:.75rem;border-bottom:1px solid var(--border)}
+.sb-brand h1{font-size:.85rem;font-weight:700;letter-spacing:.06em;font-family:var(--mono)}
+.sb-brand .sb-file{font-size:.65rem;color:var(--muted);margin-top:2px;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.theme-btn{background:none;border:1px solid var(--border);border-radius:6px;width:30px;height:30px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text2);transition:background .15s,color .15s}
+.theme-btn:hover{background:var(--surface-h);color:var(--text)}
+
+.sb-score{text-align:center;padding:1rem 0}
+.sb-score .big{font-size:2.8rem;font-weight:800;font-family:var(--mono);line-height:1;letter-spacing:-.03em}
+.sb-score .verdict{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;margin-top:.4rem;font-weight:600}
+
+.sb-dims{padding-top:.5rem;border-top:1px solid var(--border)}
+.sb-dims h3,.sb-nav h3,.sb-moments h3,.sb-stats-title{font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.45rem}
+.dim-row{display:flex;align-items:center;gap:.4rem;margin-bottom:.35rem}
+.dim-label{width:62px;font-size:.7rem;color:var(--text2);text-transform:capitalize}
+.dim-track{flex:1;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+.dim-fill{height:100%;border-radius:2px;transition:width .4s}
+.dim-val{width:30px;text-align:right;font-family:var(--mono);font-size:.65rem;color:var(--text2)}
+
+.sb-stats{display:grid;grid-template-columns:1fr 1fr;gap:.4rem;padding-top:.5rem;border-top:1px solid var(--border)}
+.sb-stat{text-align:center;padding:.45rem .25rem;background:var(--bg2);border-radius:6px}
+.sb-stat .sv{font-size:1rem;font-weight:700;font-family:var(--mono)}
+.sb-stat .sl{font-size:.58rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-top:1px}
+
+.sb-nav{padding-top:.5rem;border-top:1px solid var(--border)}
+.nav-link{display:block;padding:.3rem .55rem;border-radius:4px;color:var(--text2);text-decoration:none;font-size:.78rem;cursor:pointer;transition:background .12s,color .12s;margin-bottom:1px}
+.nav-link:hover{background:var(--surface-h);color:var(--text)}
+.nav-link.active{background:var(--surface-a);color:var(--text);font-weight:600}
+
+.sb-moments{padding-top:.5rem;border-top:1px solid var(--border)}
+.ml{display:flex;align-items:flex-start;gap:.45rem;padding:.35rem .45rem;border-radius:4px;cursor:pointer;transition:background .12s;margin-bottom:1px}
+.ml:hover{background:var(--surface-h)}
+.ml.active{background:var(--surface-a)}
+.ml-rank{font-family:var(--mono);font-size:.65rem;font-weight:700;min-width:18px;padding-top:1px}
+.ml-body{flex:1;min-width:0}
+.ml-text{font-size:.7rem;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ml-meta{font-size:.6rem;color:var(--muted);font-family:var(--mono)}
+
+/* ── Main Header ───────────────────────────────────────── */
+.main-hdr h1{font-size:1.3rem;font-weight:700}
+.main-hdr .meta{color:var(--text2);font-size:.82rem;margin-top:.15rem}
+.main-hdr{margin-bottom:2rem}
+
+/* ── Section ───────────────────────────────────────────── */
 .section{margin-bottom:2.5rem}
-.section-title{color:var(--dim);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.12em;margin-bottom:0.75rem;padding-bottom:0.4rem;border-bottom:1px solid var(--border)}
+.section-hdr{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin-bottom:.7rem;padding-bottom:.35rem;border-bottom:1px solid var(--border)}
 
-/* Timeline SVG */
-.timeline-wrap{background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:1rem}
-svg text{font-family:'SF Mono','Fira Code',monospace}
+/* ── Timeline Bars ─────────────────────────────────────── */
+.tl-wrap{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1rem;box-shadow:var(--shadow)}
+.tl-bars{display:flex;gap:1px;height:44px;border-radius:4px;overflow:hidden}
+.tl-bar{min-width:2px;height:100%;cursor:pointer;transition:opacity .12s,transform .12s;position:relative}
+.tl-bar:hover{opacity:1!important;transform:scaleY(1.2);z-index:1}
+.tl-labels{display:flex;justify-content:space-between;margin-top:.45rem;font-size:.65rem;font-family:var(--mono);color:var(--muted)}
+.tl-legend{display:flex;gap:1rem;margin-top:.5rem;font-size:.65rem;color:var(--muted)}
+.tl-legend span{display:flex;align-items:center;gap:.3rem}
+.tl-legend i{width:10px;height:10px;border-radius:2px;display:inline-block}
 
-/* Table */
-table{width:100%;border-collapse:collapse}
-th{color:var(--dim);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.08em;text-align:left;padding:0.4rem 0.75rem;border-bottom:1px solid var(--border);white-space:nowrap}
-td{padding:0.45rem 0.75rem;border-bottom:1px solid #181818;vertical-align:top}
-tr:hover td{background:#111}
-.text-cell{max-width:420px;line-height:1.4}
-.time{color:var(--dim);white-space:nowrap;font-size:0.85em}
-.verdict-toxic{color:var(--red)}
-.verdict-borderline{color:var(--yellow)}
-.verdict-clean{color:var(--green)}
+/* ── Moment Cards ──────────────────────────────────────── */
+.moments{display:flex;flex-direction:column;gap:.65rem}
+.mc{background:var(--surface);border:1px solid var(--border);border-left:3px solid transparent;border-radius:8px;padding:.9rem 1.1rem;display:flex;gap:.9rem;align-items:flex-start;cursor:pointer;transition:background .12s,box-shadow .12s;box-shadow:var(--shadow)}
+.mc:hover{background:var(--surface-h);box-shadow:var(--shadow-lg)}
+.mc-rank{font-family:var(--mono);font-size:1.3rem;font-weight:800;line-height:1;min-width:28px}
+.mc-body{flex:1;min-width:0}
+.mc-top{display:flex;align-items:center;gap:.65rem;margin-bottom:.35rem;flex-wrap:wrap}
+.mc-score{font-family:var(--mono);font-weight:700;font-size:.95rem}
+.mc-time{font-family:var(--mono);font-size:.7rem;color:var(--muted);background:var(--bg2);padding:.1rem .4rem;border-radius:4px}
+.mc-verdict{font-size:.65rem;text-transform:uppercase;letter-spacing:.05em;font-weight:600}
+.mc-text{color:var(--text2);font-size:.88rem;line-height:1.45}
+.mc-chips{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.45rem}
+.chip{display:inline-flex;align-items:center;padding:.12rem .5rem;border-radius:20px;font-size:.65rem;font-family:var(--mono);font-weight:500}
 
-/* Bar */
-.bar{display:inline-block;vertical-align:middle;width:52px;height:3px;background:#222;border-radius:2px;margin-left:6px;position:relative;top:-1px}
-.bar-fill{height:100%;border-radius:2px}
+/* ── Sentence Table ────────────────────────────────────── */
+.s-table{width:100%;border-collapse:collapse}
+.s-table thead th{font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);text-align:left;padding:.45rem .65rem;border-bottom:1px solid var(--border);white-space:nowrap}
+.s-table tbody tr{transition:background .1s}
+.s-table tbody tr:hover{background:var(--surface-h)}
+.s-table td{padding:.45rem .65rem;border-bottom:1px solid var(--border);vertical-align:top}
+.col-time{font-family:var(--mono);font-size:.78rem;color:var(--muted);white-space:nowrap;cursor:pointer}
+.col-text{max-width:440px;line-height:1.4;color:var(--text2)}
+.col-score{font-family:var(--mono);font-weight:700;white-space:nowrap}
+.col-sent{font-family:var(--mono);font-size:.82rem}
+.col-verd{font-size:.78rem;font-weight:600}
 
-/* Dims */
-.dims{margin-top:0.2rem;font-size:0.78em;color:var(--dim)}
-.dim-badge{display:inline-block;margin-right:0.5rem}
+.mini-bar{display:inline-block;width:46px;height:3px;background:var(--border);border-radius:2px;margin-left:5px;vertical-align:middle;position:relative;top:-1px}
+.mini-bar-fill{height:100%;border-radius:2px}
 
-/* Tooltip */
-.tip{position:fixed;background:#1e1e1e;border:1px solid #333;padding:0.4rem 0.6rem;font-size:0.75rem;pointer-events:none;max-width:280px;line-height:1.4;border-radius:2px;display:none;z-index:100}
+/* ── Charts Grid ──────────────────────────────────────── */
+.charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.chart-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1rem;box-shadow:var(--shadow);min-width:0}
+.chart-title{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.6rem}
+.chart-card svg text{font-family:var(--mono)}
+
+/* ── Distribution ─────────────────────────────────────── */
+.dist{display:flex;gap:3px;height:120px}
+.dist-col{flex:1;display:flex;flex-direction:column;align-items:center}
+.dist-count{font-size:.55rem;color:var(--text2);font-family:var(--mono);height:14px;display:flex;align-items:flex-end}
+.dist-bar-wrap{flex:1;width:100%;display:flex;align-items:flex-end}
+.dist-bar{width:100%;border-radius:3px 3px 0 0;min-height:1px;transition:height .3s}
+.dist-label{font-size:.55rem;color:var(--muted);font-family:var(--mono);margin-top:2px}
+.dist-col:hover .dist-bar{filter:brightness(1.2)}
+
+/* ── Heatmap ──────────────────────────────────────────── */
+.hm-wrap{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1rem;box-shadow:var(--shadow)}
+.hm-row{display:flex;align-items:center;gap:.5rem;margin-bottom:2px}
+.hm-label{width:58px;font-size:.65rem;color:var(--text2);text-align:right;flex-shrink:0}
+.hm-cells{display:flex;flex:1;gap:1px}
+.hm-cell{flex:1 1 0;min-width:3px;height:20px;border-radius:2px;cursor:pointer;transition:transform .1s}
+.hm-cell:hover{transform:scaleY(1.4);z-index:1;filter:brightness(1.3)}
+.hm-legend{display:flex;align-items:center;gap:.5rem;margin-top:.6rem;justify-content:flex-end;font-size:.55rem;color:var(--muted);font-family:var(--mono)}
+.hm-legend-bar{width:80px;height:6px;border-radius:3px;background:linear-gradient(to right,var(--border),var(--blu),var(--yel),var(--red))}
+.hm-time-labels{display:flex;margin-left:66px;margin-top:3px;gap:1px}
+.hm-time-labels span{flex:1;font-size:.5rem;color:var(--muted);font-family:var(--mono);text-align:center}
+
+/* ── Highlight flash ───────────────────────────────────── */
+@keyframes hl-flash{0%{background:var(--blu-d)}100%{background:transparent}}
+.sent-hl{animation:hl-flash 2s ease-out}
+
+/* ── Tooltip ───────────────────────────────────────────── */
+.tip{position:fixed;background:var(--surface);border:1px solid var(--border);padding:.45rem .7rem;font-size:.78rem;pointer-events:none;max-width:320px;line-height:1.4;border-radius:6px;display:none;z-index:100;box-shadow:var(--shadow-lg)}
+
+/* ── Responsive ────────────────────────────────────────── */
+@media(max-width:860px){
+  .layout{flex-direction:column}
+  .sidebar{position:relative;width:100%;height:auto;max-height:none;border-right:none;border-bottom:1px solid var(--border);flex-direction:row;flex-wrap:wrap;gap:.75rem;padding:1rem}
+  .sb-score{padding:.5rem 0}
+  .sb-score .big{font-size:2rem}
+  .main{padding:1.25rem}
+  .sb-nav,.sb-moments{display:none}
+  .charts-grid{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
@@ -63,179 +178,380 @@ tr:hover td{background:#111}
 <script>
 const REPORT = null;
 
-// ── helpers ──────────────────────────────────────────────────────────────────
-function fmt(s) {
-  const m = Math.floor(s / 60);
-  const sec = Math.floor(s % 60);
-  return `${m}:${sec.toString().padStart(2,'0')}`;
-}
-function toxColor(v) {
-  return v >= 0.7 ? 'var(--red)' : v >= 0.4 ? 'var(--yellow)' : 'var(--green)';
-}
-function sentColor(v) {
-  return v >= 0.05 ? 'var(--green)' : v <= -0.05 ? 'var(--red)' : 'var(--yellow)';
-}
-function verdictClass(v) {
-  return v === 'Toxic' ? 'verdict-toxic' : v === 'Borderline' ? 'verdict-borderline' : 'verdict-clean';
-}
-function bar(score, color) {
-  return `<span class="bar"><span class="bar-fill" style="width:${(score*100).toFixed(1)}%;background:${color}"></span></span>`;
-}
-function sign(v) { return (v >= 0 ? '+' : '') + v.toFixed(2); }
+/* ── Helpers ──────────────────────────────────────────── */
+function fmt(s){const m=Math.floor(s/60),sec=Math.floor(s%60);return m+':'+String(sec).padStart(2,'0')}
+function tc(v){return v>=.7?'var(--red)':v>=.4?'var(--yel)':'var(--grn)'}
+function sc(v){return v>=.05?'var(--grn)':v<=-.05?'var(--red)':'var(--yel)'}
+function vc(v){return v==='Toxic'?'var(--red)':v==='Borderline'?'var(--yel)':'var(--grn)'}
+function sign(v){return(v>=0?'+':'')+v.toFixed(2)}
+function mbar(score,color){return '<span class="mini-bar"><span class="mini-bar-fill" style="width:'+((score*100).toFixed(1))+'%;background:'+color+'"></span></span>'}
 
-// ── timeline ─────────────────────────────────────────────────────────────────
-function renderTimeline(R) {
-  const W = 1000, H = 130;
-  const PAD = { t: 12, r: 20, b: 28, l: 36 };
-  const iW = W - PAD.l - PAD.r;
-  const iH = H - PAD.t - PAD.b;
-  const dur = R.duration || 1;
+/* ── Theme ────────────────────────────────────────────── */
+const SUN='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>';
+const MOON='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
 
-  const pts = R.sentences.map(s => ({
-    x: PAD.l + ((s.start + s.end) / 2 / dur) * iW,
-    y: PAD.t + (1 - s.toxicity) * iH,
-    tox: s.toxicity,
-    text: s.text,
-    start: s.start,
-    end: s.end,
-  }));
+function toggleTheme(){
+  const h=document.documentElement;
+  const next=h.dataset.theme==='dark'?'light':'dark';
+  h.dataset.theme=next;
+  localStorage.setItem('toxc-theme',next);
+  updIcon();
+}
+function updIcon(){
+  const b=document.getElementById('theme-btn');
+  if(b) b.innerHTML=document.documentElement.dataset.theme==='dark'?SUN:MOON;
+}
 
-  const yTox  = PAD.t + (1 - 0.7) * iH;
-  const yBord = PAD.t + (1 - 0.4) * iH;
-  const ticks = [0, 0.25, 0.5, 0.75, 1];
+/* ── Navigation ───────────────────────────────────────── */
+function scrollToSent(idx){
+  const el=document.getElementById('sent-'+idx);
+  if(!el)return;
+  el.scrollIntoView({behavior:'smooth',block:'center'});
+  el.classList.remove('sent-hl');
+  void el.offsetWidth;
+  el.classList.add('sent-hl');
+}
+function scrollToSec(id){
+  const el=document.getElementById(id);
+  if(el)el.scrollIntoView({behavior:'smooth'});
+}
 
-  // smooth path via curve
-  let path = '';
-  if (pts.length > 1) {
-    path = pts.map((p, i) => i === 0 ? `M ${p.x} ${p.y}` : `L ${p.x} ${p.y}`).join(' ');
+/* ── Sidebar ──────────────────────────────────────────── */
+function renderSidebar(R){
+  const O=R.overall;
+  const ovc=vc(O.verdict);
+
+  /* dimension mini-bars */
+  let dimHtml='';
+  const dims=O.dimensions||{};
+  const dimKeys=Object.keys(dims);
+  if(dimKeys.length){
+    const labels={insult:'Insult',obscene:'Obscene',threat:'Threat',identity_attack:'Identity',severe_toxicity:'Severe'};
+    const sorted=Object.entries(dims).sort(function(a,b){return b[1]-a[1]});
+    dimHtml='<div class="sb-dims"><h3>Dimensions</h3>'+sorted.map(function(e){
+      var k=e[0],v=e[1];
+      return '<div class="dim-row">'+
+        '<span class="dim-label">'+(labels[k]||k)+'</span>'+
+        '<div class="dim-track"><span class="dim-fill" style="width:'+(v*100).toFixed(1)+'%;background:'+tc(v)+'"></span></div>'+
+        '<span class="dim-val" style="color:'+tc(v)+'">'+v.toFixed(2)+'</span></div>';
+    }).join('')+'</div>';
   }
 
-  const circles = pts.map((p, i) =>
-    `<circle class="pt" cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="4.5"
-      fill="${p.tox >= 0.7 ? '#f05050' : p.tox >= 0.4 ? '#e8a838' : '#4caf78'}"
-      stroke="var(--bg)" stroke-width="1.5" style="cursor:pointer"
-      data-i="${i}"/>`
-  ).join('');
+  /* moment nav */
+  var moments=R.top_toxic.filter(function(s){return s.toxicity>0}).slice(0,5);
+  var momentHtml=moments.map(function(s,i){
+    var idx=s.idx!=null?s.idx:R.sentences.findIndex(function(x){return x.start===s.start&&x.text===s.text});
+    var preview=s.text.length>28?s.text.slice(0,28)+'\u2026':s.text;
+    return '<div class="ml" onclick="scrollToSent('+idx+')" data-midx="'+idx+'">'+
+      '<span class="ml-rank" style="color:'+tc(s.toxicity)+'">#'+(i+1)+'</span>'+
+      '<div class="ml-body"><div class="ml-text">'+preview+'</div>'+
+      '<div class="ml-meta">'+fmt(s.start)+' \u00b7 <span style="color:'+tc(s.toxicity)+'">'+s.toxicity.toFixed(2)+'</span></div></div></div>';
+  }).join('');
 
-  return `<div class="section">
-    <div class="section-title">Toxicity Timeline</div>
-    <div class="timeline-wrap">
-      <svg width="100%" viewBox="0 0 ${W} ${H}" id="timeline">
-        <!-- threshold lines -->
-        <line x1="${PAD.l}" y1="${yTox.toFixed(1)}" x2="${W-PAD.r}" y2="${yTox.toFixed(1)}"
-          stroke="#f05050" stroke-width="0.8" stroke-dasharray="5,5" opacity="0.35"/>
-        <line x1="${PAD.l}" y1="${yBord.toFixed(1)}" x2="${W-PAD.r}" y2="${yBord.toFixed(1)}"
-          stroke="#e8a838" stroke-width="0.8" stroke-dasharray="5,5" opacity="0.35"/>
-        <!-- y labels -->
-        <text x="${PAD.l-5}" y="${(yTox+3).toFixed(1)}" text-anchor="end" fill="#f05050" font-size="8" opacity="0.6">0.7</text>
-        <text x="${PAD.l-5}" y="${(yBord+3).toFixed(1)}" text-anchor="end" fill="#e8a838" font-size="8" opacity="0.6">0.4</text>
-        <!-- x axis -->
-        <line x1="${PAD.l}" y1="${PAD.t+iH}" x2="${W-PAD.r}" y2="${PAD.t+iH}" stroke="#222" stroke-width="1"/>
-        ${ticks.map(t => `
-          <text x="${(PAD.l + t*iW).toFixed(1)}" y="${PAD.t+iH+14}" text-anchor="middle" fill="#444" font-size="9">${fmt(t*dur)}</text>
-        `).join('')}
-        <!-- line -->
-        ${path ? `<path d="${path}" fill="none" stroke="#333" stroke-width="1.5"/>` : ''}
-        <!-- points -->
-        ${circles}
-      </svg>
-    </div>
-  </div>`;
+  return '<div class="sidebar">'+
+    '<div class="sb-brand"><div><h1>toxc</h1><div class="sb-file" title="'+R.audio+'">'+R.audio+'</div></div>'+
+    '<button class="theme-btn" id="theme-btn" onclick="toggleTheme()" title="Toggle theme">'+SUN+'</button></div>'+
+
+    '<div class="sb-score"><div class="big" style="color:'+ovc+'">'+O.toxicity.toFixed(2)+'</div>'+
+    '<div class="verdict" style="color:'+ovc+'">'+O.verdict+'</div></div>'+
+
+    dimHtml+
+
+    '<div class="sb-stats"><h3 class="sb-stats-title" style="grid-column:1/-1">Stats</h3>'+
+    '<div class="sb-stat"><div class="sv" style="color:var(--red)">'+O.toxic_count+'</div><div class="sl">Toxic</div></div>'+
+    '<div class="sb-stat"><div class="sv">'+O.sentence_count+'</div><div class="sl">Sentences</div></div>'+
+    '<div class="sb-stat"><div class="sv" style="color:'+sc(O.sentiment)+'">'+sign(O.sentiment)+'</div><div class="sl">Sentiment</div></div>'+
+    '<div class="sb-stat"><div class="sv" style="color:var(--muted)">'+fmt(R.duration)+'</div><div class="sl">Duration</div></div>'+
+    '</div>'+
+
+    '<div class="sb-nav"><h3>Sections</h3>'+
+    '<a class="nav-link active" data-sec="sec-tl" onclick="scrollToSec(\'sec-tl\')">Timeline</a>'+
+    '<a class="nav-link" data-sec="sec-charts" onclick="scrollToSec(\'sec-charts\')">Analysis</a>'+
+    (R.fast?'':'<a class="nav-link" data-sec="sec-hm" onclick="scrollToSec(\'sec-hm\')">Heatmap</a>')+
+    '<a class="nav-link" data-sec="sec-mom" onclick="scrollToSec(\'sec-mom\')">Top Moments</a>'+
+    '<a class="nav-link" data-sec="sec-all" onclick="scrollToSec(\'sec-all\')">All Sentences</a></div>'+
+
+    '<div class="sb-moments"><h3>Top Moments</h3>'+momentHtml+'</div>'+
+  '</div>';
 }
 
-// ── sentence row ──────────────────────────────────────────────────────────────
-function sentRow(s, showDims) {
-  const tc = toxColor(s.toxicity);
-  const dims = showDims && s.dimensions
-    ? Object.entries(s.dimensions)
-        .filter(([,v]) => v > 0.1)
-        .sort(([,a],[,b]) => b - a)
-        .map(([k,v]) => `<span class="dim-badge" style="color:${toxColor(v)}">${k.replace('_',' ')} ${v.toFixed(2)}</span>`)
-        .join('')
-    : '';
-  return `<tr>
-    <td class="time">${fmt(s.start)}</td>
-    <td class="text-cell">${s.text}${dims ? `<div class="dims">${dims}</div>` : ''}</td>
-    <td><span style="color:${tc};font-weight:bold">${s.toxicity.toFixed(2)}</span>${bar(s.toxicity, tc)}</td>
-    <td style="color:${sentColor(s.sentiment)}">${sign(s.sentiment)}</td>
-    <td class="${verdictClass(s.verdict)}">${s.verdict}</td>
-  </tr>`;
+/* ── Timeline ─────────────────────────────────────────── */
+function renderTimeline(R){
+  var dur=R.duration||1;
+  var bars=R.sentences.map(function(s,i){
+    var w=((s.end-s.start)/dur)*100;
+    var op=Math.max(.12,Math.min(s.toxicity*1.3,.95));
+    return '<div class="tl-bar" style="width:'+Math.max(w,.25)+'%;background:'+tc(s.toxicity)+';opacity:'+op.toFixed(2)+'" data-idx="'+i+'" onclick="scrollToSent('+i+')"></div>';
+  }).join('');
+
+  var ticks=[0,.25,.5,.75,1];
+  var labels=ticks.map(function(t){return '<span>'+fmt(t*dur)+'</span>'}).join('');
+
+  return '<div class="section" id="sec-tl">'+
+    '<div class="section-hdr">Timeline</div>'+
+    '<div class="tl-wrap">'+
+    '<div class="tl-bars">'+bars+'</div>'+
+    '<div class="tl-labels">'+labels+'</div>'+
+    '<div class="tl-legend">'+
+    '<span><i style="background:var(--red)"></i> Toxic (\u22650.7)</span>'+
+    '<span><i style="background:var(--yel)"></i> Borderline</span>'+
+    '<span><i style="background:var(--grn)"></i> Clean</span></div>'+
+    '</div></div>';
 }
 
-// ── main render ───────────────────────────────────────────────────────────────
-function render() {
-  const R = REPORT;
-  const O = R.overall;
-  const isFast = R.fast;
-  const modelLabel = `whisper-${R.model} · ${isFast ? 'vader' : 'toxic-bert'}`;
+/* ── Smooth SVG path (Catmull-Rom) ─────────────────────── */
+function smoothD(pts,xk,yk){
+  if(pts.length<2)return'';
+  var d='M '+pts[0][xk].toFixed(1)+' '+pts[0][yk].toFixed(1);
+  if(pts.length===2)return d+' L '+pts[1][xk].toFixed(1)+' '+pts[1][yk].toFixed(1);
+  for(var i=1;i<pts.length;i++){
+    var p0=pts[Math.max(0,i-2)],p1=pts[i-1],p2=pts[i],p3=pts[Math.min(pts.length-1,i+1)];
+    var c1x=p1[xk]+(p2[xk]-p0[xk])/6,c1y=p1[yk]+(p2[yk]-p0[yk])/6;
+    var c2x=p2[xk]-(p3[xk]-p1[xk])/6,c2y=p2[yk]-(p3[yk]-p1[yk])/6;
+    d+=' C '+c1x.toFixed(1)+' '+c1y.toFixed(1)+','+c2x.toFixed(1)+' '+c2y.toFixed(1)+','+p2[xk].toFixed(1)+' '+p2[yk].toFixed(1);
+  }
+  return d;
+}
 
-  document.title = `toxc · ${R.audio}`;
+/* ── Line Chart (Toxicity & Sentiment) ────────────────── */
+function renderLineChart(R){
+  var W=600,H=200,P={t:18,r:48,b:28,l:38};
+  var iW=W-P.l-P.r,iH=H-P.t-P.b,dur=R.duration||1;
 
-  const verdictColor = O.verdict === 'Toxic' ? 'var(--red)' : O.verdict === 'Borderline' ? 'var(--yellow)' : 'var(--green)';
+  var pts=R.sentences.map(function(s){
+    var mid=(s.start+s.end)/2;
+    return{x:P.l+(mid/dur)*iW,ty:P.t+(1-s.toxicity)*iH,sy:P.t+(1-(s.sentiment+1)/2)*iH};
+  });
 
-  const header = `<div class="header">
-    <h1>toxc <span>·</span> ${R.audio}</h1>
-    <div class="meta">${fmt(R.duration)} · ${O.sentence_count} sentences · ${modelLabel}</div>
-  </div>`;
+  var toxD=smoothD(pts,'x','ty');
+  var senD=smoothD(pts,'x','sy');
+  var areaD=toxD+' L '+pts[pts.length-1].x.toFixed(1)+' '+(P.t+iH)+' L '+pts[0].x.toFixed(1)+' '+(P.t+iH)+' Z';
 
-  const stats = `<div class="stats">
-    <div class="card">
-      <div class="label">Overall Toxicity</div>
-      <div class="value" style="color:${verdictColor}">${O.toxicity.toFixed(2)}</div>
-      <div class="sub">${O.verdict}</div>
-    </div>
-    <div class="card">
-      <div class="label">Sentiment</div>
-      <div class="value" style="color:${sentColor(O.sentiment)}">${sign(O.sentiment)}</div>
-    </div>
-    <div class="card">
-      <div class="label">Toxic Sentences</div>
-      <div class="value" style="color:var(--red)">${O.toxic_count}</div>
-      <div class="sub">of ${O.sentence_count}</div>
-    </div>
-    <div class="card">
-      <div class="label">Duration</div>
-      <div class="value" style="color:var(--dim);font-size:1.1rem">${fmt(R.duration)}</div>
-    </div>
-  </div>`;
+  var grid='';
+  [0,.25,.5,.75,1].forEach(function(v){
+    var y=P.t+(1-v)*iH;
+    grid+='<line x1="'+P.l+'" y1="'+y.toFixed(1)+'" x2="'+(W-P.r)+'" y2="'+y.toFixed(1)+'" stroke="var(--border)" stroke-width="0.5"/>';
+    grid+='<text x="'+(P.l-5)+'" y="'+(y+3).toFixed(1)+'" text-anchor="end" fill="var(--muted)" font-size="7.5">'+v.toFixed(1)+'</text>';
+    var sv=v*2-1;grid+='<text x="'+(W-P.r+5)+'" y="'+(y+3).toFixed(1)+'" text-anchor="start" fill="var(--muted)" font-size="7.5">'+(sv>=0?'+':'')+sv.toFixed(1)+'</text>';
+  });
 
-  const tableHead = `<thead><tr>
-    <th>Time</th><th>Text</th><th>Toxicity</th><th>Sentiment</th><th>Verdict</th>
-  </tr></thead>`;
+  var yT=P.t+(1-.7)*iH,yB=P.t+(1-.4)*iH;
+  var thresh='<line x1="'+P.l+'" y1="'+yT.toFixed(1)+'" x2="'+(W-P.r)+'" y2="'+yT.toFixed(1)+'" stroke="var(--red)" stroke-width=".7" stroke-dasharray="4,4" opacity=".35"/>';
+  thresh+='<line x1="'+P.l+'" y1="'+yB.toFixed(1)+'" x2="'+(W-P.r)+'" y2="'+yB.toFixed(1)+'" stroke="var(--yel)" stroke-width=".7" stroke-dasharray="4,4" opacity=".35"/>';
 
-  const topSection = `<div class="section">
-    <div class="section-title">Top Toxic Moments</div>
-    <table>${tableHead}<tbody>
-      ${R.top_toxic.filter(s => s.toxicity > 0).map(s => sentRow(s, !isFast)).join('')}
-    </tbody></table>
-  </div>`;
+  var xTicks='';
+  [0,.25,.5,.75,1].forEach(function(t){
+    xTicks+='<text x="'+(P.l+t*iW).toFixed(1)+'" y="'+(P.t+iH+14)+'" text-anchor="middle" fill="var(--muted)" font-size="7.5">'+fmt(t*dur)+'</text>';
+  });
 
-  const allSection = `<div class="section">
-    <div class="section-title">All Sentences</div>
-    <table>${tableHead}<tbody>
-      ${R.sentences.map(s => sentRow(s, false)).join('')}
-    </tbody></table>
-  </div>`;
+  var dots=pts.map(function(p){
+    return '<circle cx="'+p.x.toFixed(1)+'" cy="'+p.ty.toFixed(1)+'" r="2.5" fill="var(--red)" opacity=".6"/>';
+  }).join('');
 
-  document.getElementById('root').innerHTML =
-    header + stats + renderTimeline(R) + topSection + allSection;
+  var lg='<g transform="translate('+(W-P.r-160)+','+(P.t-6)+')">'
+    +'<line x1="0" y1="0" x2="14" y2="0" stroke="var(--red)" stroke-width="2"/><text x="18" y="3" fill="var(--text2)" font-size="7.5">Toxicity</text>'
+    +'<line x1="72" y1="0" x2="86" y2="0" stroke="var(--blu)" stroke-width="1.5" stroke-dasharray="3,2"/><text x="90" y="3" fill="var(--text2)" font-size="7.5">Sentiment</text></g>';
 
-  // tooltip on timeline points
-  const tip = document.getElementById('tip');
-  document.querySelectorAll('#timeline .pt').forEach(el => {
-    el.addEventListener('mousemove', e => {
-      const i = +el.dataset.i;
-      const s = R.sentences[i];
-      tip.style.display = 'block';
-      tip.style.left = (e.clientX + 14) + 'px';
-      tip.style.top  = (e.clientY - 10) + 'px';
-      tip.innerHTML = `<span style="color:${toxColor(s.toxicity)}">${s.toxicity.toFixed(2)}</span> · ${fmt(s.start)}<br>${s.text}`;
+  return '<svg width="100%" viewBox="0 0 '+W+' '+H+'" style="overflow:visible">'+grid+thresh+xTicks
+    +'<path d="'+areaD+'" fill="var(--red)" opacity=".05"/>'
+    +'<path d="'+toxD+'" fill="none" stroke="var(--red)" stroke-width="1.8" stroke-linejoin="round"/>'
+    +'<path d="'+senD+'" fill="none" stroke="var(--blu)" stroke-width="1.3" stroke-linejoin="round" stroke-dasharray="4,3"/>'
+    +dots+lg+'</svg>';
+}
+
+/* ── Score Distribution ───────────────────────────────── */
+function renderDistribution(R){
+  var bk=new Array(10).fill(0);
+  R.sentences.forEach(function(s){bk[Math.min(Math.floor(s.toxicity*10),9)]++});
+  var mx=Math.max.apply(null,bk)||1;
+  return '<div class="dist">'+bk.map(function(c,i){
+    var h=(c/mx)*100;
+    var cl=i>=7?'var(--red)':i>=4?'var(--yel)':'var(--grn)';
+    return '<div class="dist-col"><div class="dist-count">'+(c||'')+'</div><div class="dist-bar-wrap"><div class="dist-bar" style="height:'+h+'%;background:'+cl+'"></div></div><div class="dist-label">'+(i/10).toFixed(1)+'</div></div>';
+  }).join('')+'</div>';
+}
+
+/* ── Charts Section ───────────────────────────────────── */
+function renderCharts(R){
+  return '<div class="section" id="sec-charts">'
+    +'<div class="section-hdr">Analysis</div>'
+    +'<div class="charts-grid">'
+    +'<div class="chart-card"><div class="chart-title">Toxicity &amp; Sentiment Over Time</div>'+renderLineChart(R)+'</div>'
+    +'<div class="chart-card"><div class="chart-title">Score Distribution</div>'+renderDistribution(R)+'</div>'
+    +'</div></div>';
+}
+
+/* ── Dimension Heatmap ────────────────────────────────── */
+function renderHeatmap(R){
+  if(R.fast)return'';
+  var dl={insult:'Insult',obscene:'Obscene',threat:'Threat',identity_attack:'Identity',severe_toxicity:'Severe'};
+  var dk=['insult','obscene','threat','identity_attack','severe_toxicity'];
+  var n=R.sentences.length;
+
+  var rows=dk.map(function(dim){
+    var cells=R.sentences.map(function(s,i){
+      var v=(s.dimensions||{})[dim]||0;
+      var op=v<.01?.08:(.15+v*.85);
+      return '<div class="hm-cell" style="background:'+tc(v)+';opacity:'+op.toFixed(2)+'" data-dim="'+dim+'" data-idx="'+i+'" onclick="scrollToSent('+i+')"></div>';
+    }).join('');
+    return '<div class="hm-row"><div class="hm-label">'+(dl[dim]||dim)+'</div><div class="hm-cells">'+cells+'</div></div>';
+  }).join('');
+
+  var step=Math.max(1,Math.floor(n/6));
+  var timeLbls=R.sentences.filter(function(_,i){return i%step===0||i===n-1}).map(function(s){
+    return '<span>'+fmt(s.start)+'</span>';
+  }).join('');
+
+  return '<div class="section" id="sec-hm">'
+    +'<div class="section-hdr">Dimension Heatmap</div>'
+    +'<div class="hm-wrap">'+rows
+    +'<div class="hm-time-labels">'+timeLbls+'</div>'
+    +'<div class="hm-legend"><span>Low</span><div class="hm-legend-bar"></div><span>High</span></div>'
+    +'</div></div>';
+}
+
+/* ── Moment Cards ─────────────────────────────────────── */
+function renderMoments(R){
+  var isFast=R.fast;
+  var cards=R.top_toxic.filter(function(s){return s.toxicity>0}).slice(0,5).map(function(s,i){
+    var idx=s.idx!=null?s.idx:R.sentences.findIndex(function(x){return x.start===s.start&&x.text===s.text});
+    var color=tc(s.toxicity);
+    var chips='';
+    if(!isFast&&s.dimensions){
+      var dimLabels={insult:'Insult',obscene:'Obscene',threat:'Threat',identity_attack:'Identity',severe_toxicity:'Severe'};
+      chips=Object.entries(s.dimensions)
+        .sort(function(a,b){return b[1]-a[1]})
+        .map(function(e){
+          var k=e[0],v=e[1];
+          var bg=v>=.7?'var(--red-d)':v>=.4?'var(--yel-d)':'var(--grn-d)';
+          return '<span class="chip" style="background:'+bg+';color:'+tc(v)+'">'+(dimLabels[k]||k)+' '+v.toFixed(2)+'</span>';
+        }).join('');
+    }
+    var bc=s.toxicity>=.7?'var(--red)':s.toxicity>=.4?'var(--yel)':'var(--grn)';
+    return '<div class="mc" onclick="scrollToSent('+idx+')" style="border-left-color:'+bc+'">'+
+      '<div class="mc-rank" style="color:'+color+'">'+(i+1)+'</div>'+
+      '<div class="mc-body">'+
+      '<div class="mc-top">'+
+      '<span class="mc-score" style="color:'+color+'">'+s.toxicity.toFixed(2)+'</span>'+
+      '<span class="mc-time">'+fmt(s.start)+'</span>'+
+      '<span class="mc-verdict" style="color:'+vc(s.verdict)+'">'+s.verdict+'</span></div>'+
+      '<div class="mc-text">'+s.text+'</div>'+
+      (chips?'<div class="mc-chips">'+chips+'</div>':'')+
+      '</div></div>';
+  }).join('');
+
+  return '<div class="section" id="sec-mom">'+
+    '<div class="section-hdr">Top Toxic Moments</div>'+
+    '<div class="moments">'+cards+'</div></div>';
+}
+
+/* ── Sentences Table ──────────────────────────────────── */
+function renderSentences(R){
+  var rows=R.sentences.map(function(s,i){
+    var color=tc(s.toxicity);
+    return '<tr id="sent-'+i+'">'+
+      '<td class="col-time" onclick="scrollToSent('+i+')">'+fmt(s.start)+'</td>'+
+      '<td class="col-text">'+s.text+'</td>'+
+      '<td class="col-score"><span style="color:'+color+'">'+s.toxicity.toFixed(2)+'</span>'+mbar(s.toxicity,color)+'</td>'+
+      '<td class="col-sent" style="color:'+sc(s.sentiment)+'">'+sign(s.sentiment)+'</td>'+
+      '<td class="col-verd" style="color:'+vc(s.verdict)+'">'+s.verdict+'</td></tr>';
+  }).join('');
+
+  return '<div class="section" id="sec-all">'+
+    '<div class="section-hdr">All Sentences</div>'+
+    '<table class="s-table"><thead><tr>'+
+    '<th>Time</th><th>Text</th><th>Toxicity</th><th>Sentiment</th><th>Verdict</th>'+
+    '</tr></thead><tbody>'+rows+'</tbody></table></div>';
+}
+
+/* ── Main Render ──────────────────────────────────────── */
+function render(){
+  var R=REPORT;
+  if(!R||!R.sentences||!R.sentences.length){
+    document.getElementById('root').innerHTML='<div style="padding:3rem;color:var(--muted)">No data.</div>';
+    return;
+  }
+  var isFast=R.fast;
+  var modelLabel='whisper-'+R.model+' \u00b7 '+(isFast?'vader':'toxic-bert');
+  document.title='toxc \u00b7 '+R.audio;
+
+  var saved=localStorage.getItem('toxc-theme');
+  if(saved)document.documentElement.dataset.theme=saved;
+
+  var hdr='<div class="main-hdr"><h1>'+R.audio+'</h1>'+
+    '<div class="meta">'+fmt(R.duration)+' \u00b7 '+R.overall.sentence_count+' sentences \u00b7 '+modelLabel+(R.analyzed_at?' \u00b7 '+R.analyzed_at:'')+'</div></div>';
+
+  var sidebar=renderSidebar(R);
+  var main='<div class="main">'+hdr+renderTimeline(R)+renderCharts(R)+renderHeatmap(R)+renderMoments(R)+renderSentences(R)+'</div>';
+  document.getElementById('root').innerHTML='<div class="layout">'+sidebar+main+'</div>';
+
+  updIcon();
+  setupTips(R);
+  setupActive();
+}
+
+/* ── Tooltips ─────────────────────────────────────────── */
+function setupTips(R){
+  var tip=document.getElementById('tip');
+  document.querySelectorAll('.tl-bar').forEach(function(el){
+    el.addEventListener('mousemove',function(e){
+      var i=+el.dataset.idx,s=R.sentences[i];
+      var preview=s.text.length>80?s.text.slice(0,80)+'\u2026':s.text;
+      tip.style.display='block';
+      tip.style.left=(e.clientX+14)+'px';
+      tip.style.top=(e.clientY-10)+'px';
+      tip.innerHTML='<span style="color:'+tc(s.toxicity)+';font-weight:700">'+s.toxicity.toFixed(2)+'</span> \u00b7 <span style="color:var(--muted)">'+fmt(s.start)+'</span><br><span style="color:var(--text2)">'+preview+'</span>';
     });
-    el.addEventListener('mouseleave', () => { tip.style.display = 'none'; });
+    el.addEventListener('mouseleave',function(){tip.style.display='none'});
+  });
+  var dl={insult:'Insult',obscene:'Obscene',threat:'Threat',identity_attack:'Identity',severe_toxicity:'Severe'};
+  document.querySelectorAll('.hm-cell').forEach(function(el){
+    el.addEventListener('mousemove',function(e){
+      var i=+el.dataset.idx,dim=el.dataset.dim,s=R.sentences[i];
+      var v=(s.dimensions||{})[dim]||0;
+      tip.style.display='block';
+      tip.style.left=(e.clientX+14)+'px';
+      tip.style.top=(e.clientY-10)+'px';
+      var prev=s.text.length>55?s.text.slice(0,55)+'\u2026':s.text;
+      tip.innerHTML='<span style="font-weight:700;color:'+tc(v)+'">'+v.toFixed(3)+'</span> '+(dl[dim]||dim)+'<br><span style="color:var(--muted)">'+fmt(s.start)+' \u2014 '+prev+'</span>';
+    });
+    el.addEventListener('mouseleave',function(){tip.style.display='none'});
   });
 }
 
-window.onload = render;
+/* ── Active State Tracking ────────────────────────────── */
+function setupActive(){
+  var secs=['sec-tl','sec-charts','sec-hm','sec-mom','sec-all'];
+  var secObs=new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        document.querySelectorAll('.nav-link').forEach(function(el){el.classList.remove('active')});
+        var link=document.querySelector('.nav-link[data-sec="'+entry.target.id+'"]');
+        if(link)link.classList.add('active');
+      }
+    });
+  },{threshold:.15,rootMargin:'-10% 0px -60% 0px'});
+  secs.forEach(function(id){var el=document.getElementById(id);if(el)secObs.observe(el)});
+
+  var momObs=new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      var idx=entry.target.id.replace('sent-','');
+      var link=document.querySelector('.ml[data-midx="'+idx+'"]');
+      if(link){
+        if(entry.isIntersecting)link.classList.add('active');
+        else link.classList.remove('active');
+      }
+    });
+  },{threshold:.5});
+
+  REPORT.top_toxic.forEach(function(s){
+    var idx=s.idx!=null?s.idx:REPORT.sentences.findIndex(function(x){return x.start===s.start&&x.text===s.text});
+    var el=document.getElementById('sent-'+idx);
+    if(el)momObs.observe(el);
+  });
+}
+
+window.onload=render;
 </script>
 </body>
 </html>
