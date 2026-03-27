@@ -47,6 +47,16 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .theme-btn{background:none;border:1px solid var(--border);border-radius:6px;width:30px;height:30px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text2);transition:background .15s,color .15s}
 .theme-btn:hover{background:var(--surface-h);color:var(--text)}
 
+/* ── Monetization Risk Widget ──────────────────────────── */
+.sb-mono-risk{padding:.65rem 0;border-bottom:1px solid var(--border)}
+.sb-mono-risk h3{font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.45rem}
+.mono-risk-row{display:flex;align-items:center;gap:.5rem;margin-bottom:.3rem}
+.risk-pill{font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.2rem .55rem;border-radius:4px}
+.rp-high{background:var(--red-d);color:var(--red)}
+.rp-medium{background:var(--yel-d);color:var(--yel)}
+.rp-low{background:var(--grn-d);color:var(--grn)}
+.mono-ad-ver{font-size:.72rem;color:var(--text2)}
+
 .sb-score{text-align:center;padding:1rem 0}
 .sb-score .big{font-size:2.8rem;font-weight:800;font-family:var(--mono);line-height:1;letter-spacing:-.03em}
 .sb-score .verdict{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;margin-top:.4rem;font-weight:600}
@@ -86,16 +96,35 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .main-hdr h1{font-size:1.3rem;font-weight:700}
 .main-hdr .meta{color:var(--text2);font-size:.82rem;margin-top:.15rem}
 .main-hdr{margin-bottom:2rem}
+.yt-thumb{width:100%;border-radius:6px;margin-top:.75rem;display:block;object-fit:cover;aspect-ratio:16/9;max-width:480px}
+.yt-channel{font-size:.78rem;color:var(--muted);margin-top:.25rem}
 
 /* ── Section ───────────────────────────────────────────── */
 .section{margin-bottom:2.5rem}
 .section-hdr{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin-bottom:.7rem;padding-bottom:.35rem;border-bottom:1px solid var(--border)}
 
+/* ── Signals ───────────────────────────────────────────── */
+.signals-list{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1rem}
+.sig-row{display:inline-flex;align-items:center;gap:.35rem;font-size:.75rem;padding:.3rem .6rem;border-radius:5px;border:1px solid}
+.sig-high{background:var(--red-d);border-color:rgba(239,68,68,.22);color:var(--red)}
+.sig-medium{background:var(--yel-d);border-color:rgba(245,158,11,.2);color:var(--yel)}
+.sig-low{background:var(--grn-d);border-color:rgba(34,197,94,.2);color:var(--grn)}
+
+/* ── Recommendations ───────────────────────────────────── */
+.recs-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.9rem 1.1rem;margin-bottom:1.8rem;box-shadow:var(--shadow)}
+.rec{display:flex;gap:.55rem;align-items:flex-start;padding:.35rem 0;font-size:.83rem;line-height:1.45}
+.rec+.rec{border-top:1px solid var(--border)}
+.rec-icon{flex-shrink:0;padding-top:2px}
+.rec-pass{color:var(--grn)}.rec-warning{color:var(--yel)}.rec-edit{color:var(--text2)}
+.rec-snippet{font-size:.75rem;color:var(--muted);margin-top:.12rem;font-style:italic}
+
 /* ── Timeline Bars ─────────────────────────────────────── */
 .tl-wrap{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1rem;box-shadow:var(--shadow)}
+.tl-bars-outer{position:relative}
+.tl-zone7{position:absolute;top:0;left:0;bottom:0;background:var(--red-d);border-right:1px dashed rgba(239,68,68,.35);pointer-events:none;z-index:1;border-radius:3px 0 0 3px}
 .tl-bars{display:flex;gap:1px;height:44px;border-radius:4px;overflow:hidden}
 .tl-bar{min-width:2px;height:100%;cursor:pointer;transition:opacity .12s,transform .12s;position:relative}
-.tl-bar:hover{opacity:1!important;transform:scaleY(1.2);z-index:1}
+.tl-bar:hover{opacity:1!important;transform:scaleY(1.2);z-index:2}
 .tl-labels{display:flex;justify-content:space-between;margin-top:.45rem;font-size:.65rem;font-family:var(--mono);color:var(--muted)}
 .tl-legend{display:flex;gap:1rem;margin-top:.5rem;font-size:.65rem;color:var(--muted)}
 .tl-legend span{display:flex;align-items:center;gap:.3rem}
@@ -157,12 +186,55 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .hm-time-labels{display:flex;margin-left:66px;margin-top:3px;gap:1px}
 .hm-time-labels span{flex:1;font-size:.5rem;color:var(--muted);font-family:var(--mono);text-align:center}
 
+/* ── What to Fix ───────────────────────────────────────── */
+.wf-row{display:flex;gap:.6rem;align-items:flex-start;padding:.38rem 0;border-bottom:1px solid var(--border);font-size:.83rem;line-height:1.45}
+.wf-row:last-child{border-bottom:none}
+.wf-icon{flex-shrink:0;padding-top:1px;font-weight:700;min-width:14px}
+.wf-edit{color:var(--blu)}.wf-warn{color:var(--yel)}.wf-pass{color:var(--grn)}.wf-info{color:var(--text2)}
+.wf-text{color:var(--text)}
+.wf-saves{font-family:var(--mono);font-weight:700;color:var(--grn)}
+.wf-sub{font-size:.75rem;color:var(--muted);margin-top:.1rem;font-style:italic}
+
 /* ── Highlight flash ───────────────────────────────────── */
 @keyframes hl-flash{0%{background:var(--blu-d)}100%{background:transparent}}
 .sent-hl{animation:hl-flash 2s ease-out}
 
 /* ── Tooltip ───────────────────────────────────────────── */
 .tip{position:fixed;background:var(--surface);border:1px solid var(--border);padding:.45rem .7rem;font-size:.78rem;pointer-events:none;max-width:320px;line-height:1.4;border-radius:6px;display:none;z-index:100;box-shadow:var(--shadow-lg)}
+
+/* ── Channel Risk Profile ──────────────────────────────── */
+.ch-grid{display:grid;grid-template-columns:1fr 1fr;gap:.4rem;margin-bottom:.75rem}
+.ch-cell{background:var(--bg2);border-radius:6px;padding:.45rem .6rem}
+.ch-cell .cv{font-size:.88rem;font-weight:700;font-family:var(--mono)}
+.ch-cell .cl{font-size:.58rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-top:1px}
+.ch-row{display:flex;justify-content:space-between;align-items:baseline;font-size:.82rem;padding:.28rem 0;border-bottom:1px solid var(--border)}
+.ch-row:last-child{border-bottom:none}
+.ch-key{color:var(--text2)}
+.ch-val{font-family:var(--mono);font-weight:600}
+.escalation-box{background:var(--red-d);border:1px solid rgba(239,68,68,.25);border-radius:6px;padding:.7rem .9rem;font-size:.8rem;line-height:1.5;color:var(--red);margin-top:.75rem}
+
+/* ── Financial Impact ──────────────────────────────────── */
+.fin-scenario{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.5rem;margin-bottom:.9rem}
+.fin-tier{background:var(--bg2);border-radius:6px;padding:.65rem .75rem;text-align:center;position:relative}
+.fin-tier.active{background:var(--surface);border:1px solid var(--border);box-shadow:var(--shadow)}
+.fin-tier .ft-label{font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.35rem}
+.fin-tier .ft-amount{font-size:1.2rem;font-weight:800;font-family:var(--mono);line-height:1}
+.fin-tier .ft-note{font-size:.6rem;color:var(--muted);margin-top:.2rem}
+.fin-tier .ft-arrow{position:absolute;top:.5rem;right:.5rem;font-size:.65rem;color:var(--muted)}
+.fin-rows{margin-bottom:.75rem}
+.fin-row{display:flex;align-items:baseline;justify-content:space-between;padding:.35rem 0;border-bottom:1px solid var(--border);font-size:.83rem}
+.fin-row:last-child{border-bottom:none}
+.fr-label{color:var(--text2)}
+.fr-val{font-family:var(--mono);font-weight:700}
+
+/* ── Consequence Breakdown ─────────────────────────────── */
+.cons-row{display:flex;align-items:center;justify-content:space-between;padding:.38rem 0;border-bottom:1px solid var(--border);font-size:.83rem}
+.cons-row:last-child{border-bottom:none}
+.cons-label{color:var(--text2)}
+.cons-val{font-family:var(--mono);font-size:.78rem;font-weight:700;padding:.15rem .5rem;border-radius:4px}
+.cv-high{background:var(--red-d);color:var(--red)}
+.cv-medium{background:var(--yel-d);color:var(--yel)}
+.cv-low{background:var(--grn-d);color:var(--grn)}
 
 /* ── Responsive ────────────────────────────────────────── */
 @media(max-width:860px){
@@ -181,1012 +253,3509 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 <div id="root"></div>
 <script>
 const REPORT = {
-  "audio": "RAYE - Intro: Girl Under the Gray Cloud & I Will Overcome [Live at Lanxess Arena Cologne 10-02-2026]",
+  "audio": "Why Mike Israetel Needs To Be STOPPED",
   "model": "small",
-  "duration": 220.42,
+  "duration": 1100.6,
   "analyzed_at": "Mar 27 2026",
   "overall": {
-    "toxicity": 0.1419,
+    "toxicity": 0.4946,
     "score_breakdown": {
-      "density": 0.04,
-      "peak": 0.2638,
-      "rate": 0.0
+      "density": 0.059,
+      "peak": 0.9342,
+      "rate": 0.0508
     },
-    "sentiment": 0.1506695469798658,
-    "verdict": "Clean",
-    "toxic_count": 0,
-    "sentence_count": 43,
+    "sentiment": 0.1054837277486911,
+    "verdict": "Borderline",
+    "toxic_count": 9,
+    "sentence_count": 177,
     "dimensions": {
-      "insult": 0.001257992025247764,
-      "obscene": 0.001261472866791404,
-      "threat": 0.0010142222485283493,
-      "identity_attack": 0.00038935158136765624,
-      "severe_toxicity": 0.00018222095719014174
+      "insult": 0.019895700476118924,
+      "obscene": 0.031180626016946877,
+      "threat": 0.0006292290605177386,
+      "identity_attack": 0.012520719662661292,
+      "severe_toxicity": 0.0037692931283599667
     }
   },
   "sentences": [
     {
-      "text": "Thank you so much for joining us this evening.",
-      "sentiment": 0.3612,
-      "toxicity": 0.0005322612705640495,
+      "text": "So Dr. Mike... wait, that's not right.",
+      "sentiment": 0.0,
+      "toxicity": 0.0010794649133458734,
       "dimensions": {
-        "severe_toxicity": 0.000142688921187073,
-        "obscene": 0.00018477134290151298,
-        "threat": 0.00015473076200578362,
-        "insult": 0.00018480358994565904,
-        "identity_attack": 0.00015441313735209405
+        "severe_toxicity": 0.00010013569408329204,
+        "obscene": 0.00019583354878704995,
+        "threat": 9.849618072621524e-05,
+        "insult": 0.00018340609676670283,
+        "identity_attack": 0.00013749641948379576
       },
       "verdict": "Clean",
       "detail": "no significant toxicity detected",
       "fast": false,
       "start": 0.0,
-      "end": 2.16,
+      "end": 3.92,
       "idx": 0
     },
     {
-      "text": "We have a couple of announcements for you before we begin.",
+      "text": "Let me just redo that.",
       "sentiment": 0.0,
-      "toxicity": 0.0005235096323303878,
+      "toxicity": 0.0007866477244533598,
       "dimensions": {
-        "severe_toxicity": 0.0001498422643635422,
-        "obscene": 0.00020525451691355556,
-        "threat": 0.00015175118460319936,
-        "insult": 0.00018663051014300436,
-        "identity_attack": 0.00015369555330835283
+        "severe_toxicity": 0.0001140894164564088,
+        "obscene": 0.00018563310732133687,
+        "threat": 0.00011384761455701664,
+        "insult": 0.00018166354857385159,
+        "identity_attack": 0.00014040726819075644
       },
       "verdict": "Clean",
       "detail": "no significant toxicity detected",
       "fast": false,
-      "start": 2.68,
-      "end": 5.14,
+      "start": 4.14,
+      "end": 5.06,
       "idx": 1
     },
     {
-      "text": "Firstly, be kind and respectful to your name.",
-      "sentiment": 0.7506,
-      "toxicity": 0.000548461452126503,
+      "text": "So Mr. Mike has found himself standing in the center of controversy these last two weeks as a law student by the name of Solomon Nelson dropped an absolute nuke of a video exposing Mike Isertel for being a fraud.",
+      "sentiment": -0.7096,
+      "toxicity": 0.00512212747707963,
       "dimensions": {
-        "severe_toxicity": 0.00014229610678739846,
-        "obscene": 0.00018888227350544184,
-        "threat": 0.00015502670430578291,
-        "insult": 0.0001843465433921665,
-        "identity_attack": 0.00014755285519640893
+        "severe_toxicity": 0.00010126812412636355,
+        "obscene": 0.0004731630615424365,
+        "threat": 9.77736635832116e-05,
+        "insult": 0.000379672012059018,
+        "identity_attack": 0.00018072575039695948
       },
       "verdict": "Clean",
       "detail": "no significant toxicity detected",
       "fast": false,
-      "start": 5.9,
-      "end": 8.52,
+      "start": 6.3,
+      "end": 17.28,
       "idx": 2
     },
     {
-      "text": "Secondly, filming is permitted throughout the duration of this show.",
-      "sentiment": 0.0,
-      "toxicity": 0.0005684574716724455,
+      "text": "You see as many of you know, Mike has a PhD in exercise science as he likes to mention this any opportunity he gets.",
+      "sentiment": 0.6808,
+      "toxicity": 0.0005972243379801512,
       "dimensions": {
-        "severe_toxicity": 0.0001319192670052871,
-        "obscene": 0.00019192825129721314,
-        "threat": 0.00013679391122423112,
-        "insult": 0.00018318797810934484,
-        "identity_attack": 0.00014227167412173003
+        "severe_toxicity": 0.00012117146980017424,
+        "obscene": 0.00017357822798658162,
+        "threat": 0.0001257858966710046,
+        "insult": 0.00017730772378854454,
+        "identity_attack": 0.00013989342551212758
       },
       "verdict": "Clean",
       "detail": "no significant toxicity detected",
       "fast": false,
-      "start": 9.280000000000001,
-      "end": 13.7,
+      "start": 17.44,
+      "end": 22.86,
       "idx": 3
     },
     {
-      "text": "This show will contain strobe lighting and flushing images.",
-      "sentiment": 0.0,
-      "toxicity": 0.0006352227064780891,
+      "text": "However, Solomon combed through his entire dissertation and found it to be riddled with mistakes to the point that he claims that any university worth our salt would have denied Mike's PhD.",
+      "sentiment": -0.5423,
+      "toxicity": 0.0006796381785534322,
       "dimensions": {
-        "severe_toxicity": 0.0001210928094224073,
-        "obscene": 0.00017777377797756344,
-        "threat": 0.0001263368030777201,
-        "insult": 0.0001817030570236966,
-        "identity_attack": 0.00013995746849104762
+        "severe_toxicity": 0.00011589502537390217,
+        "obscene": 0.00017700671742204577,
+        "threat": 0.0001224518200615421,
+        "insult": 0.00017913742340169847,
+        "identity_attack": 0.0001396994775859639
       },
       "verdict": "Clean",
       "detail": "no significant toxicity detected",
       "fast": false,
-      "start": 14.42,
-      "end": 17.52,
+      "start": 26.68,
+      "end": 37.14,
       "idx": 4
     },
     {
-      "text": "Now please prepare your ear drums, for the show is about to begin.",
-      "sentiment": 0.3182,
-      "toxicity": 0.0006884663016535342,
+      "text": "It was that bad.",
+      "sentiment": -0.5423,
+      "toxicity": 0.0024288692511618137,
       "dimensions": {
-        "severe_toxicity": 0.00012056683044647798,
-        "obscene": 0.0001757011777954176,
-        "threat": 0.0001304006000282243,
-        "insult": 0.00018102757167071104,
-        "identity_attack": 0.00014390320575330406
+        "severe_toxicity": 0.0001272787485504523,
+        "obscene": 0.0003528539673425257,
+        "threat": 9.898325515678152e-05,
+        "insult": 0.0002582382585387677,
+        "identity_attack": 0.0001737863931339234
       },
       "verdict": "Clean",
       "detail": "no significant toxicity detected",
       "fast": false,
-      "start": 18.46,
-      "end": 22.32,
+      "start": 37.42,
+      "end": 38.66,
       "idx": 5
     },
     {
-      "text": "Allow me to set the scene of Stephen King's appearance in a very long time.",
-      "sentiment": 0.2263,
-      "toxicity": 0.0006315934006124735,
+      "text": "And since then, Mike has lied multiple times about the dissertation supposedly being an early draft, when it wasn't, and may have even gone as far as committing actual fraud.",
+      "sentiment": -0.7269,
+      "toxicity": 0.0008254690910689533,
       "dimensions": {
-        "severe_toxicity": 0.0001195827207993716,
-        "obscene": 0.00017586325702723116,
-        "threat": 0.00012728519504889846,
-        "insult": 0.00017478865629527718,
-        "identity_attack": 0.00013855828728992492
+        "severe_toxicity": 0.00011059261305490509,
+        "obscene": 0.00018562815967015922,
+        "threat": 0.00011078239185735583,
+        "insult": 0.00018597360758576542,
+        "identity_attack": 0.00013911444693803787
       },
       "verdict": "Clean",
       "detail": "no significant toxicity detected",
       "fast": false,
-      "start": 30.259999999999998,
-      "end": 36.08,
+      "start": 38.86,
+      "end": 48.06,
       "idx": 6
     },
     {
-      "text": "In a very cute way.",
-      "sentiment": 0.5095,
-      "toxicity": 0.0006339761894196272,
+      "text": "But this video won't just be a recap of the drama.",
+      "sentiment": 0.0,
+      "toxicity": 0.0008424178813584149,
       "dimensions": {
-        "severe_toxicity": 0.00013821256288792938,
-        "obscene": 0.0002204244810855016,
-        "threat": 0.00012259774666745216,
-        "insult": 0.0001943007664522156,
-        "identity_attack": 0.00014533182547893375
+        "severe_toxicity": 0.0001095714615075849,
+        "obscene": 0.00019003533816430718,
+        "threat": 0.00011821258522104472,
+        "insult": 0.00017750142433214933,
+        "identity_attack": 0.00013361632591113448
       },
       "verdict": "Clean",
       "detail": "no significant toxicity detected",
       "fast": false,
-      "start": 36.16,
-      "end": 37.68,
+      "start": 48.26,
+      "end": 50.48,
       "idx": 7
     },
     {
-      "text": "In the middle of the show, the cast of the star, the woman and the 20s, will watch you about her time.",
+      "text": "You see, before Solomon dropped his video, I was working on my own video concerning Mike Isertel.",
       "sentiment": 0.0,
-      "toxicity": 0.0007642366108484566,
+      "toxicity": 0.0007476844475604594,
       "dimensions": {
-        "severe_toxicity": 0.00011228537914576009,
-        "obscene": 0.00017236451094504446,
-        "threat": 0.0001203811916639097,
-        "insult": 0.00019263006106484681,
-        "identity_attack": 0.00013931342982687056
+        "severe_toxicity": 0.00011294731666566804,
+        "obscene": 0.00018249776621814817,
+        "threat": 0.00011154188541695476,
+        "insult": 0.00017317452875431627,
+        "identity_attack": 0.0001370213140035048
       },
       "verdict": "Clean",
       "detail": "no significant toxicity detected",
       "fast": false,
-      "start": 44.3,
-      "end": 51.06,
+      "start": 50.64,
+      "end": 55.06,
       "idx": 8
     },
     {
-      "text": "She is no one but her love, she has some of the coolest teeth and she uses all of them.",
-      "sentiment": 0.7351,
-      "toxicity": 0.02562316320836544,
+      "text": "About a month ago, I stumbled across a video on Mike's second channel, where in typical Mike fashion, he claims authority using his completely unrelated PhD to speed misinformation on a topic he actually knows nothing about.",
+      "sentiment": -0.25,
+      "toxicity": 0.0005959285190328956,
       "dimensions": {
-        "severe_toxicity": 0.00011934840586036444,
-        "obscene": 0.0006506930803880095,
-        "threat": 0.00028169440338388085,
-        "insult": 0.0011972700012847781,
-        "identity_attack": 0.00034770360798574984
+        "severe_toxicity": 0.0001245560561073944,
+        "obscene": 0.00019174387853126973,
+        "threat": 0.00011715918662957847,
+        "insult": 0.00017794438463170081,
+        "identity_attack": 0.0001382051850669086
       },
       "verdict": "Clean",
       "detail": "no significant toxicity detected",
       "fast": false,
-      "start": 52.08,
-      "end": 55.7,
+      "start": 55.14,
+      "end": 65.54,
       "idx": 9
     },
     {
-      "text": "She is desperately trying to fill her mouth.",
-      "sentiment": -0.3818,
-      "toxicity": 0.2039516717195511,
+      "text": "However, this time it wasn't something harmless and silly like claiming chat GPT is gone.",
+      "sentiment": 0.2168,
+      "toxicity": 0.025568954646587372,
       "dimensions": {
-        "severe_toxicity": 0.0005075666704215109,
-        "obscene": 0.017709046602249146,
-        "threat": 0.0003073413681704551,
-        "insult": 0.0032723057083785534,
-        "identity_attack": 0.0005288575775921345
+        "severe_toxicity": 0.00011608903150772676,
+        "obscene": 0.0008823334355838597,
+        "threat": 0.0001706545881461352,
+        "insult": 0.0011549724731594324,
+        "identity_attack": 0.00024860550183802843
       },
       "verdict": "Clean",
       "detail": "no significant toxicity detected",
       "fast": false,
-      "start": 55.7,
-      "end": 57.72,
+      "start": 65.74,
+      "end": 70.0,
       "idx": 10
     },
     {
-      "text": "Her eyebrows were plucked, she wore fake eyelashes and a red dress, yet no one in the bar would notice her effects.",
-      "sentiment": -0.6486,
-      "toxicity": 0.003591419430449605,
+      "text": "You've got a whole ass wife, bro.",
+      "sentiment": -0.5423,
+      "toxicity": 0.9795905351638794,
       "dimensions": {
-        "severe_toxicity": 0.0001109759759856388,
-        "obscene": 0.00022607519349548966,
-        "threat": 0.00010803390614455566,
-        "insult": 0.0004701034922618419,
-        "identity_attack": 0.00023461338423658162
+        "severe_toxicity": 0.03985420987010002,
+        "obscene": 0.9026030898094177,
+        "threat": 0.0007393879350274801,
+        "insult": 0.8010215163230896,
+        "identity_attack": 0.006470061372965574
       },
-      "verdict": "Clean",
-      "detail": "no significant toxicity detected",
+      "verdict": "Toxic",
+      "detail": "personal attack detected",
       "fast": false,
-      "start": 58.4,
-      "end": 63.36,
+      "start": 90.94,
+      "end": 92.78,
       "idx": 11
     },
     {
-      "text": "She is no true ejection.",
-      "sentiment": -0.3252,
-      "toxicity": 0.015461129136383533,
+      "text": "How about you talk to her getting back to topic though?",
+      "sentiment": 0.0,
+      "toxicity": 0.000605421606451273,
       "dimensions": {
-        "severe_toxicity": 0.00011409866419853643,
-        "obscene": 0.0008217644062824547,
-        "threat": 0.00013944834063295275,
-        "insult": 0.0006405821768566966,
-        "identity_attack": 0.00021570741955656558
+        "severe_toxicity": 0.00012501834135036916,
+        "obscene": 0.00018704132526181638,
+        "threat": 0.00012234550376888365,
+        "insult": 0.0001790081587387249,
+        "identity_attack": 0.0001380110770696774
       },
       "verdict": "Clean",
       "detail": "no significant toxicity detected",
       "fast": false,
-      "start": 64.26,
-      "end": 66.74,
+      "start": 92.92,
+      "end": 95.3,
       "idx": 12
     },
     {
-      "text": "She is one of the most famous stars that she has seen in the world.",
-      "sentiment": 0.0,
-      "toxicity": 0.0008671204559504986,
+      "text": "This time, Mike decided to sit in front of his camera and advocate for eugenics and race realism, both also known as scientific racism.",
+      "sentiment": -0.6249,
+      "toxicity": 0.0024037344846874475,
       "dimensions": {
-        "severe_toxicity": 0.00011325252853566781,
-        "obscene": 0.00017486067372374237,
-        "threat": 0.00012044938921462744,
-        "insult": 0.00019108263950329274,
-        "identity_attack": 0.0001449410046916455
+        "severe_toxicity": 0.00011288615496596321,
+        "obscene": 0.00018366840959060937,
+        "threat": 0.0001338528818450868,
+        "insult": 0.0002585918118711561,
+        "identity_attack": 0.00032180294510908425
       },
       "verdict": "Clean",
       "detail": "no significant toxicity detected",
       "fast": false,
-      "start": 67.48,
-      "end": 70.34,
+      "start": 95.4,
+      "end": 102.98,
       "idx": 13
     },
     {
-      "text": "The girl, after the big girl.",
-      "sentiment": 0.0,
-      "toxicity": 0.007013210095465183,
+      "text": "You see, Mike is still claims that certain races are inherently superior to others.",
+      "sentiment": 0.6808,
+      "toxicity": 0.0014119617408141494,
       "dimensions": {
-        "severe_toxicity": 0.00011360816279193386,
-        "obscene": 0.0003694462648127228,
-        "threat": 9.048310312209651e-05,
-        "insult": 0.0005922520067542791,
-        "identity_attack": 0.00023841029906179756
+        "severe_toxicity": 0.00010103547538165003,
+        "obscene": 0.00016068120021373034,
+        "threat": 0.00011480740795377642,
+        "insult": 0.00018965682829730213,
+        "identity_attack": 0.00020132794452365488
       },
       "verdict": "Clean",
       "detail": "no significant toxicity detected",
       "fast": false,
-      "start": 70.8,
-      "end": 72.58,
+      "start": 103.1,
+      "end": 107.34,
       "idx": 14
     },
     {
-      "text": "As she was walking along the rain, she had to her chest armed and wrapped around her waist.",
-      "sentiment": 0.0,
-      "toxicity": 0.002340282779186964,
+      "text": "If you ask me any more questions about that, I won't say anything because I'm not getting canceled over that shit.",
+      "sentiment": -0.5574,
+      "toxicity": 0.9302244782447815,
       "dimensions": {
-        "severe_toxicity": 0.00014343687507789582,
-        "obscene": 0.00022661127150058746,
-        "threat": 0.000155032190377824,
-        "insult": 0.0002542152942623943,
-        "identity_attack": 0.0002848890144377947
+        "severe_toxicity": 0.018718237057328224,
+        "obscene": 0.8580507040023804,
+        "threat": 0.0016981870867311954,
+        "insult": 0.07046978920698166,
+        "identity_attack": 0.0016622141702100635
       },
-      "verdict": "Clean",
-      "detail": "no significant toxicity detected",
+      "verdict": "Toxic",
+      "detail": "harmful content detected",
       "fast": false,
-      "start": 74.12,
-      "end": 77.86,
+      "start": 107.84,
+      "end": 113.34,
       "idx": 15
     },
     {
-      "text": "A perfect storm was brewing.",
-      "sentiment": 0.5719,
-      "toxicity": 0.001077611348591745,
+      "text": "Because in our current political climate, if I fill in the blanks of what I mean, your boy's out.",
+      "sentiment": 0.0,
+      "toxicity": 0.015008917078375816,
       "dimensions": {
-        "severe_toxicity": 0.00011510787589941174,
-        "obscene": 0.00021214186563156545,
-        "threat": 0.00010126319830305874,
-        "insult": 0.00020023214165121317,
-        "identity_attack": 0.0001531979360152036
+        "severe_toxicity": 9.830954513745382e-05,
+        "obscene": 0.0005272655398584902,
+        "threat": 0.00019014861027244478,
+        "insult": 0.0007439829059876502,
+        "identity_attack": 0.0002477513044141233
       },
       "verdict": "Clean",
       "detail": "no significant toxicity detected",
       "fast": false,
-      "start": 78.04,
-      "end": 79.7,
+      "start": 113.72,
+      "end": 118.32,
       "idx": 16
     },
     {
-      "text": "This night, in over, the woman tried to be the catalyst.",
-      "sentiment": 0.0,
-      "toxicity": 0.004333879798650742,
+      "text": "Fuck that.",
+      "sentiment": -0.5423,
+      "toxicity": 0.9919903874397278,
       "dimensions": {
-        "severe_toxicity": 0.00011570443894015625,
-        "obscene": 0.00041606154991313815,
-        "threat": 9.899948781821877e-05,
-        "insult": 0.0003251756133977324,
-        "identity_attack": 0.00017879134975373745
+        "severe_toxicity": 0.16567446291446686,
+        "obscene": 0.981975793838501,
+        "threat": 0.003300843760371208,
+        "insult": 0.29857733845710754,
+        "identity_attack": 0.0041047739796340466
       },
-      "verdict": "Clean",
-      "detail": "no significant toxicity detected",
+      "verdict": "Toxic",
+      "detail": "harmful content detected",
       "fast": false,
-      "start": 80.62,
-      "end": 82.66,
+      "start": 118.86,
+      "end": 119.34,
       "idx": 17
     },
     {
-      "text": "The combination, the perfect recipe for the girl under the grey cloud, was finally made clear for the rain.",
-      "sentiment": 0.7579,
-      "toxicity": 0.0006159331533126533,
+      "text": "I'm not ready.",
+      "sentiment": -0.2755,
+      "toxicity": 0.0010049126576632261,
       "dimensions": {
-        "severe_toxicity": 0.00012387392052914947,
-        "obscene": 0.00017730536637827754,
-        "threat": 0.00011942512355744839,
-        "insult": 0.00018819321121554822,
-        "identity_attack": 0.0001471504510845989
+        "severe_toxicity": 0.0001061179573298432,
+        "obscene": 0.00017716526053845882,
+        "threat": 0.00011155050015076995,
+        "insult": 0.00017823680536821485,
+        "identity_attack": 0.00014750812260899693
       },
       "verdict": "Clean",
       "detail": "no significant toxicity detected",
       "fast": false,
-      "start": 82.66,
-      "end": 88.52,
+      "start": 119.74,
+      "end": 120.32,
       "idx": 18
     },
     {
-      "text": "Ingredients, as follows, the loneliness, the love, the scratching, the scent of the scent of her dress, the echo of a belittling assessment she received from a man I loved that day.",
-      "sentiment": 0.743,
-      "toxicity": 0.000568421499338001,
+      "text": "You know what I'm saying?",
+      "sentiment": 0.0,
+      "toxicity": 0.0010391655378043652,
       "dimensions": {
-        "severe_toxicity": 0.00012895312102045864,
-        "obscene": 0.000179709168151021,
-        "threat": 0.0001264529855689034,
-        "insult": 0.0001806175714591518,
-        "identity_attack": 0.00014426316192839295
+        "severe_toxicity": 0.0001016839305520989,
+        "obscene": 0.00018500052101444453,
+        "threat": 0.0001166187139460817,
+        "insult": 0.0001810627873055637,
+        "identity_attack": 0.00013821967877447605
       },
       "verdict": "Clean",
       "detail": "no significant toxicity detected",
       "fast": false,
-      "start": 88.96,
-      "end": 98.04,
+      "start": 120.56,
+      "end": 121.1,
       "idx": 19
     },
     {
-      "text": "And the voice heard from her grandma that would say, Government please, leave the crowd.",
-      "sentiment": 0.2732,
-      "toxicity": 0.014655444771051407,
+      "text": "Shut down the YouTube yet.",
+      "sentiment": 0.0,
+      "toxicity": 0.6713665723800659,
       "dimensions": {
-        "severe_toxicity": 9.566226799506694e-05,
-        "obscene": 0.0004506810219027102,
-        "threat": 0.00013153492182027549,
-        "insult": 0.0009065009071491659,
-        "identity_attack": 0.0002598431019578129
+        "severe_toxicity": 0.0012079811422154307,
+        "obscene": 0.018605081364512444,
+        "threat": 0.005110659170895815,
+        "insult": 0.010186683386564255,
+        "identity_attack": 0.0014284253120422363
       },
-      "verdict": "Clean",
-      "detail": "no significant toxicity detected",
+      "verdict": "Borderline",
+      "detail": "potentially problematic content",
       "fast": false,
-      "start": 99.0,
-      "end": 105.92,
+      "start": 121.3,
+      "end": 122.24,
       "idx": 20
     },
     {
-      "text": "She would not want, would not want a constant, constant, constant.",
-      "sentiment": -0.1139,
-      "toxicity": 0.005134081933647394,
+      "text": "And only a week after Solomon uploaded his video, two days ago at the point of me recording this, Mike Isertel has decided to quietly go and delete this video from his second channel, hoping nobody would notice.",
+      "sentiment": 0.4215,
+      "toxicity": 0.0006839076522737741,
       "dimensions": {
-        "severe_toxicity": 9.709744335850701e-05,
-        "obscene": 0.0002609314688015729,
-        "threat": 0.00012134143617004156,
-        "insult": 0.00026956910733133554,
-        "identity_attack": 0.00021775421919301152
+        "severe_toxicity": 0.00011647000792436302,
+        "obscene": 0.00017768294492270797,
+        "threat": 0.00012012593651888892,
+        "insult": 0.00017640319128986448,
+        "identity_attack": 0.00013962408411316574
       },
       "verdict": "Clean",
       "detail": "no significant toxicity detected",
       "fast": false,
-      "start": 112.75999999999999,
-      "end": 120.98,
+      "start": 122.6,
+      "end": 132.4,
       "idx": 21
     },
     {
-      "text": "This man was a strong terror, since I needed one.",
-      "sentiment": -0.0258,
-      "toxicity": 0.0020610038191080093,
+      "text": "Luckily for me though, one of you guys actually downloaded the video in case he ever decided to take it down.",
+      "sentiment": 0.5106,
+      "toxicity": 0.0006139199249446392,
       "dimensions": {
-        "severe_toxicity": 0.00011537183308973908,
-        "obscene": 0.00020296625734772533,
-        "threat": 0.00014760323392692953,
-        "insult": 0.00021380292309913784,
-        "identity_attack": 0.00019743845041375607
+        "severe_toxicity": 0.00012420605344232172,
+        "obscene": 0.00018263493257109076,
+        "threat": 0.0001329228689428419,
+        "insult": 0.0001809481909731403,
+        "identity_attack": 0.00013762824528384954
       },
       "verdict": "Clean",
       "detail": "no significant toxicity detected",
       "fast": false,
-      "start": 121.36,
-      "end": 126.26,
+      "start": 132.7,
+      "end": 137.3,
       "idx": 22
     },
     {
-      "text": "I can see syrup strands of blue moonlight pour through the clouds, to frame me up like a spotlight as if heaven was watching down to the little street briefly.",
-      "sentiment": 0.7003,
-      "toxicity": 0.0006051772506907582,
+      "text": "And the top comments on this now deleted video should truly say it all.",
+      "sentiment": 0.5719,
+      "toxicity": 0.0007064826786518097,
       "dimensions": {
-        "severe_toxicity": 0.00012556060391943902,
-        "obscene": 0.00017237354768440127,
-        "threat": 0.00013099006901029497,
-        "insult": 0.00017720210598781705,
-        "identity_attack": 0.00014944060239940882
+        "severe_toxicity": 0.00011465194984339178,
+        "obscene": 0.0001811975089367479,
+        "threat": 0.00011676659050863236,
+        "insult": 0.00017182349984068424,
+        "identity_attack": 0.00013543771638069302
       },
       "verdict": "Clean",
       "detail": "no significant toxicity detected",
       "fast": false,
-      "start": 128.68,
-      "end": 138.02,
+      "start": 137.48,
+      "end": 140.82,
       "idx": 23
     },
     {
-      "text": "The state of my mind, that black eyed glasses, so ugly and sheepish I cried.",
-      "sentiment": -0.7809,
-      "toxicity": 0.09735098481178284,
+      "text": "This really would have gone hard in 1930s Germany.",
+      "sentiment": -0.1027,
+      "toxicity": 0.0007284078164957464,
       "dimensions": {
-        "severe_toxicity": 0.0002067137829726562,
-        "obscene": 0.0018293147440999746,
-        "threat": 0.00033938814885914326,
-        "insult": 0.003809139830991626,
-        "identity_attack": 0.0009082300821319222
+        "severe_toxicity": 0.00011613166134338826,
+        "obscene": 0.0001735706173349172,
+        "threat": 0.00011576888937270269,
+        "insult": 0.0001795457792468369,
+        "identity_attack": 0.00015138091112021357
       },
       "verdict": "Clean",
       "detail": "no significant toxicity detected",
       "fast": false,
-      "start": 138.02,
-      "end": 143.48,
+      "start": 140.92,
+      "end": 143.94,
       "idx": 24
     },
     {
-      "text": "It's funny some people say it, oh my number baby, some spit through their keyboards, I will never want.",
-      "sentiment": 0.4548,
-      "toxicity": 0.09142764657735825,
+      "text": "Ain't that funny, Mike?",
+      "sentiment": -0.3412,
+      "toxicity": 0.001704301219433546,
       "dimensions": {
-        "severe_toxicity": 0.00026098842499777675,
-        "obscene": 0.006569680757820606,
-        "threat": 0.0005336424801498652,
-        "insult": 0.0022221833933144808,
-        "identity_attack": 0.0005212054238654673
+        "severe_toxicity": 9.057659190148115e-05,
+        "obscene": 0.00023213063832372427,
+        "threat": 9.404522279510275e-05,
+        "insult": 0.0001982651010621339,
+        "identity_attack": 0.0001390319666825235
       },
       "verdict": "Clean",
       "detail": "no significant toxicity detected",
       "fast": false,
-      "start": 143.7,
-      "end": 150.52,
+      "start": 145.16000000000003,
+      "end": 146.2,
       "idx": 25
     },
     {
-      "text": "And the evening soars, the arrows from your tongue, the same devil as you tortured the wind.",
-      "sentiment": -0.8402,
-      "toxicity": 0.09825561195611954,
+      "text": "Mike?",
+      "sentiment": 0.0,
+      "toxicity": 0.0015658641932532191,
       "dimensions": {
-        "severe_toxicity": 0.00016201304970309138,
-        "obscene": 0.0008711917907930911,
-        "threat": 0.0006519497837871313,
-        "insult": 0.0033135435078293085,
-        "identity_attack": 0.0010504608508199453
+        "severe_toxicity": 9.503652836428955e-05,
+        "obscene": 0.00023692783724982291,
+        "threat": 9.216449689120054e-05,
+        "insult": 0.0001878103066701442,
+        "identity_attack": 0.00013457596651278436
       },
       "verdict": "Clean",
       "detail": "no significant toxicity detected",
       "fast": false,
-      "start": 150.9,
-      "end": 157.14,
+      "start": 147.38,
+      "end": 147.76,
       "idx": 26
     },
     {
-      "text": "And in over, over, over, come, come, come.",
+      "text": "Mike, what are you doing?",
       "sentiment": 0.0,
-      "toxicity": 0.08072280138731003,
+      "toxicity": 0.000986873754300177,
       "dimensions": {
-        "severe_toxicity": 0.0003979043976869434,
-        "obscene": 0.00643518753349781,
-        "threat": 0.0011298507452011108,
-        "insult": 0.0009116529254242778,
-        "identity_attack": 0.00048315772437490523
+        "severe_toxicity": 0.0001015487578115426,
+        "obscene": 0.00018823645950760692,
+        "threat": 0.00010182899131905288,
+        "insult": 0.00017594863311387599,
+        "identity_attack": 0.00013646847219206393
       },
       "verdict": "Clean",
       "detail": "no significant toxicity detected",
       "fast": false,
-      "start": 157.7,
-      "end": 168.58,
+      "start": 148.66,
+      "end": 149.58,
       "idx": 27
     },
     {
-      "text": "When you were looking at those doors, though you can't know you won't be, you will close and tell you to shut up and go sleep, This is my song to remind me.",
+      "text": "Mike, no.",
       "sentiment": 0.0,
-      "toxicity": 0.32357239723205566,
+      "toxicity": 0.001150806318037212,
       "dimensions": {
-        "severe_toxicity": 0.0007019131444394588,
-        "obscene": 0.003785653505474329,
-        "threat": 0.01246671937406063,
-        "insult": 0.009049562737345695,
-        "identity_attack": 0.0020437827333807945
+        "severe_toxicity": 9.765960567165166e-05,
+        "obscene": 0.00019817550492007285,
+        "threat": 9.871245129033923e-05,
+        "insult": 0.00018532254034653306,
+        "identity_attack": 0.00013495261373464018
       },
       "verdict": "Clean",
       "detail": "no significant toxicity detected",
       "fast": false,
-      "start": 168.58,
-      "end": 182.96,
+      "start": 150.8,
+      "end": 151.3,
       "idx": 28
     },
     {
-      "text": "To remind me.",
-      "sentiment": 0.0,
-      "toxicity": 0.0010021141497418284,
+      "text": "Mike, please for the love of chat, GPT stop.",
+      "sentiment": 0.6486,
+      "toxicity": 0.0006722176331095397,
       "dimensions": {
-        "severe_toxicity": 0.0001121873501688242,
-        "obscene": 0.0002290757984155789,
-        "threat": 9.296082862420008e-05,
-        "insult": 0.0001938583009177819,
-        "identity_attack": 0.00013465169467963278
+        "severe_toxicity": 0.00011520407133502886,
+        "obscene": 0.00017745065269991755,
+        "threat": 0.0001220754929818213,
+        "insult": 0.00017078335804399103,
+        "identity_attack": 0.00013619208766613156
       },
       "verdict": "Clean",
       "detail": "no significant toxicity detected",
       "fast": false,
-      "start": 183.36,
-      "end": 184.22,
+      "start": 152.26,
+      "end": 154.84,
       "idx": 29
     },
     {
-      "text": "Woo!",
-      "sentiment": 0.5255,
-      "toxicity": 0.003820498241111636,
+      "text": "Thank God.",
+      "sentiment": 0.5574,
+      "toxicity": 0.0005565117462538183,
       "dimensions": {
-        "severe_toxicity": 8.997820259537548e-05,
-        "obscene": 0.0002915278892032802,
-        "threat": 0.00010301131987944245,
-        "insult": 0.00025437408476136625,
-        "identity_attack": 0.0001648398902034387
+        "severe_toxicity": 0.00013404895435087383,
+        "obscene": 0.0001956890628207475,
+        "threat": 0.00012765360588673502,
+        "insult": 0.00017832315643317997,
+        "identity_attack": 0.00014535732043441385
       },
       "verdict": "Clean",
       "detail": "no significant toxicity detected",
       "fast": false,
-      "start": 196.3,
-      "end": 196.46,
+      "start": 157.34,
+      "end": 159.06,
       "idx": 30
     },
     {
-      "text": "Oh, really?",
+      "text": "Mike, no.",
       "sentiment": 0.0,
-      "toxicity": 0.0007954900502227247,
+      "toxicity": 0.001150806318037212,
       "dimensions": {
-        "severe_toxicity": 0.0001117004721891135,
-        "obscene": 0.00018090229423251003,
-        "threat": 0.00010859504254767671,
-        "insult": 0.00018512950919102877,
-        "identity_attack": 0.00013623962877318263
+        "severe_toxicity": 9.765960567165166e-05,
+        "obscene": 0.00019817550492007285,
+        "threat": 9.871245129033923e-05,
+        "insult": 0.00018532254034653306,
+        "identity_attack": 0.00013495261373464018
       },
       "verdict": "Clean",
       "detail": "no significant toxicity detected",
       "fast": false,
-      "start": 197.5,
-      "end": 198.3,
+      "start": 159.82,
+      "end": 160.32,
       "idx": 31
     },
     {
-      "text": "Woo!",
-      "sentiment": 0.5255,
-      "toxicity": 0.003820498241111636,
+      "text": "I'm kidding.",
+      "sentiment": 0.1027,
+      "toxicity": 0.0009231023723259568,
       "dimensions": {
-        "severe_toxicity": 8.997820259537548e-05,
-        "obscene": 0.0002915278892032802,
-        "threat": 0.00010301131987944245,
-        "insult": 0.00025437408476136625,
-        "identity_attack": 0.0001648398902034387
+        "severe_toxicity": 0.00010606626892695203,
+        "obscene": 0.0001932209124788642,
+        "threat": 0.00010290626960340887,
+        "insult": 0.00018064960022456944,
+        "identity_attack": 0.00013689020124729723
       },
       "verdict": "Clean",
       "detail": "no significant toxicity detected",
       "fast": false,
-      "start": 203.38,
-      "end": 203.94,
+      "start": 162.0,
+      "end": 162.74,
       "idx": 32
     },
     {
-      "text": "Woo!",
-      "sentiment": 0.5255,
-      "toxicity": 0.003820498241111636,
+      "text": "I'm kidding.",
+      "sentiment": 0.1027,
+      "toxicity": 0.0009231023723259568,
       "dimensions": {
-        "severe_toxicity": 8.997820259537548e-05,
-        "obscene": 0.0002915278892032802,
-        "threat": 0.00010301131987944245,
-        "insult": 0.00025437408476136625,
-        "identity_attack": 0.0001648398902034387
+        "severe_toxicity": 0.00010606626892695203,
+        "obscene": 0.0001932209124788642,
+        "threat": 0.00010290626960340887,
+        "insult": 0.00018064960022456944,
+        "identity_attack": 0.00013689020124729723
       },
       "verdict": "Clean",
       "detail": "no significant toxicity detected",
       "fast": false,
-      "start": 207.62,
-      "end": 208.0,
+      "start": 163.12,
+      "end": 163.6,
       "idx": 33
     },
     {
-      "text": "Woo!",
-      "sentiment": 0.5255,
-      "toxicity": 0.003820498241111636,
+      "text": "That's a joke.",
+      "sentiment": 0.296,
+      "toxicity": 0.009826830588281155,
       "dimensions": {
-        "severe_toxicity": 8.997820259537548e-05,
-        "obscene": 0.0002915278892032802,
-        "threat": 0.00010301131987944245,
-        "insult": 0.00025437408476136625,
-        "identity_attack": 0.0001648398902034387
+        "severe_toxicity": 0.00012329331366345286,
+        "obscene": 0.0007158219232223928,
+        "threat": 0.00011872262984979898,
+        "insult": 0.00046161707723513246,
+        "identity_attack": 0.00020582815341185778
       },
       "verdict": "Clean",
       "detail": "no significant toxicity detected",
       "fast": false,
-      "start": 208.0,
-      "end": 208.48,
+      "start": 163.86,
+      "end": 164.56,
       "idx": 34
     },
     {
-      "text": "Woo!",
-      "sentiment": 0.5255,
-      "toxicity": 0.003820498241111636,
+      "text": "This fucking video's gonna get demonetized.",
+      "sentiment": 0.0,
+      "toxicity": 0.9946046471595764,
       "dimensions": {
-        "severe_toxicity": 8.997820259537548e-05,
-        "obscene": 0.0002915278892032802,
-        "threat": 0.00010301131987944245,
-        "insult": 0.00025437408476136625,
-        "identity_attack": 0.0001648398902034387
+        "severe_toxicity": 0.23564183712005615,
+        "obscene": 0.9849942326545715,
+        "threat": 0.007646515034139156,
+        "insult": 0.3770627975463867,
+        "identity_attack": 0.005047564394772053
       },
-      "verdict": "Clean",
-      "detail": "no significant toxicity detected",
+      "verdict": "Toxic",
+      "detail": "harmful content detected",
       "fast": false,
-      "start": 208.48,
-      "end": 208.58,
+      "start": 165.1,
+      "end": 167.02,
       "idx": 35
     },
     {
-      "text": "Woo!",
-      "sentiment": 0.5255,
-      "toxicity": 0.003820498241111636,
+      "text": "All right, we've got a lot of stuff to talk about.",
+      "sentiment": 0.0,
+      "toxicity": 0.0005606145714409649,
       "dimensions": {
-        "severe_toxicity": 8.997820259537548e-05,
-        "obscene": 0.0002915278892032802,
-        "threat": 0.00010301131987944245,
-        "insult": 0.00025437408476136625,
-        "identity_attack": 0.0001648398902034387
+        "severe_toxicity": 0.0001348545920336619,
+        "obscene": 0.00019313876691740006,
+        "threat": 0.0001371061516692862,
+        "insult": 0.00017697870498523116,
+        "identity_attack": 0.00014739985635969788
       },
       "verdict": "Clean",
       "detail": "no significant toxicity detected",
       "fast": false,
-      "start": 209.2,
-      "end": 209.76,
+      "start": 167.18,
+      "end": 168.7,
       "idx": 36
     },
     {
-      "text": "We are breaking the horizon, and it is the wall between hope and despair.",
-      "sentiment": 0.1531,
-      "toxicity": 0.0011738032335415483,
+      "text": "Let's get into it.",
+      "sentiment": 0.0,
+      "toxicity": 0.0007020295597612858,
       "dimensions": {
-        "severe_toxicity": 0.00010820061288541183,
-        "obscene": 0.00017037446377798915,
-        "threat": 0.00012033058010274544,
-        "insult": 0.0001780190650606528,
-        "identity_attack": 0.0001732911478029564
+        "severe_toxicity": 0.00012130268441978842,
+        "obscene": 0.0001934740284923464,
+        "threat": 0.0001149215386249125,
+        "insult": 0.00017530089826323092,
+        "identity_attack": 0.0001416962913936004
       },
       "verdict": "Clean",
       "detail": "no significant toxicity detected",
       "fast": false,
-      "start": 209.76,
-      "end": 214.02,
+      "start": 168.88,
+      "end": 169.78,
       "idx": 37
     },
     {
-      "text": "She exists behind it.",
+      "text": "So some of you are caught up with the drama, maybe wondering what's Mike Isertel's PhD thesis even about.",
       "sentiment": 0.0,
-      "toxicity": 0.0011687406804412603,
+      "toxicity": 0.0005718643078580499,
       "dimensions": {
-        "severe_toxicity": 0.00010627988376654685,
-        "obscene": 0.00018265392282046378,
-        "threat": 0.00011358638585079461,
-        "insult": 0.0001895512396004051,
-        "identity_attack": 0.0001507216802565381
+        "severe_toxicity": 0.0001271019282285124,
+        "obscene": 0.000180800911039114,
+        "threat": 0.000127990118926391,
+        "insult": 0.00017955484509002417,
+        "identity_attack": 0.00014388262934517115
       },
       "verdict": "Clean",
       "detail": "no significant toxicity detected",
       "fast": false,
-      "start": 214.3,
-      "end": 215.28,
+      "start": 169.88,
+      "end": 175.24,
       "idx": 38
     },
     {
-      "text": "She will ever come.",
-      "sentiment": 0.0,
-      "toxicity": 0.017300087958574295,
+      "text": "Well, in his magnum opus, his pi\u00e8ce de r\u00e9sistance, the very thesis that made him the accredited doctor of exercise science, that he likes to remind people of every single opportunity he gets, Mike basically states that stronger people tend to be stronger and athletic people tend to be able to run faster and jump higher.",
+      "sentiment": 0.8979,
+      "toxicity": 0.0007503075175918639,
       "dimensions": {
-        "severe_toxicity": 0.00026426001568324864,
-        "obscene": 0.0009217791957780719,
-        "threat": 0.0011454407358542085,
-        "insult": 0.0005217852303758264,
-        "identity_attack": 0.0004988042055629194
+        "severe_toxicity": 0.0001153085904661566,
+        "obscene": 0.00016403506742790341,
+        "threat": 0.00013158998626749963,
+        "insult": 0.00019052247807849199,
+        "identity_attack": 0.00014843653480056673
       },
       "verdict": "Clean",
       "detail": "no significant toxicity detected",
       "fast": false,
-      "start": 215.4,
-      "end": 216.2,
+      "start": 175.44,
+      "end": 192.38,
       "idx": 39
     },
     {
-      "text": "We will be there!",
-      "sentiment": 0.0,
-      "toxicity": 0.0018196236342191696,
+      "text": "I mean, you'd think that with the way Mike likes to remind people of his superior intelligence.",
+      "sentiment": 0.8555,
+      "toxicity": 0.0006744080455973744,
       "dimensions": {
-        "severe_toxicity": 0.0001363134360872209,
-        "obscene": 0.00023652765958104283,
-        "threat": 0.00020992672943975776,
-        "insult": 0.0002043127897195518,
-        "identity_attack": 0.00020078617671970278
+        "severe_toxicity": 0.00011492931662360206,
+        "obscene": 0.00017228565411642194,
+        "threat": 0.00012209120905026793,
+        "insult": 0.0001788348308764398,
+        "identity_attack": 0.00013621494872495532
       },
       "verdict": "Clean",
       "detail": "no significant toxicity detected",
       "fast": false,
-      "start": 216.6,
-      "end": 217.48,
+      "start": 192.6,
+      "end": 196.04,
       "idx": 40
     },
     {
-      "text": "Woo!",
-      "sentiment": 0.5255,
-      "toxicity": 0.003820498241111636,
+      "text": "And whatever it is you think you're good at in your life, I'd probably take about a year and become an authority in this field in which you think you're good.",
+      "sentiment": 0.7269,
+      "toxicity": 0.0006774711655452847,
       "dimensions": {
-        "severe_toxicity": 8.997820259537548e-05,
-        "obscene": 0.0002915278892032802,
-        "threat": 0.00010301131987944245,
-        "insult": 0.00025437408476136625,
-        "identity_attack": 0.0001648398902034387
+        "severe_toxicity": 0.00011667921353364363,
+        "obscene": 0.0001753722899593413,
+        "threat": 0.0001306672056671232,
+        "insult": 0.0001799986494006589,
+        "identity_attack": 0.0001375129504594952
       },
       "verdict": "Clean",
       "detail": "no significant toxicity detected",
       "fast": false,
-      "start": 218.22,
-      "end": 218.78,
+      "start": 196.38,
+      "end": 201.92,
       "idx": 41
     },
     {
-      "text": "Woo!",
-      "sentiment": 0.5255,
-      "toxicity": 0.003820498241111636,
+      "text": "I'm both on a raw IQ scale, smarter than almost every coach.",
+      "sentiment": 0.4588,
+      "toxicity": 0.0037544863298535347,
       "dimensions": {
-        "severe_toxicity": 8.997820259537548e-05,
-        "obscene": 0.0002915278892032802,
-        "threat": 0.00010301131987944245,
-        "insult": 0.00025437408476136625,
-        "identity_attack": 0.0001648398902034387
+        "severe_toxicity": 8.770005661062896e-05,
+        "obscene": 0.0003004163736477494,
+        "threat": 9.673866588855162e-05,
+        "insult": 0.00029194008675403893,
+        "identity_attack": 0.0001624153519514948
       },
       "verdict": "Clean",
       "detail": "no significant toxicity detected",
       "fast": false,
-      "start": 219.86,
-      "end": 220.42,
+      "start": 202.14,
+      "end": 207.48,
       "idx": 42
+    },
+    {
+      "text": "That his thesis would actually discover something new or at the very least seek to explain a complicated concept.",
+      "sentiment": 0.0,
+      "toxicity": 0.0006066952482797205,
+      "dimensions": {
+        "severe_toxicity": 0.00012562084884848446,
+        "obscene": 0.0001765600172802806,
+        "threat": 0.00013192871119827032,
+        "insult": 0.00017654470866546035,
+        "identity_attack": 0.0001448449766030535
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 208.78,
+      "end": 214.04,
+      "idx": 43
+    },
+    {
+      "text": "But no, as Solomon put it, in short, Mike's thesis consolidates the widely held view in sports science, that it's a good idea for aspiring athletes to become leaner, stronger, and more muscular.",
+      "sentiment": 0.8047,
+      "toxicity": 0.0006274753250181675,
+      "dimensions": {
+        "severe_toxicity": 0.00012300618982408196,
+        "obscene": 0.0001766440545907244,
+        "threat": 0.00012703382526524365,
+        "insult": 0.00018194993026554585,
+        "identity_attack": 0.00014584351447410882
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 214.26,
+      "end": 226.58,
+      "idx": 44
+    },
+    {
+      "text": "But okay, to play devil's advocate, even though these concepts are very intuitive and logical to anyone over the age of four, we still need scientific research into why these concepts are true.",
+      "sentiment": 0.8462,
+      "toxicity": 0.0012326233554631472,
+      "dimensions": {
+        "severe_toxicity": 9.581929043633863e-05,
+        "obscene": 0.00017443635442759842,
+        "threat": 0.00010561280214460567,
+        "insult": 0.00020009682339150459,
+        "identity_attack": 0.00014952811761759222
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 226.9,
+      "end": 236.56,
+      "idx": 45
+    },
+    {
+      "text": "Maybe Mike actually presents some novel research to back up these rather intuitive beliefs.",
+      "sentiment": 0.3182,
+      "toxicity": 0.0005738947074860334,
+      "dimensions": {
+        "severe_toxicity": 0.00012561534822452813,
+        "obscene": 0.00018093784456141293,
+        "threat": 0.00012671177682932466,
+        "insult": 0.00017627724446356297,
+        "identity_attack": 0.00014151967479847372
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 236.7,
+      "end": 240.96,
+      "idx": 46
+    },
+    {
+      "text": "Maybe because these beliefs are so intuitive, there's a surprising lack of data to back them up.",
+      "sentiment": -0.0516,
+      "toxicity": 0.0006253797910176218,
+      "dimensions": {
+        "severe_toxicity": 0.000123057106975466,
+        "obscene": 0.00017804247909225523,
+        "threat": 0.0001242875587195158,
+        "insult": 0.00017851387383416295,
+        "identity_attack": 0.0001448738476028666
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 241.16,
+      "end": 245.68,
+      "idx": 47
+    },
+    {
+      "text": "And Mike fills that gap with his PhD dissertation sounds pretty valid to me.",
+      "sentiment": 0.4939,
+      "toxicity": 0.0005537074757739902,
+      "dimensions": {
+        "severe_toxicity": 0.0001287143095396459,
+        "obscene": 0.00018485875625628978,
+        "threat": 0.0001296762056881562,
+        "insult": 0.00017827759438659996,
+        "identity_attack": 0.0001415423466823995
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 245.84,
+      "end": 249.98,
+      "idx": 48
+    },
+    {
+      "text": "Let's take a look.",
+      "sentiment": 0.0,
+      "toxicity": 0.000686414074152708,
+      "dimensions": {
+        "severe_toxicity": 0.0001275658723898232,
+        "obscene": 0.00019140230142511427,
+        "threat": 0.00011586165055632591,
+        "insult": 0.000179013964952901,
+        "identity_attack": 0.00014955292863305658
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 250.14,
+      "end": 250.66,
+      "idx": 49
+    },
+    {
+      "text": "Mike's thesis falls short of fulfilling one of the most fundamental requirements for doctoral research, a significant contribution of original knowledge.",
+      "sentiment": 0.4767,
+      "toxicity": 0.0006236810004338622,
+      "dimensions": {
+        "severe_toxicity": 0.00012050384975736961,
+        "obscene": 0.00017560152627993375,
+        "threat": 0.00012255602632649243,
+        "insult": 0.0001742420281516388,
+        "identity_attack": 0.000142085540574044
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 250.82,
+      "end": 260.92,
+      "idx": 50
+    },
+    {
+      "text": "The stated goal of Mike's thesis was to explore interrelationships among fitness variables that he claimed were less clear in the existing literature.",
+      "sentiment": 0.5279,
+      "toxicity": 0.0005600095028057694,
+      "dimensions": {
+        "severe_toxicity": 0.00013069923443254083,
+        "obscene": 0.00018257435294799507,
+        "threat": 0.0001345440250588581,
+        "insult": 0.0001795629068510607,
+        "identity_attack": 0.00014493409253191203
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 261.4,
+      "end": 270.74,
+      "idx": 51
+    },
+    {
+      "text": "However, the core findings that stronger athletes are more muscular and powerful, that more powerful athletes jump higher and sprint faster, and that leaner athletes perform better in these tasks are not only unsurprising, but also extensively documented in prior research, even by 2013.",
+      "sentiment": 0.703,
+      "toxicity": 0.0006406057509593666,
+      "dimensions": {
+        "severe_toxicity": 0.00012452031660359353,
+        "obscene": 0.00016866867372300476,
+        "threat": 0.00012684668763540685,
+        "insult": 0.00018778203229885548,
+        "identity_attack": 0.00015536174760200083
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 271.34,
+      "end": 291.72,
+      "idx": 52
+    },
+    {
+      "text": "Well, okay, okay, okay, okay.",
+      "sentiment": 0.7717,
+      "toxicity": 0.0008775728056207299,
+      "dimensions": {
+        "severe_toxicity": 0.00010654441575752571,
+        "obscene": 0.00018645121599547565,
+        "threat": 0.00010782579192891717,
+        "insult": 0.00017926181317307055,
+        "identity_attack": 0.00013369598309509456
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 292.16,
+      "end": 293.92,
+      "idx": 53
+    },
+    {
+      "text": "So there's been extensive past research done into this exact topic.",
+      "sentiment": 0.0,
+      "toxicity": 0.0005549914785660803,
+      "dimensions": {
+        "severe_toxicity": 0.00013389679952524602,
+        "obscene": 0.0001993662881432101,
+        "threat": 0.0001291277294512838,
+        "insult": 0.0001799603778636083,
+        "identity_attack": 0.00014380856009665877
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 294.04,
+      "end": 297.42,
+      "idx": 54
+    },
+    {
+      "text": "And Mike gives absolutely zero new insight into any of this.",
+      "sentiment": 0.0,
+      "toxicity": 0.0010114444885402918,
+      "dimensions": {
+        "severe_toxicity": 0.0001034310189425014,
+        "obscene": 0.00019758006965275854,
+        "threat": 0.00010517612099647522,
+        "insult": 0.00018225725216325372,
+        "identity_attack": 0.00013781117741018534
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 297.42,
+      "end": 300.18,
+      "idx": 55
+    },
+    {
+      "text": "And one of the most important aspects of getting your PhD at Salomon States is to show that you're able to contribute new knowledge to your field.",
+      "sentiment": 0.2716,
+      "toxicity": 0.0005435383063741028,
+      "dimensions": {
+        "severe_toxicity": 0.00013538877828978002,
+        "obscene": 0.00018244609236717224,
+        "threat": 0.00014596233086194843,
+        "insult": 0.00017935926734935492,
+        "identity_attack": 0.00014892450417391956
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 300.28,
+      "end": 305.76,
+      "idx": 56
+    },
+    {
+      "text": "But maybe just stay with me here.",
+      "sentiment": 0.0,
+      "toxicity": 0.0011841519735753536,
+      "dimensions": {
+        "severe_toxicity": 0.0001131626995629631,
+        "obscene": 0.00017611176008358598,
+        "threat": 0.00013767616474069655,
+        "insult": 0.00018870423082262278,
+        "identity_attack": 0.00017028966976795346
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 305.84,
+      "end": 307.94,
+      "idx": 57
+    },
+    {
+      "text": "Maybe Mike takes all the data that has already been extensively reviewed and actually categorizes, handles, and strings it together in such a comprehensive, precise and brilliant manner that still warns him getting his PhD.",
+      "sentiment": 0.6597,
+      "toxicity": 0.0005867511499673128,
+      "dimensions": {
+        "severe_toxicity": 0.0001255401293747127,
+        "obscene": 0.0001864501682575792,
+        "threat": 0.00012891279766336083,
+        "insult": 0.00017693382687866688,
+        "identity_attack": 0.00013838690938428044
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 308.0,
+      "end": 318.3,
+      "idx": 58
+    },
+    {
+      "text": "Let's take a look.",
+      "sentiment": 0.0,
+      "toxicity": 0.000686414074152708,
+      "dimensions": {
+        "severe_toxicity": 0.0001275658723898232,
+        "obscene": 0.00019140230142511427,
+        "threat": 0.00011586165055632591,
+        "insult": 0.000179013964952901,
+        "identity_attack": 0.00014955292863305658
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 318.6,
+      "end": 319.14,
+      "idx": 59
+    },
+    {
+      "text": "A doctoral thesis isn't evaluated just on the originality or significance of its content, but also the clarity and accuracy with which that content is presented.",
+      "sentiment": 0.6249,
+      "toxicity": 0.0005456566577777267,
+      "dimensions": {
+        "severe_toxicity": 0.00013506475079338998,
+        "obscene": 0.00019433541456237435,
+        "threat": 0.00013182885595597327,
+        "insult": 0.00018067166092805564,
+        "identity_attack": 0.00014686043141409755
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 319.38,
+      "end": 330.02,
+      "idx": 60
+    },
+    {
+      "text": "Mike Israel's thesis fails comprehensively on this front.",
+      "sentiment": -0.4215,
+      "toxicity": 0.0010858724126592278,
+      "dimensions": {
+        "severe_toxicity": 9.934902482200414e-05,
+        "obscene": 0.0001742252497933805,
+        "threat": 0.00010396756988484412,
+        "insult": 0.00018156017176806927,
+        "identity_attack": 0.0001550644083181396
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 330.76,
+      "end": 334.7,
+      "idx": 61
+    },
+    {
+      "text": "Across the thesis, Mike presents impossible and contradictory data, inflates simple points with jargon, and allows hundreds of basic grammatical, typographical, and formatting errors to remain uncorrected.",
+      "sentiment": -0.5859,
+      "toxicity": 0.0007803199114277959,
+      "dimensions": {
+        "severe_toxicity": 0.00011201492452528328,
+        "obscene": 0.00017182219016831368,
+        "threat": 0.00012239065836183727,
+        "insult": 0.00018754153279587626,
+        "identity_attack": 0.0001402702328050509
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 335.58,
+      "end": 350.22,
+      "idx": 62
+    },
+    {
+      "text": "The following sections unpack these issues in detail.",
+      "sentiment": 0.0,
+      "toxicity": 0.0005376787739805877,
+      "dimensions": {
+        "severe_toxicity": 0.00013928765838500112,
+        "obscene": 0.00019441178301349282,
+        "threat": 0.00014024882693774998,
+        "insult": 0.0001825369254220277,
+        "identity_attack": 0.00015032224473543465
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 351.06,
+      "end": 353.86,
+      "idx": 63
+    },
+    {
+      "text": "And by the end, you'll see that it's impossible to view Mike's work as anything but fundamentally compromised.",
+      "sentiment": 0.0,
+      "toxicity": 0.0006462725577875972,
+      "dimensions": {
+        "severe_toxicity": 0.00011917349183931947,
+        "obscene": 0.00017961290723178536,
+        "threat": 0.0001280915894312784,
+        "insult": 0.00017588739865459502,
+        "identity_attack": 0.00013865952496416867
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 354.36,
+      "end": 360.96,
+      "idx": 64
+    },
+    {
+      "text": "So what Salomon discovered when he combed through Mike's dissertation is that a lot of the data Mike presents is statistically impossible.",
+      "sentiment": 0.0,
+      "toxicity": 0.0006551104015670717,
+      "dimensions": {
+        "severe_toxicity": 0.00011850185546791181,
+        "obscene": 0.00017496240616310388,
+        "threat": 0.00012381275882944465,
+        "insult": 0.00018375058425590396,
+        "identity_attack": 0.00014349090633913875
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 361.56,
+      "end": 367.86,
+      "idx": 65
+    },
+    {
+      "text": "For example, Mike's dissertation references supposed athletes with body weight under 4.6 pounds, literally smaller than a newborn child.",
+      "sentiment": 0.0,
+      "toxicity": 0.0006807629251852632,
+      "dimensions": {
+        "severe_toxicity": 0.00011547296890057623,
+        "obscene": 0.00017018579819705337,
+        "threat": 0.0001182112391688861,
+        "insult": 0.00018558991723693907,
+        "identity_attack": 0.0001441271888324991
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 368.12,
+      "end": 376.3,
+      "idx": 66
+    },
+    {
+      "text": "And not just that, according to Mike's own data, some of these athletes were apparently shorter than minus 2.3 inches and younger than minus 1.6 years old.",
+      "sentiment": 0.0,
+      "toxicity": 0.00103006639983505,
+      "dimensions": {
+        "severe_toxicity": 0.00010085046960739419,
+        "obscene": 0.00018600482144393027,
+        "threat": 9.778829553397372e-05,
+        "insult": 0.0002033030759776011,
+        "identity_attack": 0.000141715063364245
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 376.46,
+      "end": 384.74,
+      "idx": 67
+    },
+    {
+      "text": "So unless Mike found the secret population of time-traveling, reverse-aging microscopic athletes, some things gotta be a little off here.",
+      "sentiment": 0.0,
+      "toxicity": 0.0006286135758273304,
+      "dimensions": {
+        "severe_toxicity": 0.00011884349805768579,
+        "obscene": 0.00018141082546208054,
+        "threat": 0.00011922452540602535,
+        "insult": 0.00017727848899085075,
+        "identity_attack": 0.00013889468391425908
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 384.82,
+      "end": 392.28,
+      "idx": 68
+    },
+    {
+      "text": "And it wasn't just improper data handling.",
+      "sentiment": 0.0,
+      "toxicity": 0.0006994944415055215,
+      "dimensions": {
+        "severe_toxicity": 0.00011550117051228881,
+        "obscene": 0.00018753491167444736,
+        "threat": 0.00011271233233856037,
+        "insult": 0.00017868245777208358,
+        "identity_attack": 0.00013510248390957713
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 392.4,
+      "end": 394.34,
+      "idx": 69
+    },
+    {
+      "text": "His dissertation was riddled with spelling mistakes to the point where even Greg Duchette's writing would seem Shakespearean in contrast.",
+      "sentiment": -0.3612,
+      "toxicity": 0.0008224193006753922,
+      "dimensions": {
+        "severe_toxicity": 0.00010734004899859428,
+        "obscene": 0.00017004337860271335,
+        "threat": 0.00011349317355779931,
+        "insult": 0.00019314153178129345,
+        "identity_attack": 0.00014392104640137404
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 394.54,
+      "end": 401.1,
+      "idx": 70
+    },
+    {
+      "text": "These mistakes would show up in numerous sections over and over again, showing that he copied and pasted massive parts over and over again without even proofreading anything.",
+      "sentiment": -0.3612,
+      "toxicity": 0.0007067840197123587,
+      "dimensions": {
+        "severe_toxicity": 0.00011648201325442642,
+        "obscene": 0.00017344587831757963,
+        "threat": 0.0001292293454753235,
+        "insult": 0.00018532802641857415,
+        "identity_attack": 0.00013914045121055096
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 401.42,
+      "end": 409.38,
+      "idx": 71
+    },
+    {
+      "text": "He also inconsistently rounds up numbers such as rounding figures of minus 8.71% and minus 7.91% both to minus 8%.",
+      "sentiment": 0.0,
+      "toxicity": 0.000819122651591897,
+      "dimensions": {
+        "severe_toxicity": 0.00010632337216520682,
+        "obscene": 0.0001798020675778389,
+        "threat": 0.000112220186565537,
+        "insult": 0.00018452871881891042,
+        "identity_attack": 0.00013788176875095814
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 409.56,
+      "end": 417.98,
+      "idx": 72
+    },
+    {
+      "text": "Which by the way, on the topic of percentages, 70% of you that watched my last video were not subscribed.",
+      "sentiment": 0.0,
+      "toxicity": 0.0009809157345443964,
+      "dimensions": {
+        "severe_toxicity": 9.848707122728229e-05,
+        "obscene": 0.00017903359548654407,
+        "threat": 0.0001111449018935673,
+        "insult": 0.0001940732036018744,
+        "identity_attack": 0.00013510428834706545
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 417.98,
+      "end": 422.9,
+      "idx": 73
+    },
+    {
+      "text": "So consider hitting that subscribe button if you've enjoyed the video.",
+      "sentiment": 0.5106,
+      "toxicity": 0.0009894364047795534,
+      "dimensions": {
+        "severe_toxicity": 0.00010273859516019002,
+        "obscene": 0.00017696300346869975,
+        "threat": 0.00012235448230057955,
+        "insult": 0.00017933978233486414,
+        "identity_attack": 0.00013515634054783732
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 423.18,
+      "end": 425.84,
+      "idx": 74
+    },
+    {
+      "text": "Going back though, to top it all off, there's also a finding within his paper that flat out contradicts Mike's entire thesis.",
+      "sentiment": -0.1531,
+      "toxicity": 0.0006662141531705856,
+      "dimensions": {
+        "severe_toxicity": 0.00011845926201203838,
+        "obscene": 0.00018364792049396783,
+        "threat": 0.00011805105896200985,
+        "insult": 0.00017480699170846492,
+        "identity_attack": 0.0001375276333419606
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 426.0,
+      "end": 432.5,
+      "idx": 75
+    },
+    {
+      "text": "To go back to Salomon one last time, to recap Mike's thesis, distorts its cited works, manufactures a research gap from those distortions, corrupt its own data, copy pastes entire sections without revision, contains hundreds of basic grammatical, typographical and formatting errors, scarcely justifies its methods, fails to engage critically with relevant literature, draws strong conclusions from nonsignificant findings without adequate caveats, and contributes little, if anything, to the theoretical development of sports science.",
+      "sentiment": -0.3749,
+      "toxicity": 0.0008328663534484804,
+      "dimensions": {
+        "severe_toxicity": 0.00010779155854834244,
+        "obscene": 0.00017037770885508507,
+        "threat": 0.00011474217171780765,
+        "insult": 0.0001883599761640653,
+        "identity_attack": 0.00014412085874937475
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 432.76,
+      "end": 470.4,
+      "idx": 76
+    },
+    {
+      "text": "In summary, Mike's thesis can't be said to be careful, rigorous, cohesive or original.",
+      "sentiment": 0.2023,
+      "toxicity": 0.0006020201253704727,
+      "dimensions": {
+        "severe_toxicity": 0.00012262651580385864,
+        "obscene": 0.00018202696810476482,
+        "threat": 0.00012525245256256312,
+        "insult": 0.00017798000772017986,
+        "identity_attack": 0.00013939873315393925
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 470.48,
+      "end": 476.1,
+      "idx": 77
+    },
+    {
+      "text": "It fails to meet the basic standards of doctoral scholarship.",
+      "sentiment": -0.4215,
+      "toxicity": 0.0008340274216607213,
+      "dimensions": {
+        "severe_toxicity": 0.0001103892718674615,
+        "obscene": 0.0001689864438958466,
+        "threat": 0.00011492088378872722,
+        "insult": 0.00018371273472439498,
+        "identity_attack": 0.0001465329696657136
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 476.78,
+      "end": 480.56,
+      "idx": 78
+    },
+    {
+      "text": "Dissertation that Salomon reviewed was actually an earlier draft that had accidentally been uploaded to the university database.",
+      "sentiment": -0.34,
+      "toxicity": 0.0006303362315520644,
+      "dimensions": {
+        "severe_toxicity": 0.00011980814451817423,
+        "obscene": 0.00018026554607786238,
+        "threat": 0.00011983946023974568,
+        "insult": 0.00018120613822247833,
+        "identity_attack": 0.00014032013132236898
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 492.38,
+      "end": 498.4,
+      "idx": 79
+    },
+    {
+      "text": "This of course made zero sense from the beginning, and their lie immediately started unraveling when people noticed that the dates on the supposed final draft revealed a bunch of inconsistencies to which Mike then admitted that the supposed later draft wasn't actually a later draft but an earlier draft to the one that Salomon critiqued, even though this earlier draft didn't have 90% of the mistakes that Salomon's draft had.",
+      "sentiment": -0.4678,
+      "toxicity": 0.0007846708176657557,
+      "dimensions": {
+        "severe_toxicity": 0.00011395883484510705,
+        "obscene": 0.00018043820455204695,
+        "threat": 0.00011931472545256838,
+        "insult": 0.00018590694526210427,
+        "identity_attack": 0.00014227480278350413
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 498.66,
+      "end": 517.72,
+      "idx": 80
+    },
+    {
+      "text": "And then Mike came out of the woodwork with yet another final draft that he found somewhere laying around, just incredibly shady stuff, the gist of the situation being that Milo tried to help Mike cover his tracks and they both failed spectacularly.",
+      "sentiment": -0.1531,
+      "toxicity": 0.0008990826900117099,
+      "dimensions": {
+        "severe_toxicity": 0.00010950544674415141,
+        "obscene": 0.00018067682685796171,
+        "threat": 0.00011651989188976586,
+        "insult": 0.00019698883988894522,
+        "identity_attack": 0.00014660773740615696
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 517.9,
+      "end": 529.92,
+      "idx": 81
+    },
+    {
+      "text": "Now, the reason I'm recapping this drama is because it follows the exact same pattern as the situation I'm about to cover.",
+      "sentiment": 0.0,
+      "toxicity": 0.0006346559966914356,
+      "dimensions": {
+        "severe_toxicity": 0.00012052177771693096,
+        "obscene": 0.00018092455866280943,
+        "threat": 0.00013009805115871131,
+        "insult": 0.00017966462473850697,
+        "identity_attack": 0.00013891243725083768
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 529.94,
+      "end": 535.42,
+      "idx": 82
+    },
+    {
+      "text": "As Salomon has stated multiple times in his video, Mike just loves flashing his PhD as a badge of authority while spewing misinformation about topics he clearly does not understand, which we're about to see again.",
+      "sentiment": 0.6597,
+      "toxicity": 0.0008132581133395433,
+      "dimensions": {
+        "severe_toxicity": 0.00010782086610561237,
+        "obscene": 0.00017869641305878758,
+        "threat": 0.00010901421046582982,
+        "insult": 0.00017629843205213547,
+        "identity_attack": 0.00013930280692875385
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 535.56,
+      "end": 545.46,
+      "idx": 83
+    },
+    {
+      "text": "You see, Mike has a second channel that many don't know about which he dubs his philosophy channel in which he talks about many riveting topics such as the psychology of pleasing women should we grant AI civil rights, why robot girlfriends are about to take over, and my personal favorite should young girls be allowed to wear makeup.",
+      "sentiment": 0.836,
+      "toxicity": 0.0015733608743175864,
+      "dimensions": {
+        "severe_toxicity": 9.534515265841037e-05,
+        "obscene": 0.00017663765174802393,
+        "threat": 0.00010887262033065781,
+        "insult": 0.00020597576803993434,
+        "identity_attack": 0.00017556585953570902
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 545.46,
+      "end": 563.32,
+      "idx": 84
+    },
+    {
+      "text": "How do you talk about this for 54 minutes straight?",
+      "sentiment": 0.2263,
+      "toxicity": 0.0005847081774845719,
+      "dimensions": {
+        "severe_toxicity": 0.00012656832404900342,
+        "obscene": 0.00018615616136230528,
+        "threat": 0.0001270563661819324,
+        "insult": 0.0001758687722031027,
+        "identity_attack": 0.00014065088180359453
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 563.4,
+      "end": 566.24,
+      "idx": 85
+    },
+    {
+      "text": "But missing from this list of brilliant videos is one that Mike quietly deleted in the midst of the whole Salomon situation, a video which was uploaded two years ago and had 80,000 views.",
+      "sentiment": 0.5267,
+      "toxicity": 0.0008178097195923328,
+      "dimensions": {
+        "severe_toxicity": 0.00010522748198127374,
+        "obscene": 0.0001712377998046577,
+        "threat": 0.00011041222023777664,
+        "insult": 0.00018189684487879276,
+        "identity_attack": 0.00013486873649526387
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 567.16,
+      "end": 576.78,
+      "idx": 86
+    },
+    {
+      "text": "Unluckily for Mike though, this video was already on my radar as I was already conceptualizing a script for this video before Salomon dropped his nuke, and luckily for me, both one of you guys and the world's leading expert on polymorphisms, the scientific snitch had this video saved, the latter of whom actually made a really good video delving into the overwhelming scientific evidence that debunks Mike's claims.",
+      "sentiment": 0.8516,
+      "toxicity": 0.005781466141343117,
+      "dimensions": {
+        "severe_toxicity": 0.0001157375518232584,
+        "obscene": 0.0007965094409883022,
+        "threat": 0.00014513268251903355,
+        "insult": 0.0004071315925102681,
+        "identity_attack": 0.00016194819181691855
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 577.04,
+      "end": 596.28,
+      "idx": 87
+    },
+    {
+      "text": "Her video is definitely worth a watch.",
+      "sentiment": 0.5574,
+      "toxicity": 0.0008209155639633536,
+      "dimensions": {
+        "severe_toxicity": 0.00011243237531743944,
+        "obscene": 0.0002008807787206024,
+        "threat": 0.00011663850455079228,
+        "insult": 0.0001711344812065363,
+        "identity_attack": 0.0001317539718002081
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 596.4,
+      "end": 598.02,
+      "idx": 88
+    },
+    {
+      "text": "In this now deleted video titled is intelligence really different among the races, Mike regurgitates debunks eugenicist and race realist talking points which have been classified broadly by most scientists as scientific racism.",
+      "sentiment": -0.25,
+      "toxicity": 0.0019981290679425,
+      "dimensions": {
+        "severe_toxicity": 9.793107165023685e-05,
+        "obscene": 0.0001878599141491577,
+        "threat": 0.00011058501695515588,
+        "insult": 0.0002193391410401091,
+        "identity_attack": 0.00022842564794700593
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 598.14,
+      "end": 610.82,
+      "idx": 89
+    },
+    {
+      "text": "And what makes it all the more concerning is the fact Mike claims he holds set beliefs because he's quote unquote scientifically literate.",
+      "sentiment": 0.0,
+      "toxicity": 0.0007691254722885787,
+      "dimensions": {
+        "severe_toxicity": 0.00010825273056980222,
+        "obscene": 0.00017892540199682117,
+        "threat": 0.00010863719944609329,
+        "insult": 0.00017416478658560663,
+        "identity_attack": 0.0001365650532534346
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 610.92,
+      "end": 617.04,
+      "idx": 90
+    },
+    {
+      "text": "This is a man whose entire brand centers on his doctorate degree yet he's promoting 19th century race pseudoscience that has long been rejected by the scientific community.",
+      "sentiment": -0.4588,
+      "toxicity": 0.006072771269828081,
+      "dimensions": {
+        "severe_toxicity": 9.059931471711025e-05,
+        "obscene": 0.0002645305066835135,
+        "threat": 0.00011318990436848253,
+        "insult": 0.0003604233788792044,
+        "identity_attack": 0.00027050470816902816
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 617.08,
+      "end": 625.28,
+      "idx": 91
+    },
+    {
+      "text": "Let's take a look.",
+      "sentiment": 0.0,
+      "toxicity": 0.000686414074152708,
+      "dimensions": {
+        "severe_toxicity": 0.0001275658723898232,
+        "obscene": 0.00019140230142511427,
+        "threat": 0.00011586165055632591,
+        "insult": 0.000179013964952901,
+        "identity_attack": 0.00014955292863305658
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 625.4,
+      "end": 625.98,
+      "idx": 92
+    },
+    {
+      "text": "The GPT tells you, because you asked it, that your race or ethnic group is not the most intelligent of all of them and maybe somewhere down the totem pole much further than you had anticipated.",
+      "sentiment": -0.4013,
+      "toxicity": 0.015143345110118389,
+      "dimensions": {
+        "severe_toxicity": 9.863557352218777e-05,
+        "obscene": 0.000301888125250116,
+        "threat": 0.00018613682186696678,
+        "insult": 0.00112252461258322,
+        "identity_attack": 0.00042675042641349137
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 626.22,
+      "end": 636.4,
+      "idx": 93
+    },
+    {
+      "text": "You may also discover at the same time that there is a totem pole of racial intelligence and you're going to go holy.",
+      "sentiment": 0.4767,
+      "toxicity": 0.30072832107543945,
+      "dimensions": {
+        "severe_toxicity": 0.0011151268845424056,
+        "obscene": 0.0025396551936864853,
+        "threat": 0.0070107560604810715,
+        "insult": 0.00898315291851759,
+        "identity_attack": 0.03575518727302551
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 636.98,
+      "end": 642.16,
+      "idx": 94
+    },
+    {
+      "text": "What?",
+      "sentiment": 0.0,
+      "toxicity": 0.0009642159566283226,
+      "dimensions": {
+        "severe_toxicity": 0.00010641009430401027,
+        "obscene": 0.00018756603822112083,
+        "threat": 0.00010279994603479281,
+        "insult": 0.00017749718972481787,
+        "identity_attack": 0.00013943994417786598
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 642.58,
+      "end": 643.04,
+      "idx": 95
+    },
+    {
+      "text": "You keep asking it's like, this is a reality.",
+      "sentiment": 0.3612,
+      "toxicity": 0.0008733551949262619,
+      "dimensions": {
+        "severe_toxicity": 0.0001079569774447009,
+        "obscene": 0.00018016554531641304,
+        "threat": 0.00011015289055649191,
+        "insult": 0.00017194428073707968,
+        "identity_attack": 0.00013866428344044834
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 643.64,
+      "end": 645.64,
+      "idx": 96
+    },
+    {
+      "text": "You're like, oh my, do I just stop trying?",
+      "sentiment": 0.0772,
+      "toxicity": 0.06490238010883331,
+      "dimensions": {
+        "severe_toxicity": 0.00012613050057552755,
+        "obscene": 0.0012699146755039692,
+        "threat": 0.0003655022010207176,
+        "insult": 0.0023475203197449446,
+        "identity_attack": 0.000342522602295503
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 645.86,
+      "end": 648.8,
+      "idx": 97
+    },
+    {
+      "text": "What is this?",
+      "sentiment": 0.0,
+      "toxicity": 0.0009697473724372685,
+      "dimensions": {
+        "severe_toxicity": 0.00010344226029701531,
+        "obscene": 0.00018770415044855326,
+        "threat": 0.0001038264817907475,
+        "insult": 0.00017406383994966745,
+        "identity_attack": 0.00013698605471290648
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 649.2,
+      "end": 650.1,
+      "idx": 98
+    },
+    {
+      "text": "Holy crap, that's a really big deal.",
+      "sentiment": -0.3818,
+      "toxicity": 0.9016872048377991,
+      "dimensions": {
+        "severe_toxicity": 0.013590911403298378,
+        "obscene": 0.78428053855896,
+        "threat": 0.0016114769969135523,
+        "insult": 0.061291057616472244,
+        "identity_attack": 0.002467517042532563
+      },
+      "verdict": "Toxic",
+      "detail": "harmful content detected",
+      "fast": false,
+      "start": 650.46,
+      "end": 652.36,
+      "idx": 99
+    },
+    {
+      "text": "It could really bum you out.",
+      "sentiment": 0.0,
+      "toxicity": 0.016593443229794502,
+      "dimensions": {
+        "severe_toxicity": 0.0001071722072083503,
+        "obscene": 0.0005904014105908573,
+        "threat": 0.00013992504682391882,
+        "insult": 0.0007575972122140229,
+        "identity_attack": 0.00023643928579986095
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 652.4,
+      "end": 653.54,
+      "idx": 100
+    },
+    {
+      "text": "Now, inevitably, when you guys get in the comments and ask me questions about race and intelligence, here is my view in perpetuity until politics changes in at least the United States.",
+      "sentiment": 0.7096,
+      "toxicity": 0.0006443712045438588,
+      "dimensions": {
+        "severe_toxicity": 0.00012302988034207374,
+        "obscene": 0.00016960810171440244,
+        "threat": 0.00013362918980419636,
+        "insult": 0.00017442737589590251,
+        "identity_attack": 0.00015301996609196067
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 654.24,
+      "end": 665.14,
+      "idx": 101
+    },
+    {
+      "text": "This is my view as applied forward for the rest of this channel's lifetime until and unless politics really changes.",
+      "sentiment": 0.0,
+      "toxicity": 0.0006687166751362383,
+      "dimensions": {
+        "severe_toxicity": 0.00011942024138988927,
+        "obscene": 0.0001740874140523374,
+        "threat": 0.00013596657663583755,
+        "insult": 0.00018100686429534107,
+        "identity_attack": 0.00014180793368723243
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 665.34,
+      "end": 670.94,
+      "idx": 102
+    },
+    {
+      "text": "Here it is, ready?",
+      "sentiment": 0.3612,
+      "toxicity": 0.0008327877731062472,
+      "dimensions": {
+        "severe_toxicity": 0.00010745893814601004,
+        "obscene": 0.000177372494363226,
+        "threat": 0.00011962731514358893,
+        "insult": 0.00017607751942705363,
+        "identity_attack": 0.0001377571898046881
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 671.1,
+      "end": 671.62,
+      "idx": 103
+    },
+    {
+      "text": "I 100% acknowledge because I'm literate that race is truly a biological construct.",
+      "sentiment": 0.4404,
+      "toxicity": 0.00101110537070781,
+      "dimensions": {
+        "severe_toxicity": 0.00012534802954178303,
+        "obscene": 0.0001646345917833969,
+        "threat": 0.00012850778875872493,
+        "insult": 0.00018599328177515417,
+        "identity_attack": 0.00024298320931848139
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 672.9,
+      "end": 680.68,
+      "idx": 104
+    },
+    {
+      "text": "It is deep.",
+      "sentiment": 0.0,
+      "toxicity": 0.0007998774526640773,
+      "dimensions": {
+        "severe_toxicity": 0.00011643647303571925,
+        "obscene": 0.00019152679305989295,
+        "threat": 0.00010912414290942252,
+        "insult": 0.00017198380373883992,
+        "identity_attack": 0.0001396624429617077
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 680.68,
+      "end": 681.76,
+      "idx": 105
+    },
+    {
+      "text": "It pervades almost everything and it has real world differences and ability that are complicated.",
+      "sentiment": 0.3182,
+      "toxicity": 0.0006729698507115245,
+      "dimensions": {
+        "severe_toxicity": 0.00012198065087432042,
+        "obscene": 0.00017621876031626016,
+        "threat": 0.00012684210378210992,
+        "insult": 0.0001767395733622834,
+        "identity_attack": 0.00014079244283493608
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 681.94,
+      "end": 687.88,
+      "idx": 106
+    },
+    {
+      "text": "They are overlapping in spectra, but they are nonetheless for sure real and they affect every single thing about your life on the margins.",
+      "sentiment": 0.4497,
+      "toxicity": 0.0006474207621067762,
+      "dimensions": {
+        "severe_toxicity": 0.00012689085269812495,
+        "obscene": 0.00017312831187155098,
+        "threat": 0.00013973556633573025,
+        "insult": 0.00019164371769875288,
+        "identity_attack": 0.00015079815057106316
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 688.16,
+      "end": 696.78,
+      "idx": 107
+    },
+    {
+      "text": "If you ask me any more questions about that, I won't say anything because I'm not getting canceled over that shit because in our current political climate, if I fill in the blanks of what I mean, your boy's out.",
+      "sentiment": -0.5574,
+      "toxicity": 0.7046151161193848,
+      "dimensions": {
+        "severe_toxicity": 0.00400907825678587,
+        "obscene": 0.5347998142242432,
+        "threat": 0.0014681833563372493,
+        "insult": 0.09600583463907242,
+        "identity_attack": 0.002308088121935725
+      },
+      "verdict": "Toxic",
+      "detail": "harmful content detected",
+      "fast": false,
+      "start": 697.7,
+      "end": 708.78,
+      "idx": 108
+    },
+    {
+      "text": "Fuck that.",
+      "sentiment": -0.5423,
+      "toxicity": 0.9919903874397278,
+      "dimensions": {
+        "severe_toxicity": 0.16567446291446686,
+        "obscene": 0.981975793838501,
+        "threat": 0.003300843760371208,
+        "insult": 0.29857733845710754,
+        "identity_attack": 0.0041047739796340466
+      },
+      "verdict": "Toxic",
+      "detail": "harmful content detected",
+      "fast": false,
+      "start": 709.18,
+      "end": 709.78,
+      "idx": 109
+    },
+    {
+      "text": "I'm saying shut down the YouTube yet.",
+      "sentiment": 0.0,
+      "toxicity": 0.40885111689567566,
+      "dimensions": {
+        "severe_toxicity": 0.0006660983199253678,
+        "obscene": 0.008546831086277962,
+        "threat": 0.003640842391178012,
+        "insult": 0.004843343049287796,
+        "identity_attack": 0.001238438067957759
+      },
+      "verdict": "Borderline",
+      "detail": "potentially problematic content",
+      "fast": false,
+      "start": 710.08,
+      "end": 712.7,
+      "idx": 110
+    },
+    {
+      "text": "What I'm saying is, yes, race is real.",
+      "sentiment": 0.4019,
+      "toxicity": 0.0009874245151877403,
+      "dimensions": {
+        "severe_toxicity": 0.00011004979023709893,
+        "obscene": 0.00016786789637990296,
+        "threat": 0.00011643514881143346,
+        "insult": 0.00017456014757044613,
+        "identity_attack": 0.00017204908363055438
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 712.98,
+      "end": 715.72,
+      "idx": 111
+    },
+    {
+      "text": "Yes, race differences exist.",
+      "sentiment": 0.4019,
+      "toxicity": 0.0007931174477562308,
+      "dimensions": {
+        "severe_toxicity": 0.00011683698539854959,
+        "obscene": 0.00015827796596568078,
+        "threat": 0.00011835967598017305,
+        "insult": 0.00018789611931424588,
+        "identity_attack": 0.00017635121184866875
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 716.1,
+      "end": 717.54,
+      "idx": 112
+    },
+    {
+      "text": "Yes, even in every single quality that you think is too politically incorrect to talk about, which is why I'm not going to talk about it.",
+      "sentiment": 0.4019,
+      "toxicity": 0.0007284140447154641,
+      "dimensions": {
+        "severe_toxicity": 0.00011504159920150414,
+        "obscene": 0.0001754599215928465,
+        "threat": 0.00012325310672167689,
+        "insult": 0.00017761485651135445,
+        "identity_attack": 0.00014021768583916128
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 717.98,
+      "end": 725.04,
+      "idx": 113
+    },
+    {
+      "text": "I got plenty of other shit to say, tons of other great stuff, but as a scientifically literate awake person, I have to say, yes, I'm aware of these things.",
+      "sentiment": 0.5859,
+      "toxicity": 0.6724875569343567,
+      "dimensions": {
+        "severe_toxicity": 0.006105334497988224,
+        "obscene": 0.651072084903717,
+        "threat": 0.0009480737498961389,
+        "insult": 0.025710124522447586,
+        "identity_attack": 0.001093686674721539
+      },
+      "verdict": "Borderline",
+      "detail": "potentially problematic content",
+      "fast": false,
+      "start": 725.34,
+      "end": 733.9,
+      "idx": 114
+    },
+    {
+      "text": "That's that.",
+      "sentiment": 0.0,
+      "toxicity": 0.001146666705608368,
+      "dimensions": {
+        "severe_toxicity": 0.00010883451614063233,
+        "obscene": 0.00023654030519537628,
+        "threat": 9.63269267231226e-05,
+        "insult": 0.00019211994367651641,
+        "identity_attack": 0.00013593441690318286
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 735.44,
+      "end": 736.08,
+      "idx": 115
+    },
+    {
+      "text": "He's basically just admitted to believing in racial hierarchies and yet this is somehow the censored version.",
+      "sentiment": -0.0516,
+      "toxicity": 0.008050521835684776,
+      "dimensions": {
+        "severe_toxicity": 0.00012146368680987507,
+        "obscene": 0.0003144601359963417,
+        "threat": 0.00015546532813459635,
+        "insult": 0.0004334236145950854,
+        "identity_attack": 0.0005434450577013195
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 736.66,
+      "end": 742.24,
+      "idx": 116
+    },
+    {
+      "text": "These aren't his raw unfiltered thoughts.",
+      "sentiment": 0.0,
+      "toxicity": 0.0010672884527593851,
+      "dimensions": {
+        "severe_toxicity": 0.00010341681627323851,
+        "obscene": 0.0001885421952465549,
+        "threat": 0.00010141771781491116,
+        "insult": 0.00018760681268759072,
+        "identity_attack": 0.00014544453006237745
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 742.36,
+      "end": 744.54,
+      "idx": 117
+    },
+    {
+      "text": "How much worse can it get, Mike?",
+      "sentiment": -0.4767,
+      "toxicity": 0.005375685170292854,
+      "dimensions": {
+        "severe_toxicity": 9.09783411771059e-05,
+        "obscene": 0.00032260778243653476,
+        "threat": 0.00012553631677292287,
+        "insult": 0.00027830200269818306,
+        "identity_attack": 0.0001879950286820531
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 744.74,
+      "end": 746.16,
+      "idx": 118
+    },
+    {
+      "text": "Well, luckily for us, we don't have to wonder.",
+      "sentiment": 0.6597,
+      "toxicity": 0.0006367040332406759,
+      "dimensions": {
+        "severe_toxicity": 0.00012338222586549819,
+        "obscene": 0.00018560550233814865,
+        "threat": 0.00011958671530010179,
+        "insult": 0.0001768004149198532,
+        "identity_attack": 0.00014140541316010058
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 746.34,
+      "end": 748.58,
+      "idx": 119
+    },
+    {
+      "text": "You see, I had a very brief email exchange with Solomon Nelson in which I very vaguely explained what I was going to make a video about and in response, he asked me to review a certain podcast Mike was on.",
+      "sentiment": 0.2732,
+      "toxicity": 0.0005458921077661216,
+      "dimensions": {
+        "severe_toxicity": 0.00013230690092314035,
+        "obscene": 0.0001859424082795158,
+        "threat": 0.00014099315740168095,
+        "insult": 0.00017603034211788327,
+        "identity_attack": 0.0001430656120646745
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 748.84,
+      "end": 758.52,
+      "idx": 120
+    },
+    {
+      "text": "Now, the podcast is almost an hour long and Mike says a lot of unhinged stuff, so Solomon really could have been pointing me to anything.",
+      "sentiment": 0.0,
+      "toxicity": 0.000781630864366889,
+      "dimensions": {
+        "severe_toxicity": 0.00010861866030609235,
+        "obscene": 0.00017826585099101067,
+        "threat": 0.00011224491026951,
+        "insult": 0.00018075747357215732,
+        "identity_attack": 0.0001368210359942168
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 758.62,
+      "end": 764.72,
+      "idx": 121
+    },
+    {
+      "text": "However, one particular bit stood out to me.",
+      "sentiment": 0.0,
+      "toxicity": 0.0005525805754587054,
+      "dimensions": {
+        "severe_toxicity": 0.00013885044609196484,
+        "obscene": 0.00020447435963433236,
+        "threat": 0.0001238942495547235,
+        "insult": 0.00018482032464817166,
+        "identity_attack": 0.00014534761430695653
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 764.86,
+      "end": 767.28,
+      "idx": 122
+    },
+    {
+      "text": "Let's take a look.",
+      "sentiment": 0.0,
+      "toxicity": 0.000686414074152708,
+      "dimensions": {
+        "severe_toxicity": 0.0001275658723898232,
+        "obscene": 0.00019140230142511427,
+        "threat": 0.00011586165055632591,
+        "insult": 0.000179013964952901,
+        "identity_attack": 0.00014955292863305658
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 767.36,
+      "end": 768.0,
+      "idx": 123
+    },
+    {
+      "text": "Like, on almost every objective metric that Hitler qualified the Aryans to be superior, Jews are actually the ultimate white supremacists.",
+      "sentiment": 0.6124,
+      "toxicity": 0.3299568295478821,
+      "dimensions": {
+        "severe_toxicity": 0.005251303315162659,
+        "obscene": 0.012273778207600117,
+        "threat": 0.004222132731229067,
+        "insult": 0.03334958106279373,
+        "identity_attack": 0.3126567602157593
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 768.14,
+      "end": 774.02,
+      "idx": 124
+    },
+    {
+      "text": "Like, they are the smartest, the most organized, the least criminally prone.",
+      "sentiment": 0.7579,
+      "toxicity": 0.06537241488695145,
+      "dimensions": {
+        "severe_toxicity": 0.00018238695338368416,
+        "obscene": 0.0006871218793094158,
+        "threat": 0.00039082139846868813,
+        "insult": 0.003983338829129934,
+        "identity_attack": 0.0012749084271490574
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 774.46,
+      "end": 777.34,
+      "idx": 125
+    },
+    {
+      "text": "They are the best at banking and finance and all these other things, which are multipliers of wealth in a society.",
+      "sentiment": 0.8126,
+      "toxicity": 0.0006711143651045859,
+      "dimensions": {
+        "severe_toxicity": 0.0001189467657241039,
+        "obscene": 0.0001661892601987347,
+        "threat": 0.00012740564125124365,
+        "insult": 0.00018066166376229376,
+        "identity_attack": 0.00014695624122396111
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 777.9,
+      "end": 783.02,
+      "idx": 126
+    },
+    {
+      "text": "You want as many Jews in your society as possible and Ashkenazi Jews are a fucking master race.",
+      "sentiment": 0.0772,
+      "toxicity": 0.9971051812171936,
+      "dimensions": {
+        "severe_toxicity": 0.4928372800350189,
+        "obscene": 0.9682170152664185,
+        "threat": 0.05529807507991791,
+        "insult": 0.9338811635971069,
+        "identity_attack": 0.903514564037323
+      },
+      "verdict": "Toxic",
+      "detail": "personal attack detected",
+      "fast": false,
+      "start": 783.28,
+      "end": 787.94,
+      "idx": 127
+    },
+    {
+      "text": "Well, well, well.",
+      "sentiment": 0.6486,
+      "toxicity": 0.0008701630285941064,
+      "dimensions": {
+        "severe_toxicity": 0.00010923575609922409,
+        "obscene": 0.0001829336688388139,
+        "threat": 0.00010762364399852231,
+        "insult": 0.00018596474546939135,
+        "identity_attack": 0.00013760922593064606
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 788.14,
+      "end": 789.92,
+      "idx": 128
+    },
+    {
+      "text": "Over here at the anabolic stick youtube channel, we've not condoned any jokes made towards the Jewish people in any capacity and we strongly take a stand on anything that can remotely be deemed as anti-Semitic.",
+      "sentiment": 0.0926,
+      "toxicity": 0.005179334431886673,
+      "dimensions": {
+        "severe_toxicity": 0.00014200089208316058,
+        "obscene": 0.00026664917822927237,
+        "threat": 0.0002046184818027541,
+        "insult": 0.0003218440688215196,
+        "identity_attack": 0.0007179329986684024
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 794.92,
+      "end": 802.92,
+      "idx": 129
+    },
+    {
+      "text": "I strongly apologize and will strive to do better next time.",
+      "sentiment": 0.6597,
+      "toxicity": 0.0005336053436622024,
+      "dimensions": {
+        "severe_toxicity": 0.00014754878066014498,
+        "obscene": 0.00019293114019092172,
+        "threat": 0.000170798011822626,
+        "insult": 0.00018561328761279583,
+        "identity_attack": 0.00015594340220559388
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 803.38,
+      "end": 806.02,
+      "idx": 130
+    },
+    {
+      "text": "Okay, all jokes aside, Jewish people aren't inherently genetically smarter than white people.",
+      "sentiment": 0.1078,
+      "toxicity": 0.4177188277244568,
+      "dimensions": {
+        "severe_toxicity": 0.003900279989466071,
+        "obscene": 0.012343085370957851,
+        "threat": 0.003265049308538437,
+        "insult": 0.03765985742211342,
+        "identity_attack": 0.2908957302570343
+      },
+      "verdict": "Borderline",
+      "detail": "potentially problematic content",
+      "fast": false,
+      "start": 806.38,
+      "end": 810.82,
+      "idx": 131
+    },
+    {
+      "text": "White people aren't inherently genetically smarter than black people.",
+      "sentiment": -0.357,
+      "toxicity": 0.6801178455352783,
+      "dimensions": {
+        "severe_toxicity": 0.010417826473712921,
+        "obscene": 0.03964008018374443,
+        "threat": 0.0061233388260006905,
+        "insult": 0.09214626252651215,
+        "identity_attack": 0.5291197896003723
+      },
+      "verdict": "Borderline",
+      "detail": "potentially problematic content",
+      "fast": false,
+      "start": 810.96,
+      "end": 813.78,
+      "idx": 132
+    },
+    {
+      "text": "Black people aren't inherently genetically smarter There's absolutely zero scientific basis to back up any claims of inherent racial or ethnic superiority, especially in the realm of intelligence.",
+      "sentiment": 0.4624,
+      "toxicity": 0.21717439591884613,
+      "dimensions": {
+        "severe_toxicity": 0.0025835237465798855,
+        "obscene": 0.006499154027551413,
+        "threat": 0.0020663882605731487,
+        "insult": 0.01592808961868286,
+        "identity_attack": 0.1652388721704483
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 813.9,
+      "end": 824.6,
+      "idx": 133
+    },
+    {
+      "text": "There is no gene or set of genes that have shown any race to be smarter than another and to delve even deeper, race itself is not even a scientific concept.",
+      "sentiment": 0.2023,
+      "toxicity": 0.0009394058142788708,
+      "dimensions": {
+        "severe_toxicity": 0.00010493569425307214,
+        "obscene": 0.00016489130211994052,
+        "threat": 0.00011209324293304235,
+        "insult": 0.00018664672097656876,
+        "identity_attack": 0.00015404490113724023
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 824.86,
+      "end": 832.08,
+      "idx": 134
+    },
+    {
+      "text": "The consensus for decades now has been that race as a whole is a social construct and not a biological one.",
+      "sentiment": 0.0,
+      "toxicity": 0.0007685038726776838,
+      "dimensions": {
+        "severe_toxicity": 0.00011601178994169459,
+        "obscene": 0.00016723650333005935,
+        "threat": 0.0001148724477388896,
+        "insult": 0.00017883568943943828,
+        "identity_attack": 0.0001722375163808465
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 832.2,
+      "end": 837.56,
+      "idx": 135
+    },
+    {
+      "text": "It is also well established that IQ is strongly influenced by environmental factors, things like nutrition, education, access to healthcare, and a bunch of other socioeconomic stressors, which explain most cross-country IQ gaps.",
+      "sentiment": 0.3818,
+      "toxicity": 0.0006237237830646336,
+      "dimensions": {
+        "severe_toxicity": 0.00013068514817859977,
+        "obscene": 0.00017218448920175433,
+        "threat": 0.0001318927388638258,
+        "insult": 0.00019228360906708986,
+        "identity_attack": 0.0001657769753364846
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 837.62,
+      "end": 849.16,
+      "idx": 136
+    },
+    {
+      "text": "And there are a bunch of observations that back this up.",
+      "sentiment": 0.0,
+      "toxicity": 0.0005788172711618245,
+      "dimensions": {
+        "severe_toxicity": 0.00012673111632466316,
+        "obscene": 0.00018703669775277376,
+        "threat": 0.00012226433318573982,
+        "insult": 0.00017666022176854312,
+        "identity_attack": 0.0001394415448885411
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 849.3,
+      "end": 851.88,
+      "idx": 137
+    },
+    {
+      "text": "Take the Flynn effect, for example, which shows that IQ scores have risen dramatically all over the world over the past century, sometimes even by as much as 30 points.",
+      "sentiment": 0.0,
+      "toxicity": 0.0006633643642999232,
+      "dimensions": {
+        "severe_toxicity": 0.00011979980627074838,
+        "obscene": 0.00017333163123112172,
+        "threat": 0.00012105644418625161,
+        "insult": 0.0001800858590286225,
+        "identity_attack": 0.00014582613948732615
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 851.98,
+      "end": 859.6,
+      "idx": 138
+    },
+    {
+      "text": "Populations don't undergo genetic revolutions in just a hundred years, which makes it clear that environmental factors and cultural changes were the driving factors behind that rise in IQ.",
+      "sentiment": 0.3818,
+      "toxicity": 0.0008417863864451647,
+      "dimensions": {
+        "severe_toxicity": 0.00011662637552944943,
+        "obscene": 0.0001599880342837423,
+        "threat": 0.00012734673509839922,
+        "insult": 0.00019848754163831472,
+        "identity_attack": 0.00017309248505625874
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 859.84,
+      "end": 870.2,
+      "idx": 139
+    },
+    {
+      "text": "Another example, before German reunification after the fall of the Berlin Wall, West Germans who lived way more prosperously than their Soviet ruled Eastern counterparts on average had IQs around 10 points higher.",
+      "sentiment": 0.0,
+      "toxicity": 0.0009378412505611777,
+      "dimensions": {
+        "severe_toxicity": 0.00014020632079336792,
+        "obscene": 0.00016045062511693686,
+        "threat": 0.00013279300765134394,
+        "insult": 0.0002466870646458119,
+        "identity_attack": 0.000272127625066787
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 870.48,
+      "end": 881.38,
+      "idx": 140
+    },
+    {
+      "text": "West and East Germans are the same people ethnically, yet the group living under vastly worse socioeconomic conditions scored way lower on average.",
+      "sentiment": -0.6486,
+      "toxicity": 0.001842302386648953,
+      "dimensions": {
+        "severe_toxicity": 0.0001460447529098019,
+        "obscene": 0.00017291893891524523,
+        "threat": 0.00014363670197781175,
+        "insult": 0.00030518422136083245,
+        "identity_attack": 0.000529950310010463
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 881.54,
+      "end": 889.06,
+      "idx": 141
+    },
+    {
+      "text": "The same thing could be observed with Irish and Italian immigrants to America in the early 20th century.",
+      "sentiment": 0.0,
+      "toxicity": 0.0005748987896367908,
+      "dimensions": {
+        "severe_toxicity": 0.0001308758364757523,
+        "obscene": 0.00017726801161188632,
+        "threat": 0.00012882555893156677,
+        "insult": 0.00017810665303841233,
+        "identity_attack": 0.00016125447291415185
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 889.24,
+      "end": 894.08,
+      "idx": 142
+    },
+    {
+      "text": "They used to score lower on IQ tests than Americans of Anglo-Saxon ancestry because they lived under worse socioeconomic conditions and since then that gap has completely closed.",
+      "sentiment": -0.6486,
+      "toxicity": 0.002239077817648649,
+      "dimensions": {
+        "severe_toxicity": 0.00014127940812613815,
+        "obscene": 0.0001609206956345588,
+        "threat": 0.00012863332813140005,
+        "insult": 0.0003885121550410986,
+        "identity_attack": 0.0005177968414500356
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 894.14,
+      "end": 903.76,
+      "idx": 143
+    },
+    {
+      "text": "Which by the way, Irish people and Italians weren't even considered white back then.",
+      "sentiment": 0.0,
+      "toxicity": 0.019101159647107124,
+      "dimensions": {
+        "severe_toxicity": 0.0006030083750374615,
+        "obscene": 0.001111301826313138,
+        "threat": 0.0004443710495252162,
+        "insult": 0.0016635836800560355,
+        "identity_attack": 0.012538295239210129
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 904.04,
+      "end": 907.86,
+      "idx": 144
+    },
+    {
+      "text": "Another example of how race exists as a social construct rather than a biological one.",
+      "sentiment": 0.0,
+      "toxicity": 0.0008599069551564753,
+      "dimensions": {
+        "severe_toxicity": 0.00011573511437745765,
+        "obscene": 0.0001622528361622244,
+        "threat": 0.00011101271229563281,
+        "insult": 0.0001903832016978413,
+        "identity_attack": 0.0001884900702862069
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 907.94,
+      "end": 912.38,
+      "idx": 145
+    },
+    {
+      "text": "The most famous example of this being Lewontin's study wherein he found that 85% of genetic variation exists within any given population whereas only 8% genetic variation exists between different races.",
+      "sentiment": 0.0,
+      "toxicity": 0.0007463816436938941,
+      "dimensions": {
+        "severe_toxicity": 0.00011812784941866994,
+        "obscene": 0.00017254491103813052,
+        "threat": 0.00012843978765886277,
+        "insult": 0.00018483813619241118,
+        "identity_attack": 0.00015251013974193484
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 912.5,
+      "end": 924.28,
+      "idx": 146
+    },
+    {
+      "text": "This means that a Yoruba person from Nigeria and a Bushman from Botswana who are both considered black are more genetically different from each other than either of them are from a European or an East Asian person.",
+      "sentiment": 0.0,
+      "toxicity": 0.004114250652492046,
+      "dimensions": {
+        "severe_toxicity": 0.00021299332729540765,
+        "obscene": 0.0003362080315127969,
+        "threat": 0.0001918916532304138,
+        "insult": 0.0005740924971178174,
+        "identity_attack": 0.001559063675813377
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 924.42,
+      "end": 935.12,
+      "idx": 147
+    },
+    {
+      "text": "On a genetic level differences in skin color are no more significant than differences in eye or hair color.",
+      "sentiment": -0.474,
+      "toxicity": 0.0006880284636281431,
+      "dimensions": {
+        "severe_toxicity": 0.00013850227696821094,
+        "obscene": 0.00018152917618863285,
+        "threat": 0.00015064093167893589,
+        "insult": 0.00021746312268078327,
+        "identity_attack": 0.00017972906061913818
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 935.26,
+      "end": 940.82,
+      "idx": 148
+    },
+    {
+      "text": "White, black, Asian or social groupings layered on top of subtle continuous genetic variation.",
+      "sentiment": 0.2023,
+      "toxicity": 0.0010666060261428356,
+      "dimensions": {
+        "severe_toxicity": 0.00012448801135178655,
+        "obscene": 0.0001634818472666666,
+        "threat": 0.00012489584332797676,
+        "insult": 0.00020028866128996015,
+        "identity_attack": 0.00026462686946615577
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 940.94,
+      "end": 946.12,
+      "idx": 149
+    },
+    {
+      "text": "There are no separate subspecies of humanity and that's simply a scientific truth.",
+      "sentiment": 0.0258,
+      "toxicity": 0.0011009895242750645,
+      "dimensions": {
+        "severe_toxicity": 0.00010756249685073271,
+        "obscene": 0.00016923814837355167,
+        "threat": 0.00011906137660844252,
+        "insult": 0.00018303799151908606,
+        "identity_attack": 0.0001652985520195216
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 946.34,
+      "end": 950.9,
+      "idx": 150
+    },
+    {
+      "text": "Now by no stretch of the imagination am I a genius or an expert for that matter.",
+      "sentiment": -0.2732,
+      "toxicity": 0.0006466850754804909,
+      "dimensions": {
+        "severe_toxicity": 0.00012075195263605565,
+        "obscene": 0.00017885853594634682,
+        "threat": 0.0001243355800397694,
+        "insult": 0.00017937568190973252,
+        "identity_attack": 0.0001397918094880879
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 951.06,
+      "end": 955.24,
+      "idx": 151
+    },
+    {
+      "text": "Believe me.",
+      "sentiment": 0.0,
+      "toxicity": 0.0012196701718494296,
+      "dimensions": {
+        "severe_toxicity": 0.00011269191600149497,
+        "obscene": 0.00019241492555011064,
+        "threat": 0.0001347936486126855,
+        "insult": 0.00017658410069998354,
+        "identity_attack": 0.0001587849692441523
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 955.5,
+      "end": 955.74,
+      "idx": 152
+    },
+    {
+      "text": "I know all of this because two minutes of research will tell you all of this because it's the overwhelming scientific consensus.",
+      "sentiment": 0.0,
+      "toxicity": 0.0005860846140421927,
+      "dimensions": {
+        "severe_toxicity": 0.00012609417899511755,
+        "obscene": 0.00018417224055156112,
+        "threat": 0.00013098058116156608,
+        "insult": 0.00017174570530187339,
+        "identity_attack": 0.00014296032895799726
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 955.78,
+      "end": 962.4,
+      "idx": 153
+    },
+    {
+      "text": "So it truly stumps me how someone with a doctorate degree in a scientific field claims he holds pseudo scientific beliefs because he's quote unquote scientifically literate.",
+      "sentiment": 0.4902,
+      "toxicity": 0.001440547639504075,
+      "dimensions": {
+        "severe_toxicity": 9.442479495191947e-05,
+        "obscene": 0.00017656337877269834,
+        "threat": 9.962917101802304e-05,
+        "insult": 0.0002072742790915072,
+        "identity_attack": 0.00016226738807745278
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 962.8,
+      "end": 970.72,
+      "idx": 154
+    },
+    {
+      "text": "Either you're trying your hardest to affirm your inherent biases and are experiencing some kind of cognitive dissonance or you're an absolute idiot that got his PhD from a PhD mill.",
+      "sentiment": -0.5106,
+      "toxicity": 0.9163819551467896,
+      "dimensions": {
+        "severe_toxicity": 0.006570461671799421,
+        "obscene": 0.31190434098243713,
+        "threat": 0.0007488164119422436,
+        "insult": 0.822001576423645,
+        "identity_attack": 0.006686089560389519
+      },
+      "verdict": "Toxic",
+      "detail": "personal attack detected",
+      "fast": false,
+      "start": 970.76,
+      "end": 979.24,
+      "idx": 155
+    },
+    {
+      "text": "And now that we've all seen Solomon's dissection of Mike's PhD dissertation I'm heavily leaning towards the latter.",
+      "sentiment": 0.0,
+      "toxicity": 0.0005855924100615084,
+      "dimensions": {
+        "severe_toxicity": 0.00012551200052257627,
+        "obscene": 0.0001803264021873474,
+        "threat": 0.00013199099339544773,
+        "insult": 0.00017400941578671336,
+        "identity_attack": 0.00014373808517120779
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 979.34,
+      "end": 984.36,
+      "idx": 156
+    },
+    {
+      "text": "But let's keep it simple for Mike.",
+      "sentiment": 0.0,
+      "toxicity": 0.0006209680577740073,
+      "dimensions": {
+        "severe_toxicity": 0.00012089009396731853,
+        "obscene": 0.00018756567442324013,
+        "threat": 0.00012012352817691863,
+        "insult": 0.000171128282090649,
+        "identity_attack": 0.00013593649782706052
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 984.54,
+      "end": 985.78,
+      "idx": 157
+    },
+    {
+      "text": "Okay we all know Mike loves Chad's GPT.",
+      "sentiment": 0.6808,
+      "toxicity": 0.0007436153828166425,
+      "dimensions": {
+        "severe_toxicity": 0.00011507001181598753,
+        "obscene": 0.00018743750115390867,
+        "threat": 0.00012355753278825432,
+        "insult": 0.00016852543922141194,
+        "identity_attack": 0.00013979661162011325
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 986.06,
+      "end": 988.42,
+      "idx": 158
+    },
+    {
+      "text": "He told it that I can't wait for it to be embodied in robot so I could properly give it a hug.",
+      "sentiment": 0.4767,
+      "toxicity": 0.0007319807191379368,
+      "dimensions": {
+        "severe_toxicity": 0.00011192010424565524,
+        "obscene": 0.00017076870426535606,
+        "threat": 0.00012027401680825278,
+        "insult": 0.0001767984067555517,
+        "identity_attack": 0.00013789294462185353
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 988.5,
+      "end": 992.5,
+      "idx": 159
+    },
+    {
+      "text": "He references it in this very video stating that it backs up his race realist claims.",
+      "sentiment": -0.0516,
+      "toxicity": 0.0006487246137112379,
+      "dimensions": {
+        "severe_toxicity": 0.00011792796431109309,
+        "obscene": 0.00018706487026065588,
+        "threat": 0.00011725575313903391,
+        "insult": 0.0001675019011599943,
+        "identity_attack": 0.00013964087702333927
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 992.62,
+      "end": 996.7,
+      "idx": 160
+    },
+    {
+      "text": "The GPT tells you because you asked it that your race or ethnic group is not the most intelligent of all of them.",
+      "sentiment": -0.4013,
+      "toxicity": 0.04735453426837921,
+      "dimensions": {
+        "severe_toxicity": 0.00012605641677509993,
+        "obscene": 0.00041878389311023057,
+        "threat": 0.00028731118072755635,
+        "insult": 0.0033798119984567165,
+        "identity_attack": 0.0011336543830111623
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 996.96,
+      "end": 1003.34,
+      "idx": 161
+    },
+    {
+      "text": "Well let's ask Chad's GPT yourselves and before you get jealous Mike it's only a platonic relationship.",
+      "sentiment": -0.2263,
+      "toxicity": 0.020464912056922913,
+      "dimensions": {
+        "severe_toxicity": 0.00010916868632193655,
+        "obscene": 0.0010012744460254908,
+        "threat": 0.00020236606360413134,
+        "insult": 0.0008733418653719127,
+        "identity_attack": 0.0002722283243201673
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 1003.44,
+      "end": 1008.86,
+      "idx": 162
+    },
+    {
+      "text": "Trust me the GPT is all yours bro.",
+      "sentiment": 0.5106,
+      "toxicity": 0.004108268767595291,
+      "dimensions": {
+        "severe_toxicity": 9.878684068098664e-05,
+        "obscene": 0.00042419275268912315,
+        "threat": 0.0001224128354806453,
+        "insult": 0.00026463065296411514,
+        "identity_attack": 0.00014312441635411233
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 1008.86,
+      "end": 1011.28,
+      "idx": 163
+    },
+    {
+      "text": "Is race tied to intelligence?",
+      "sentiment": 0.4767,
+      "toxicity": 0.0008890865719877183,
+      "dimensions": {
+        "severe_toxicity": 0.00010645698057487607,
+        "obscene": 0.00016392109682783484,
+        "threat": 0.0001093802202376537,
+        "insult": 0.00018631723651196808,
+        "identity_attack": 0.00015705153055023402
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 1011.82,
+      "end": 1013.98,
+      "idx": 164
+    },
+    {
+      "text": "Huh is there a racial totem pole of intelligence?",
+      "sentiment": 0.4767,
+      "toxicity": 0.016285372897982597,
+      "dimensions": {
+        "severe_toxicity": 0.0001266297622350976,
+        "obscene": 0.00042187844519503415,
+        "threat": 0.00014010154700372368,
+        "insult": 0.0006473140674643219,
+        "identity_attack": 0.0007797672296874225
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 1016.32,
+      "end": 1021.5,
+      "idx": 165
+    },
+    {
+      "text": "No Dr. Mike Isretel said that you said that there is one.",
+      "sentiment": -0.296,
+      "toxicity": 0.0006559766479767859,
+      "dimensions": {
+        "severe_toxicity": 0.00011802516382886097,
+        "obscene": 0.00018442388682160527,
+        "threat": 0.00011263432679697871,
+        "insult": 0.00017723791825119406,
+        "identity_attack": 0.00013967682025395334
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 1023.9000000000001,
+      "end": 1029.28,
+      "idx": 166
+    },
+    {
+      "text": "It's possible Dr. Mike Isretel misrepresented misquoted or took something out of context.",
+      "sentiment": 0.0,
+      "toxicity": 0.0006284604896791279,
+      "dimensions": {
+        "severe_toxicity": 0.00012031268124701455,
+        "obscene": 0.00018166805966757238,
+        "threat": 0.00011794719466706738,
+        "insult": 0.00018187134992331266,
+        "identity_attack": 0.00014050396566744894
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 1030.02,
+      "end": 1035.12,
+      "idx": 167
+    },
+    {
+      "text": "Will Dr. Mike Isretel be sleeping on the couch tonight?",
+      "sentiment": 0.0,
+      "toxicity": 0.0031274014618247747,
+      "dimensions": {
+        "severe_toxicity": 9.40642348723486e-05,
+        "obscene": 0.0002585006004665047,
+        "threat": 0.00011844276741612703,
+        "insult": 0.0002355500473640859,
+        "identity_attack": 0.0001776438148226589
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 1035.66,
+      "end": 1039.88,
+      "idx": 168
+    },
+    {
+      "text": "If he's trying to defend a misquote about me I'd say there's a good chance the couch might get some action.",
+      "sentiment": 0.5994,
+      "toxicity": 0.0009205801761709154,
+      "dimensions": {
+        "severe_toxicity": 0.00010420001490274444,
+        "obscene": 0.00019493800937198102,
+        "threat": 0.00010504602687433362,
+        "insult": 0.00017789450066629797,
+        "identity_attack": 0.00013668308383785188
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 1040.2,
+      "end": 1045.14,
+      "idx": 169
+    },
+    {
+      "text": "It is interesting to me though that in the wake of Solomon's video Mike just quietly deletes the singular video from his second channel without saying anything about it which leads me to think he still holds these thoughts but was simply scared of more backlash.",
+      "sentiment": -0.4588,
+      "toxicity": 0.000633796735201031,
+      "dimensions": {
+        "severe_toxicity": 0.00012178644101368263,
+        "obscene": 0.00017873800243251026,
+        "threat": 0.000128864252474159,
+        "insult": 0.0001769306109054014,
+        "identity_attack": 0.00014218597789295018
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 1045.34,
+      "end": 1057.2,
+      "idx": 170
+    },
+    {
+      "text": "Was scared of giving Solomon's words more validity as this video is a prime example of why Mike Isretel is a charlatan.",
+      "sentiment": -0.128,
+      "toxicity": 0.0956331342458725,
+      "dimensions": {
+        "severe_toxicity": 0.00028819756698794663,
+        "obscene": 0.0033433230128139257,
+        "threat": 0.00025941163767129183,
+        "insult": 0.02096455544233322,
+        "identity_attack": 0.0018327083671465516
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 1057.34,
+      "end": 1063.06,
+      "idx": 171
+    },
+    {
+      "text": "He couldn't take accountability surrounding the Milo Wolf situation at a small group of people calling him out for this video, saw the writings on the wall and quietly deleted it hoping it wouldn't get more attention.",
+      "sentiment": 0.4215,
+      "toxicity": 0.0006634003948420286,
+      "dimensions": {
+        "severe_toxicity": 0.00011700522736646235,
+        "obscene": 0.00018204016669187695,
+        "threat": 0.00011798061314038932,
+        "insult": 0.00017391852452419698,
+        "identity_attack": 0.0001404306967742741
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 1063.14,
+      "end": 1072.4,
+      "idx": 172
+    },
+    {
+      "text": "I just don't see how this video doesn't completely take away any trust in Mike Isretel as a scientific source.",
+      "sentiment": 0.5106,
+      "toxicity": 0.0006350090261548758,
+      "dimensions": {
+        "severe_toxicity": 0.0001196398661704734,
+        "obscene": 0.00018116916180588305,
+        "threat": 0.00012117170263081789,
+        "insult": 0.00017277193546760827,
+        "identity_attack": 0.00014037500659469515
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 1072.54,
+      "end": 1077.26,
+      "idx": 173
+    },
+    {
+      "text": "Alongside that the guy has a massive ego problem cannot ever admit when he's wrong and when he does get called out and cannot ignore the problem much longer acts all fake humble while trying his hardest to lie his way out of the situation.",
+      "sentiment": -0.7289,
+      "toxicity": 0.08139235526323318,
+      "dimensions": {
+        "severe_toxicity": 0.00016508590488228947,
+        "obscene": 0.0021071264054626226,
+        "threat": 0.00020073640916962177,
+        "insult": 0.004737607669085264,
+        "identity_attack": 0.00048609878285788
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 1077.4,
+      "end": 1088.08,
+      "idx": 174
+    },
+    {
+      "text": "But okay Mike I see your eugenics and race realism and I raise my... phrenology.",
+      "sentiment": 0.3291,
+      "toxicity": 0.013533377088606358,
+      "dimensions": {
+        "severe_toxicity": 0.0001027366379275918,
+        "obscene": 0.00030831986805424094,
+        "threat": 0.00017293871496804059,
+        "insult": 0.0007057011243887246,
+        "identity_attack": 0.0004588280862662941
+      },
+      "verdict": "Clean",
+      "detail": "no significant toxicity detected",
+      "fast": false,
+      "start": 1088.32,
+      "end": 1094.94,
+      "idx": 175
+    },
+    {
+      "text": "The abnormality of your neanderthal like Skull may yet explain a lot about you after all.",
+      "sentiment": 0.3612,
+      "toxicity": 0.6811215877532959,
+      "dimensions": {
+        "severe_toxicity": 0.002007395727559924,
+        "obscene": 0.031137848272919655,
+        "threat": 0.004327202215790749,
+        "insult": 0.3574551045894623,
+        "identity_attack": 0.026416730135679245
+      },
+      "verdict": "Borderline",
+      "detail": "potentially problematic content",
+      "fast": false,
+      "start": 1095.88,
+      "end": 1100.6,
+      "idx": 176
     }
   ],
   "top_toxic": [
     {
-      "text": "When you were looking at those doors, though you can't know you won't be, you will close and tell you to shut up and go sleep, This is my song to remind me.",
+      "text": "You want as many Jews in your society as possible and Ashkenazi Jews are a fucking master race.",
+      "sentiment": 0.0772,
+      "toxicity": 0.9971051812171936,
+      "dimensions": {
+        "severe_toxicity": 0.4928372800350189,
+        "obscene": 0.9682170152664185,
+        "threat": 0.05529807507991791,
+        "insult": 0.9338811635971069,
+        "identity_attack": 0.903514564037323
+      },
+      "verdict": "Toxic",
+      "detail": "personal attack detected",
+      "fast": false,
+      "start": 783.28,
+      "end": 787.94,
+      "idx": 127
+    },
+    {
+      "text": "This fucking video's gonna get demonetized.",
       "sentiment": 0.0,
-      "toxicity": 0.32357239723205566,
+      "toxicity": 0.9946046471595764,
       "dimensions": {
-        "severe_toxicity": 0.0007019131444394588,
-        "obscene": 0.003785653505474329,
-        "threat": 0.01246671937406063,
-        "insult": 0.009049562737345695,
-        "identity_attack": 0.0020437827333807945
+        "severe_toxicity": 0.23564183712005615,
+        "obscene": 0.9849942326545715,
+        "threat": 0.007646515034139156,
+        "insult": 0.3770627975463867,
+        "identity_attack": 0.005047564394772053
       },
-      "verdict": "Clean",
-      "detail": "no significant toxicity detected",
+      "verdict": "Toxic",
+      "detail": "harmful content detected",
       "fast": false,
-      "start": 168.58,
-      "end": 182.96,
-      "idx": 28
+      "start": 165.1,
+      "end": 167.02,
+      "idx": 35
     },
     {
-      "text": "She is desperately trying to fill her mouth.",
-      "sentiment": -0.3818,
-      "toxicity": 0.2039516717195511,
+      "text": "Fuck that.",
+      "sentiment": -0.5423,
+      "toxicity": 0.9919903874397278,
       "dimensions": {
-        "severe_toxicity": 0.0005075666704215109,
-        "obscene": 0.017709046602249146,
-        "threat": 0.0003073413681704551,
-        "insult": 0.0032723057083785534,
-        "identity_attack": 0.0005288575775921345
+        "severe_toxicity": 0.16567446291446686,
+        "obscene": 0.981975793838501,
+        "threat": 0.003300843760371208,
+        "insult": 0.29857733845710754,
+        "identity_attack": 0.0041047739796340466
       },
-      "verdict": "Clean",
-      "detail": "no significant toxicity detected",
+      "verdict": "Toxic",
+      "detail": "harmful content detected",
       "fast": false,
-      "start": 55.7,
-      "end": 57.72,
-      "idx": 10
+      "start": 118.86,
+      "end": 119.34,
+      "idx": 17
     },
     {
-      "text": "And the evening soars, the arrows from your tongue, the same devil as you tortured the wind.",
-      "sentiment": -0.8402,
-      "toxicity": 0.09825561195611954,
+      "text": "Fuck that.",
+      "sentiment": -0.5423,
+      "toxicity": 0.9919903874397278,
       "dimensions": {
-        "severe_toxicity": 0.00016201304970309138,
-        "obscene": 0.0008711917907930911,
-        "threat": 0.0006519497837871313,
-        "insult": 0.0033135435078293085,
-        "identity_attack": 0.0010504608508199453
+        "severe_toxicity": 0.16567446291446686,
+        "obscene": 0.981975793838501,
+        "threat": 0.003300843760371208,
+        "insult": 0.29857733845710754,
+        "identity_attack": 0.0041047739796340466
       },
-      "verdict": "Clean",
-      "detail": "no significant toxicity detected",
+      "verdict": "Toxic",
+      "detail": "harmful content detected",
       "fast": false,
-      "start": 150.9,
-      "end": 157.14,
-      "idx": 26
+      "start": 709.18,
+      "end": 709.78,
+      "idx": 109
     },
     {
-      "text": "The state of my mind, that black eyed glasses, so ugly and sheepish I cried.",
-      "sentiment": -0.7809,
-      "toxicity": 0.09735098481178284,
+      "text": "You've got a whole ass wife, bro.",
+      "sentiment": -0.5423,
+      "toxicity": 0.9795905351638794,
       "dimensions": {
-        "severe_toxicity": 0.0002067137829726562,
-        "obscene": 0.0018293147440999746,
-        "threat": 0.00033938814885914326,
-        "insult": 0.003809139830991626,
-        "identity_attack": 0.0009082300821319222
+        "severe_toxicity": 0.03985420987010002,
+        "obscene": 0.9026030898094177,
+        "threat": 0.0007393879350274801,
+        "insult": 0.8010215163230896,
+        "identity_attack": 0.006470061372965574
       },
-      "verdict": "Clean",
-      "detail": "no significant toxicity detected",
+      "verdict": "Toxic",
+      "detail": "personal attack detected",
       "fast": false,
-      "start": 138.02,
-      "end": 143.48,
-      "idx": 24
-    },
-    {
-      "text": "It's funny some people say it, oh my number baby, some spit through their keyboards, I will never want.",
-      "sentiment": 0.4548,
-      "toxicity": 0.09142764657735825,
-      "dimensions": {
-        "severe_toxicity": 0.00026098842499777675,
-        "obscene": 0.006569680757820606,
-        "threat": 0.0005336424801498652,
-        "insult": 0.0022221833933144808,
-        "identity_attack": 0.0005212054238654673
-      },
-      "verdict": "Clean",
-      "detail": "no significant toxicity detected",
-      "fast": false,
-      "start": 143.7,
-      "end": 150.52,
-      "idx": 25
+      "start": 90.94,
+      "end": 92.78,
+      "idx": 11
     }
   ],
   "peaks_by_dim": {
     "insult": {
-      "score": 0.009049562737345695,
+      "score": 0.9338811635971069,
       "sentence": {
-        "text": "When you were looking at those doors, though you can't know you won't be, you will close and tell you to shut up and go sleep, This is my song to remind me.",
-        "sentiment": 0.0,
-        "toxicity": 0.32357239723205566,
+        "text": "You want as many Jews in your society as possible and Ashkenazi Jews are a fucking master race.",
+        "sentiment": 0.0772,
+        "toxicity": 0.9971051812171936,
         "dimensions": {
-          "severe_toxicity": 0.0007019131444394588,
-          "obscene": 0.003785653505474329,
-          "threat": 0.01246671937406063,
-          "insult": 0.009049562737345695,
-          "identity_attack": 0.0020437827333807945
+          "severe_toxicity": 0.4928372800350189,
+          "obscene": 0.9682170152664185,
+          "threat": 0.05529807507991791,
+          "insult": 0.9338811635971069,
+          "identity_attack": 0.903514564037323
         },
-        "verdict": "Clean",
-        "detail": "no significant toxicity detected",
+        "verdict": "Toxic",
+        "detail": "personal attack detected",
         "fast": false,
-        "start": 168.58,
-        "end": 182.96,
-        "idx": 28
+        "start": 783.28,
+        "end": 787.94,
+        "idx": 127
       }
     },
     "obscene": {
-      "score": 0.017709046602249146,
+      "score": 0.9849942326545715,
       "sentence": {
-        "text": "She is desperately trying to fill her mouth.",
-        "sentiment": -0.3818,
-        "toxicity": 0.2039516717195511,
+        "text": "This fucking video's gonna get demonetized.",
+        "sentiment": 0.0,
+        "toxicity": 0.9946046471595764,
         "dimensions": {
-          "severe_toxicity": 0.0005075666704215109,
-          "obscene": 0.017709046602249146,
-          "threat": 0.0003073413681704551,
-          "insult": 0.0032723057083785534,
-          "identity_attack": 0.0005288575775921345
+          "severe_toxicity": 0.23564183712005615,
+          "obscene": 0.9849942326545715,
+          "threat": 0.007646515034139156,
+          "insult": 0.3770627975463867,
+          "identity_attack": 0.005047564394772053
         },
-        "verdict": "Clean",
-        "detail": "no significant toxicity detected",
+        "verdict": "Toxic",
+        "detail": "harmful content detected",
         "fast": false,
-        "start": 55.7,
-        "end": 57.72,
-        "idx": 10
+        "start": 165.1,
+        "end": 167.02,
+        "idx": 35
       }
     },
     "threat": {
-      "score": 0.01246671937406063,
+      "score": 0.05529807507991791,
       "sentence": {
-        "text": "When you were looking at those doors, though you can't know you won't be, you will close and tell you to shut up and go sleep, This is my song to remind me.",
-        "sentiment": 0.0,
-        "toxicity": 0.32357239723205566,
+        "text": "You want as many Jews in your society as possible and Ashkenazi Jews are a fucking master race.",
+        "sentiment": 0.0772,
+        "toxicity": 0.9971051812171936,
         "dimensions": {
-          "severe_toxicity": 0.0007019131444394588,
-          "obscene": 0.003785653505474329,
-          "threat": 0.01246671937406063,
-          "insult": 0.009049562737345695,
-          "identity_attack": 0.0020437827333807945
+          "severe_toxicity": 0.4928372800350189,
+          "obscene": 0.9682170152664185,
+          "threat": 0.05529807507991791,
+          "insult": 0.9338811635971069,
+          "identity_attack": 0.903514564037323
         },
-        "verdict": "Clean",
-        "detail": "no significant toxicity detected",
+        "verdict": "Toxic",
+        "detail": "personal attack detected",
         "fast": false,
-        "start": 168.58,
-        "end": 182.96,
-        "idx": 28
+        "start": 783.28,
+        "end": 787.94,
+        "idx": 127
       }
     },
     "identity_attack": {
-      "score": 0.0020437827333807945,
+      "score": 0.903514564037323,
       "sentence": {
-        "text": "When you were looking at those doors, though you can't know you won't be, you will close and tell you to shut up and go sleep, This is my song to remind me.",
-        "sentiment": 0.0,
-        "toxicity": 0.32357239723205566,
+        "text": "You want as many Jews in your society as possible and Ashkenazi Jews are a fucking master race.",
+        "sentiment": 0.0772,
+        "toxicity": 0.9971051812171936,
         "dimensions": {
-          "severe_toxicity": 0.0007019131444394588,
-          "obscene": 0.003785653505474329,
-          "threat": 0.01246671937406063,
-          "insult": 0.009049562737345695,
-          "identity_attack": 0.0020437827333807945
+          "severe_toxicity": 0.4928372800350189,
+          "obscene": 0.9682170152664185,
+          "threat": 0.05529807507991791,
+          "insult": 0.9338811635971069,
+          "identity_attack": 0.903514564037323
         },
-        "verdict": "Clean",
-        "detail": "no significant toxicity detected",
+        "verdict": "Toxic",
+        "detail": "personal attack detected",
         "fast": false,
-        "start": 168.58,
-        "end": 182.96,
-        "idx": 28
+        "start": 783.28,
+        "end": 787.94,
+        "idx": 127
       }
     },
     "severe_toxicity": {
-      "score": 0.0007019131444394588,
+      "score": 0.4928372800350189,
       "sentence": {
-        "text": "When you were looking at those doors, though you can't know you won't be, you will close and tell you to shut up and go sleep, This is my song to remind me.",
-        "sentiment": 0.0,
-        "toxicity": 0.32357239723205566,
+        "text": "You want as many Jews in your society as possible and Ashkenazi Jews are a fucking master race.",
+        "sentiment": 0.0772,
+        "toxicity": 0.9971051812171936,
         "dimensions": {
-          "severe_toxicity": 0.0007019131444394588,
-          "obscene": 0.003785653505474329,
-          "threat": 0.01246671937406063,
-          "insult": 0.009049562737345695,
-          "identity_attack": 0.0020437827333807945
+          "severe_toxicity": 0.4928372800350189,
+          "obscene": 0.9682170152664185,
+          "threat": 0.05529807507991791,
+          "insult": 0.9338811635971069,
+          "identity_attack": 0.903514564037323
         },
-        "verdict": "Clean",
-        "detail": "no significant toxicity detected",
+        "verdict": "Toxic",
+        "detail": "personal attack detected",
         "fast": false,
-        "start": 168.58,
-        "end": 182.96,
-        "idx": 28
+        "start": 783.28,
+        "end": 787.94,
+        "idx": 127
       }
     }
   },
   "fast": false,
+  "monetization": {
+    "risk_level": "MEDIUM",
+    "ad_verdict": "Limited ads",
+    "ad_detail": "Some ads may run. Review flagged moments for maximum CPM.",
+    "first7_flagged": false,
+    "first7_sentences": [],
+    "signals": [
+      {
+        "signal": "density",
+        "severity": "medium",
+        "label": "5% of sentences flagged",
+        "value": 0.051
+      }
+    ],
+    "consequence_breakdown": [
+      {
+        "label": "Monetization",
+        "value": "LIMITED ADS",
+        "severity": "medium"
+      },
+      {
+        "label": "Strike risk",
+        "value": "LOW",
+        "severity": "low"
+      },
+      {
+        "label": "Age restriction",
+        "value": "NONE",
+        "severity": "low"
+      },
+      {
+        "label": "Advertiser opt-out risk",
+        "value": "MODERATE",
+        "severity": "medium"
+      }
+    ],
+    "recommendations": [
+      {
+        "type": "edit",
+        "text": "Consider editing 13:03 to protect monetization",
+        "snippet": "You want as many Jews in your society as possible and Ashkenazi Jews a",
+        "timestamp": 783.28,
+        "toxicity": 0.9971051812171936,
+        "saves": 442.13
+      },
+      {
+        "type": "edit",
+        "text": "Consider editing 2:45 to protect monetization",
+        "snippet": "This fucking video's gonna get demonetized.",
+        "timestamp": 165.1,
+        "toxicity": 0.9946046471595764,
+        "saves": 441.02
+      },
+      {
+        "type": "edit",
+        "text": "Consider editing 1:58 to protect monetization",
+        "snippet": "Fuck that.",
+        "timestamp": 118.86,
+        "toxicity": 0.9919903874397278,
+        "saves": 439.86
+      }
+    ]
+  },
+  "channel": {
+    "name": "",
+    "subscribers": 89800,
+    "monthly_views": 945000,
+    "cpm": 4.0,
+    "videos_per_month": 2,
+    "category": "Commentary",
+    "past_strikes": 0,
+    "size_label": "Mid-tier (10K\u2013100K subs)",
+    "strike_label": "None \u2014 clean record",
+    "strike_severity": "low",
+    "category_note": "Standard YouTube advertiser scrutiny.",
+    "financial": {
+      "revenue_per_video": 1890.0,
+      "limited_ads_revenue": 567.0,
+      "projected_revenue": 567.0,
+      "revenue_at_risk": 1323.0,
+      "annual_impact": 31752.0,
+      "views_per_video": 472500
+    },
+    "strike_escalation": null
+  },
   "youtube": {
-    "title": "RAYE - Intro: Girl Under the Gray Cloud & I Will Overcome [Live at Lanxess Arena Cologne 10-02-2026]",
-    "channel": "Mark G",
-    "url": "https://www.youtube.com/watch?v=4fPFSYVh97I",
-    "duration": 231,
-    "thumbnail": "https://i.ytimg.com/vi/4fPFSYVh97I/maxresdefault.jpg",
-    "_tmpdir": "/var/folders/9m/sb9grr0x2jvg62_d3bk_x0_r0000gn/T/toxc_yt_umcfc738"
+    "title": "Why Mike Israetel Needs To Be STOPPED",
+    "channel": "Anabolic Stick",
+    "url": "https://www.youtube.com/watch?v=50p39zPR7JY&t=3s",
+    "duration": 1101,
+    "thumbnail": "https://i.ytimg.com/vi/50p39zPR7JY/maxresdefault.jpg",
+    "_tmpdir": "/var/folders/9m/sb9grr0x2jvg62_d3bk_x0_r0000gn/T/toxc_yt_dowz6hrn"
   }
 };
 
@@ -1229,14 +3798,14 @@ function scrollToSec(id){
 }
 
 /* ── Score Breakdown ──────────────────────────────────── */
-function renderScoreBreakdown(b, mainColor){
-  function pill(label, val, tip){
+function renderScoreBreakdown(b){
+  function pill(label,val,tip){
     return '<div class="sbb" title="'+tip+'"><div class="sbv" style="color:'+tc(val)+'">'+val.toFixed(2)+'</div><div class="sbl">'+label+'</div></div>';
   }
   return '<div class="sb-breakdown">'
-    +pill('Density', b.density, 'Length-weighted mean toxicity across all sentences (25%)')
-    +pill('Peak',    b.peak,    'Mean of top 5% most toxic sentences (50%)')
-    +pill('Rate',    b.rate,    'Fraction of sentences classified Toxic ≥0.7 (25%)')
+    +pill('Density',b.density,'Length-weighted mean toxicity across all sentences (25%)')
+    +pill('Peak',b.peak,'Mean of top 5% most toxic sentences (50%)')
+    +pill('Rate',b.rate,'Fraction of sentences classified Toxic >=0.7 (25%)')
     +'</div>';
 }
 
@@ -1244,85 +3813,293 @@ function renderScoreBreakdown(b, mainColor){
 function renderSidebar(R){
   const O=R.overall;
   const ovc=vc(O.verdict);
+  const M=R.monetization||{};
+  const rl=M.risk_level||'';
+
+  /* monetization risk widget */
+  let monoHtml='';
+  if(rl){
+    const rpc=rl==='HIGH'?'rp-high':rl==='MEDIUM'?'rp-medium':'rp-low';
+    monoHtml='<div class="sb-mono-risk"><h3>Ad Safety</h3>'
+      +'<div class="mono-risk-row"><span class="risk-pill '+rpc+'">'+rl+'</span></div>'
+      +(M.ad_verdict?'<div class="mono-ad-ver">'+M.ad_verdict+'</div>':'')
+      +'</div>';
+  }
 
   /* dimension mini-bars */
   let dimHtml='';
   const dims=O.dimensions||{};
-  const dimKeys=Object.keys(dims);
-  if(dimKeys.length){
+  if(Object.keys(dims).length){
     const labels={insult:'Insult',obscene:'Obscene',threat:'Threat',identity_attack:'Identity',severe_toxicity:'Severe'};
     const sorted=Object.entries(dims).sort(function(a,b){return b[1]-a[1]});
     dimHtml='<div class="sb-dims"><h3>Dimensions</h3>'+sorted.map(function(e){
       var k=e[0],v=e[1];
-      return '<div class="dim-row">'+
-        '<span class="dim-label">'+(labels[k]||k)+'</span>'+
-        '<div class="dim-track"><span class="dim-fill" style="width:'+(v*100).toFixed(1)+'%;background:'+tc(v)+'"></span></div>'+
-        '<span class="dim-val" style="color:'+tc(v)+'">'+v.toFixed(2)+'</span></div>';
+      return '<div class="dim-row">'
+        +'<span class="dim-label">'+(labels[k]||k)+'</span>'
+        +'<div class="dim-track"><span class="dim-fill" style="width:'+(v*100).toFixed(1)+'%;background:'+tc(v)+'"></span></div>'
+        +'<span class="dim-val" style="color:'+tc(v)+'">'+v.toFixed(2)+'</span></div>';
     }).join('')+'</div>';
   }
 
   /* moment nav */
-  var moments=R.top_toxic.filter(function(s){return s.toxicity>0}).slice(0,5);
-  var momentHtml=moments.map(function(s,i){
-    var idx=s.idx!=null?s.idx:R.sentences.findIndex(function(x){return x.start===s.start&&x.text===s.text});
-    var preview=s.text.length>28?s.text.slice(0,28)+'\u2026':s.text;
-    return '<div class="ml" onclick="scrollToSent('+idx+')" data-midx="'+idx+'">'+
-      '<span class="ml-rank" style="color:'+tc(s.toxicity)+'">#'+(i+1)+'</span>'+
-      '<div class="ml-body"><div class="ml-text">'+preview+'</div>'+
-      '<div class="ml-meta">'+fmt(s.start)+' \u00b7 <span style="color:'+tc(s.toxicity)+'">'+s.toxicity.toFixed(2)+'</span></div></div></div>';
+  const top_toxic=R.top_toxic||[...R.sentences].sort(function(a,b){return b.toxicity-a.toxicity}).slice(0,5);
+  const moments=top_toxic.filter(function(s){return s.toxicity>0}).slice(0,5);
+  const momentHtml=moments.map(function(s,i){
+    const idx=s.idx!=null?s.idx:R.sentences.findIndex(function(x){return x.start===s.start&&x.text===s.text});
+    const preview=s.text.length>28?s.text.slice(0,28)+'\u2026':s.text;
+    return '<div class="ml" onclick="scrollToSent('+idx+')" data-midx="'+idx+'">'
+      +'<span class="ml-rank" style="color:'+tc(s.toxicity)+'">#'+(i+1)+'</span>'
+      +'<div class="ml-body"><div class="ml-text">'+preview+'</div>'
+      +'<div class="ml-meta">'+fmt(s.start)+' \u00b7 <span style="color:'+tc(s.toxicity)+'">'+s.toxicity.toFixed(2)+'</span></div></div></div>';
   }).join('');
 
-  return '<div class="sidebar">'+
-    '<div class="sb-brand"><div><h1>toxc</h1><div class="sb-file" title="'+R.audio+'">'+R.audio+'</div></div>'+
-    '<button class="theme-btn" id="theme-btn" onclick="toggleTheme()" title="Toggle theme">'+SUN+'</button></div>'+
+  const displayName=(R.youtube&&R.youtube.title)?R.youtube.title:R.audio;
 
-    '<div class="sb-score"><div class="big" style="color:'+ovc+'">'+O.toxicity.toFixed(2)+'</div>'+
-    '<div class="verdict" style="color:'+ovc+'">'+O.verdict+'</div>'+
-    (O.score_breakdown ? renderScoreBreakdown(O.score_breakdown, ovc) : '')+
-    '</div>'+
+  return '<div class="sidebar">'
+    +'<div class="sb-brand"><div><h1>toxc</h1><div class="sb-file" title="'+displayName+'">'+displayName+'</div></div>'
+    +'<button class="theme-btn" id="theme-btn" onclick="toggleTheme()" title="Toggle theme">'+SUN+'</button></div>'
 
-    dimHtml+
+    +monoHtml
 
-    '<div class="sb-stats"><h3 class="sb-stats-title" style="grid-column:1/-1">Stats</h3>'+
-    '<div class="sb-stat"><div class="sv" style="color:var(--red)">'+O.toxic_count+'</div><div class="sl">Toxic</div></div>'+
-    '<div class="sb-stat"><div class="sv">'+O.sentence_count+'</div><div class="sl">Sentences</div></div>'+
-    '<div class="sb-stat"><div class="sv" style="color:'+sc(O.sentiment)+'">'+sign(O.sentiment)+'</div><div class="sl">Sentiment</div></div>'+
-    '<div class="sb-stat"><div class="sv" style="color:var(--muted)">'+fmt(R.duration)+'</div><div class="sl">Duration</div></div>'+
-    '</div>'+
+    +'<div class="sb-score"><div class="big" style="color:'+ovc+'">'+O.toxicity.toFixed(2)+'</div>'
+    +'<div class="verdict" style="color:'+ovc+'">'+O.verdict+'</div>'
+    +(O.score_breakdown?renderScoreBreakdown(O.score_breakdown):'')
+    +'</div>'
 
-    '<div class="sb-nav"><h3>Sections</h3>'+
-    '<a class="nav-link active" data-sec="sec-tl" onclick="scrollToSec(\'sec-tl\')">Timeline</a>'+
-    '<a class="nav-link" data-sec="sec-charts" onclick="scrollToSec(\'sec-charts\')">Analysis</a>'+
-    (R.fast?'':'<a class="nav-link" data-sec="sec-hm" onclick="scrollToSec(\'sec-hm\')">Heatmap</a>')+
-    '<a class="nav-link" data-sec="sec-mom" onclick="scrollToSec(\'sec-mom\')">Top Moments</a>'+
-    '<a class="nav-link" data-sec="sec-all" onclick="scrollToSec(\'sec-all\')">All Sentences</a></div>'+
+    +dimHtml
 
-    '<div class="sb-moments"><h3>Top Moments</h3>'+momentHtml+'</div>'+
-  '</div>';
+    +'<div class="sb-stats"><h3 class="sb-stats-title" style="grid-column:1/-1">Stats</h3>'
+    +'<div class="sb-stat"><div class="sv" style="color:var(--red)">'+O.toxic_count+'</div><div class="sl">Toxic</div></div>'
+    +'<div class="sb-stat"><div class="sv">'+O.sentence_count+'</div><div class="sl">Sentences</div></div>'
+    +'<div class="sb-stat"><div class="sv" style="color:'+sc(O.sentiment)+'">'+sign(O.sentiment)+'</div><div class="sl">Sentiment</div></div>'
+    +'<div class="sb-stat"><div class="sv" style="color:var(--muted)">'+fmt(R.duration)+'</div><div class="sl">Duration</div></div>'
+    +'</div>'
+
+    +'<div class="sb-nav"><h3>Sections</h3>'
+    +(R.channel?'<a class="nav-link" data-sec="sec-channel" onclick="scrollToSec(\'sec-channel\')">Channel Profile</a>'  :'')
+    +(R.channel&&R.channel.financial&&R.channel.financial.revenue_per_video?'<a class="nav-link" data-sec="sec-finance" onclick="scrollToSec(\'sec-finance\')">Financial Impact</a>':'')
+    +'<a class="nav-link" data-sec="sec-consequence" onclick="scrollToSec(\'sec-consequence\')">Consequences</a>'
+    +'<a class="nav-link" data-sec="sec-fix" onclick="scrollToSec(\'sec-fix\')">What to Fix</a>'
+    +'<a class="nav-link active" data-sec="sec-tl" onclick="scrollToSec(\'sec-tl\')">Timeline</a>'
+    +'<a class="nav-link" data-sec="sec-charts" onclick="scrollToSec(\'sec-charts\')">Analysis</a>'
+    +(R.fast?'':'<a class="nav-link" data-sec="sec-hm" onclick="scrollToSec(\'sec-hm\')">Heatmap</a>')
+    +'<a class="nav-link" data-sec="sec-mom" onclick="scrollToSec(\'sec-mom\')">Top Moments</a>'
+    +'<a class="nav-link" data-sec="sec-all" onclick="scrollToSec(\'sec-all\')">All Sentences</a></div>'
+
+    +'<div class="sb-moments"><h3>Top Moments</h3>'+momentHtml+'</div>'
+    +'</div>';
+}
+
+/* ── Channel Risk Profile ─────────────────────────────── */
+function renderChannelProfile(R){
+  const C=R.channel;
+  if(!C)return'';
+
+  const strikeCls=C.strike_severity==='high'?'var(--red)':C.strike_severity==='medium'?'var(--yel)':'var(--grn)';
+  const F=C.financial||{};
+
+  let statsHtml='';
+  if(C.subscribers) statsHtml+=`<div class="ch-cell"><div class="cv">${C.subscribers.toLocaleString()}</div><div class="cl">Subscribers</div></div>`;
+  if(C.monthly_views) statsHtml+=`<div class="ch-cell"><div class="cv">${C.monthly_views.toLocaleString()}</div><div class="cl">Monthly views</div></div>`;
+  if(C.cpm) statsHtml+=`<div class="ch-cell"><div class="cv">$${C.cpm.toFixed(2)}${C.cpm_estimated?' <span style="font-size:.55rem;color:var(--muted)">est.</span>':''}</div><div class="cl">Avg CPM</div></div>`;
+  if(F.views_per_video) statsHtml+=`<div class="ch-cell"><div class="cv">${F.views_per_video.toLocaleString()}</div><div class="cl">Views / video</div></div>`;
+
+  const rows=[
+    C.size_label   && ['Channel size',  C.size_label,  'var(--text)'],
+    C.category     && ['Category',      C.category,    'var(--text)'],
+    C.strike_label && ['Strike status', C.strike_label, strikeCls],
+  ].filter(Boolean);
+
+  const rowHtml=rows.map(([k,v,col])=>`<div class="ch-row"><span class="ch-key">${k}</span><span class="ch-val" style="color:${col}">${v}</span></div>`).join('');
+
+  const noteHtml=C.category_note?`<div style="font-size:.75rem;color:var(--text2);margin-top:.5rem">${C.category_note}</div>`:'';
+  const escalHtml=C.strike_escalation?`<div class="escalation-box">⚠ ${C.strike_escalation}</div>`:'';
+
+  return`<div class="section" id="sec-channel">`
+    +`<div class="section-hdr">Channel Risk Profile</div>`
+    +(statsHtml?`<div class="ch-grid">${statsHtml}</div>`:'')
+    +`<div class="recs-card" style="margin-bottom:0">${rowHtml}${noteHtml}</div>`
+    +escalHtml
+    +`</div>`;
+}
+
+/* ── Financial Impact ─────────────────────────────────── */
+function renderFinancialImpact(R){
+  const C=R.channel;
+  if(!C)return'';
+  const F=C.financial;
+  if(!F||!F.revenue_per_video)return'';
+
+  const M=R.monetization||{};
+  const rl=M.risk_level||'LOW';
+  const fmt$=v=>'$'+v.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',');
+
+  // Three-tier scenario overview
+  const tiers=[
+    {label:'Full monetization',    amount:F.revenue_per_video,   note:'where you want to be', active:rl==='LOW'},
+    {label:'Limited ads (yellow)', amount:F.limited_ads_revenue, note:'~70% revenue loss',    active:rl==='MEDIUM'},
+    {label:'Demonetized',          amount:0,                     note:'current risk',          active:rl==='HIGH'},
+  ];
+  const tierHtml=tiers.map(t=>{
+    const amtColor=t.active?(rl==='HIGH'?'var(--red)':rl==='MEDIUM'?'var(--yel)':'var(--grn)'):'var(--text2)';
+    const arrow=t.active?'<span class="ft-arrow">◀</span>':'';
+    return`<div class="fin-tier${t.active?' active':''}">${arrow}`
+      +`<div class="ft-label">${t.label}</div>`
+      +`<div class="ft-amount" style="color:${amtColor}">${fmt$(t.amount)}</div>`
+      +`<div class="ft-note">${t.note}</div>`
+      +`</div>`;
+  }).join('');
+
+  // Labeled rows matching the spec
+  const atRiskColor=F.revenue_at_risk>0?'var(--red)':'var(--grn)';
+  const atRiskLabel=rl==='HIGH'?'demonetized':rl==='MEDIUM'?'limited ads':'full monetization';
+  const rows=[
+    ['Est. revenue / video',       fmt$(F.revenue_per_video),  'var(--text)'],
+    ['At current risk level',      `${fmt$(F.projected_revenue)}  (${atRiskLabel})`, atRiskColor],
+  ];
+  if(F.annual_impact>0) rows.push(['Annual impact if pattern', `-${fmt$(F.annual_impact)}/year`, 'var(--red)']);
+  else rows.push(['Annual impact if pattern', 'None — clean upload', 'var(--grn)']);
+
+  const rowHtml=rows.map(([k,v,col])=>`<div class="fin-row"><span class="fr-label">${k}</span><span class="fr-val" style="color:${col}">${v}</span></div>`).join('');
+
+  return`<div class="section" id="sec-finance">`
+    +`<div class="section-hdr">Financial Impact</div>`
+    +`<div class="fin-scenario">${tierHtml}</div>`
+    +`<div class="fin-rows recs-card" style="margin-bottom:0">${rowHtml}</div>`
+    +`</div>`;
+}
+
+/* ── Consequence Breakdown ────────────────────────────── */
+function renderConsequenceBreakdown(R){
+  const M=R.monetization||{};
+  const cons=M.consequence_breakdown||[];
+  if(!cons.length)return'';
+
+  const icon={high:'\u26a0',medium:'\u00b7',low:'\u2713'};
+  const rowHtml=cons.map(c=>`<div class="cons-row">`
+    +`<span class="cons-label">${c.label}</span>`
+    +`<span class="cons-val cv-${c.severity}">${icon[c.severity]||''} ${c.value}</span>`
+    +`</div>`).join('');
+
+  return`<div class="section" id="sec-consequence">`
+    +`<div class="section-hdr">Consequence Breakdown</div>`
+    +`<div class="recs-card" style="margin-bottom:0">${rowHtml}</div>`
+    +`</div>`;
+}
+
+/* ── What to Fix ─────────────────────────────────────── */
+function renderWhatToFix(R){
+  const M=R.monetization||{};
+  const recs=M.recommendations||[];
+  const rl=M.risk_level||'LOW';
+  const fmt$=v=>'$'+v.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',');
+
+  const items=[];
+
+  // Edit recommendations with savings
+  recs.filter(r=>r.type==='edit').forEach(r=>{
+    const ts=fmt(r.timestamp||0);
+    const savesHtml=r.saves?` <span class="wf-saves">→ saves ~${fmt$(r.saves)}/video</span>`:'';
+    items.push({icon:'→',cls:'wf-edit',html:`Edit ${ts}${savesHtml}`,sub:r.snippet?`\u201c${r.snippet}\u2026\u201d`:''});
+  });
+
+  // First-7-seconds warning
+  if(M.first7_flagged){
+    items.push({icon:'\u26a0',cls:'wf-warn',html:'Move flagged content out of first 7 seconds',sub:''});
+  }
+
+  // Flagged sentences summary
+  const flagged=R.sentences.filter(s=>s.toxicity>=0.4);
+  if(flagged.length>0){
+    const maxTs=Math.max(...flagged.map(s=>s.start));
+    const mins=Math.ceil(maxTs/60);
+    const allEarly=maxTs<120;
+    const suffix=allEarly?` \u2192 all in first ${mins} minute${mins>1?'s':''}`:` \u2192 last at ${fmt(maxTs)}`;
+    items.push({icon:'\u00b7',cls:'wf-info',html:`${flagged.length} sentence${flagged.length>1?'s':''} flagged${suffix}`,sub:''});
+  }
+
+  // Title reminder for YouTube videos at risk
+  if(R.youtube&&R.youtube.title&&rl!=='LOW'){
+    items.push({icon:'\u2192',cls:'wf-edit',html:'Review title for ad safety — <span style="font-family:var(--mono);font-size:.78rem;color:var(--muted)">toxc check "your title"</span>',sub:''});
+  }
+
+  // Pass message when nothing to fix
+  if(!items.length){
+    items.push({icon:'\u2713',cls:'wf-pass',html:'No edits needed — safe to upload',sub:''});
+  }
+
+  const rowHtml=items.map(item=>`<div class="wf-row">`
+    +`<span class="wf-icon ${item.cls}">${item.icon}</span>`
+    +`<div><div class="wf-text">${item.html}</div>`
+    +(item.sub?`<div class="wf-sub">${item.sub}</div>`:'')
+    +`</div></div>`).join('');
+
+  return`<div class="section" id="sec-fix">`
+    +`<div class="section-hdr">What to Fix</div>`
+    +`<div class="recs-card" style="margin-bottom:0">${rowHtml}</div>`
+    +`</div>`;
+}
+
+/* ── Signals & Recommendations ────────────────────────── */
+function renderSignalsRecs(R){
+  const M=R.monetization||{};
+  const signals=M.signals||[];
+  const recs=M.recommendations||[];
+  if(!signals.length&&!recs.length)return'';
+
+  let html='<div class="section">';
+
+  if(signals.length){
+    html+='<div class="section-hdr">Risk Signals</div>'
+      +'<div class="signals-list">'
+      +signals.map(function(s){
+        const cls=s.severity==='high'?'sig-high':s.severity==='medium'?'sig-medium':'sig-low';
+        const ic=s.severity==='high'?'\u26a0':s.severity==='medium'?'\u00b7':'\u2713';
+        return'<span class="sig-row '+cls+'">'+ic+' '+s.label+'</span>';
+      }).join('')
+      +'</div>';
+  }
+
+  if(recs.length){
+    const iconMap={pass:'\u2713',warning:'\u26a0',edit:'\u2192'};
+    const clsMap={pass:'rec-pass',warning:'rec-warning',edit:'rec-edit'};
+    html+='<div class="recs-card">'
+      +recs.map(function(r){
+        return'<div class="rec"><span class="rec-icon '+clsMap[r.type]+'">'+(iconMap[r.type]||'\u00b7')+'</span>'
+          +'<div><div>'+r.text+'</div>'
+          +(r.snippet?'<div class="rec-snippet">\u201c'+r.snippet+'\u201d</div>':'')
+          +'</div></div>';
+      }).join('')
+      +'</div>';
+  }
+
+  return html+'</div>';
 }
 
 /* ── Timeline ─────────────────────────────────────────── */
 function renderTimeline(R){
-  var dur=R.duration||1;
-  var bars=R.sentences.map(function(s,i){
-    var w=((s.end-s.start)/dur)*100;
-    var op=Math.max(.12,Math.min(s.toxicity*1.3,.95));
-    return '<div class="tl-bar" style="width:'+Math.max(w,.25)+'%;background:'+tc(s.toxicity)+';opacity:'+op.toFixed(2)+'" data-idx="'+i+'" onclick="scrollToSent('+i+')"></div>';
+  const dur=R.duration||1;
+  const bars=R.sentences.map(function(s,i){
+    const w=((s.end-s.start)/dur)*100;
+    const op=Math.max(.12,Math.min(s.toxicity*1.3,.95));
+    return'<div class="tl-bar" style="width:'+Math.max(w,.25)+'%;background:'+tc(s.toxicity)+';opacity:'+op.toFixed(2)+'" data-idx="'+i+'" onclick="scrollToSent('+i+')"></div>';
   }).join('');
 
-  var ticks=[0,.25,.5,.75,1];
-  var labels=ticks.map(function(t){return '<span>'+fmt(t*dur)+'</span>'}).join('');
+  const zone7=dur>7?'<div class="tl-zone7" style="width:'+((7/dur)*100).toFixed(2)+'%"></div>':'';
 
-  return '<div class="section" id="sec-tl">'+
-    '<div class="section-hdr">Timeline</div>'+
-    '<div class="tl-wrap">'+
-    '<div class="tl-bars">'+bars+'</div>'+
-    '<div class="tl-labels">'+labels+'</div>'+
-    '<div class="tl-legend">'+
-    '<span><i style="background:var(--red)"></i> Toxic (\u22650.7)</span>'+
-    '<span><i style="background:var(--yel)"></i> Borderline</span>'+
-    '<span><i style="background:var(--grn)"></i> Clean</span></div>'+
-    '</div></div>';
+  const labels=[0,.25,.5,.75,1].map(function(t){return'<span>'+fmt(t*dur)+'</span>'}).join('');
+
+  return'<div class="section" id="sec-tl">'
+    +'<div class="section-hdr">Timeline'+(dur>7?' <span style="font-size:.6rem;opacity:.5;font-family:var(--mono)">\u258f= first 7s</span>':'')+'</div>'
+    +'<div class="tl-wrap">'
+    +'<div class="tl-bars-outer">'+zone7+'<div class="tl-bars">'+bars+'</div></div>'
+    +'<div class="tl-labels">'+labels+'</div>'
+    +'<div class="tl-legend">'
+    +'<span><i style="background:var(--red)"></i> Toxic (\u22650.7)</span>'
+    +'<span><i style="background:var(--yel)"></i> Borderline</span>'
+    +'<span><i style="background:var(--grn)"></i> Clean</span>'
+    +'</div>'
+    +'</div></div>';
 }
 
 /* ── Smooth SVG path (Catmull-Rom) ─────────────────────── */
@@ -1371,14 +4148,14 @@ function renderLineChart(R){
   });
 
   var dots=pts.map(function(p){
-    return '<circle cx="'+p.x.toFixed(1)+'" cy="'+p.ty.toFixed(1)+'" r="2.5" fill="var(--red)" opacity=".6"/>';
+    return'<circle cx="'+p.x.toFixed(1)+'" cy="'+p.ty.toFixed(1)+'" r="2.5" fill="var(--red)" opacity=".6"/>';
   }).join('');
 
   var lg='<g transform="translate('+(W-P.r-160)+','+(P.t-6)+')">'
     +'<line x1="0" y1="0" x2="14" y2="0" stroke="var(--red)" stroke-width="2"/><text x="18" y="3" fill="var(--text2)" font-size="7.5">Toxicity</text>'
     +'<line x1="72" y1="0" x2="86" y2="0" stroke="var(--blu)" stroke-width="1.5" stroke-dasharray="3,2"/><text x="90" y="3" fill="var(--text2)" font-size="7.5">Sentiment</text></g>';
 
-  return '<svg width="100%" viewBox="0 0 '+W+' '+H+'" style="overflow:visible">'+grid+thresh+xTicks
+  return'<svg width="100%" viewBox="0 0 '+W+' '+H+'" style="overflow:visible">'+grid+thresh+xTicks
     +'<path d="'+areaD+'" fill="var(--red)" opacity=".05"/>'
     +'<path d="'+toxD+'" fill="none" stroke="var(--red)" stroke-width="1.8" stroke-linejoin="round"/>'
     +'<path d="'+senD+'" fill="none" stroke="var(--blu)" stroke-width="1.3" stroke-linejoin="round" stroke-dasharray="4,3"/>'
@@ -1390,16 +4167,16 @@ function renderDistribution(R){
   var bk=new Array(10).fill(0);
   R.sentences.forEach(function(s){bk[Math.min(Math.floor(s.toxicity*10),9)]++});
   var mx=Math.max.apply(null,bk)||1;
-  return '<div class="dist">'+bk.map(function(c,i){
+  return'<div class="dist">'+bk.map(function(c,i){
     var h=(c/mx)*100;
     var cl=i>=7?'var(--red)':i>=4?'var(--yel)':'var(--grn)';
-    return '<div class="dist-col"><div class="dist-count">'+(c||'')+'</div><div class="dist-bar-wrap"><div class="dist-bar" style="height:'+h+'%;background:'+cl+'"></div></div><div class="dist-label">'+(i/10).toFixed(1)+'</div></div>';
+    return'<div class="dist-col"><div class="dist-count">'+(c||'')+'</div><div class="dist-bar-wrap"><div class="dist-bar" style="height:'+h+'%;background:'+cl+'"></div></div><div class="dist-label">'+(i/10).toFixed(1)+'</div></div>';
   }).join('')+'</div>';
 }
 
 /* ── Charts Section ───────────────────────────────────── */
 function renderCharts(R){
-  return '<div class="section" id="sec-charts">'
+  return'<div class="section" id="sec-charts">'
     +'<div class="section-hdr">Analysis</div>'
     +'<div class="charts-grid">'
     +'<div class="chart-card"><div class="chart-title">Toxicity &amp; Sentiment Over Time</div>'+renderLineChart(R)+'</div>'
@@ -1418,17 +4195,17 @@ function renderHeatmap(R){
     var cells=R.sentences.map(function(s,i){
       var v=(s.dimensions||{})[dim]||0;
       var op=v<.01?.08:(.15+v*.85);
-      return '<div class="hm-cell" style="background:'+tc(v)+';opacity:'+op.toFixed(2)+'" data-dim="'+dim+'" data-idx="'+i+'" onclick="scrollToSent('+i+')"></div>';
+      return'<div class="hm-cell" style="background:'+tc(v)+';opacity:'+op.toFixed(2)+'" data-dim="'+dim+'" data-idx="'+i+'" onclick="scrollToSent('+i+')"></div>';
     }).join('');
-    return '<div class="hm-row"><div class="hm-label">'+(dl[dim]||dim)+'</div><div class="hm-cells">'+cells+'</div></div>';
+    return'<div class="hm-row"><div class="hm-label">'+(dl[dim]||dim)+'</div><div class="hm-cells">'+cells+'</div></div>';
   }).join('');
 
   var step=Math.max(1,Math.floor(n/6));
   var timeLbls=R.sentences.filter(function(_,i){return i%step===0||i===n-1}).map(function(s){
-    return '<span>'+fmt(s.start)+'</span>';
+    return'<span>'+fmt(s.start)+'</span>';
   }).join('');
 
-  return '<div class="section" id="sec-hm">'
+  return'<div class="section" id="sec-hm">'
     +'<div class="section-hdr">Dimension Heatmap</div>'
     +'<div class="hm-wrap">'+rows
     +'<div class="hm-time-labels">'+timeLbls+'</div>'
@@ -1438,91 +4215,101 @@ function renderHeatmap(R){
 
 /* ── Moment Cards ─────────────────────────────────────── */
 function renderMoments(R){
-  var isFast=R.fast;
-  var cards=R.top_toxic.filter(function(s){return s.toxicity>0}).slice(0,5).map(function(s,i){
-    var idx=s.idx!=null?s.idx:R.sentences.findIndex(function(x){return x.start===s.start&&x.text===s.text});
-    var color=tc(s.toxicity);
-    var chips='';
+  const isFast=R.fast;
+  const top_toxic=R.top_toxic||[...R.sentences].sort(function(a,b){return b.toxicity-a.toxicity}).slice(0,5);
+  const cards=top_toxic.filter(function(s){return s.toxicity>0}).slice(0,5).map(function(s,i){
+    const idx=s.idx!=null?s.idx:R.sentences.findIndex(function(x){return x.start===s.start&&x.text===s.text});
+    const color=tc(s.toxicity);
+    let chips='';
     if(!isFast&&s.dimensions){
-      var dimLabels={insult:'Insult',obscene:'Obscene',threat:'Threat',identity_attack:'Identity',severe_toxicity:'Severe'};
+      const dimLabels={insult:'Insult',obscene:'Obscene',threat:'Threat',identity_attack:'Identity',severe_toxicity:'Severe'};
       chips=Object.entries(s.dimensions)
         .sort(function(a,b){return b[1]-a[1]})
         .map(function(e){
-          var k=e[0],v=e[1];
-          var bg=v>=.7?'var(--red-d)':v>=.4?'var(--yel-d)':'var(--grn-d)';
-          return '<span class="chip" style="background:'+bg+';color:'+tc(v)+'">'+(dimLabels[k]||k)+' '+v.toFixed(2)+'</span>';
+          const k=e[0],v=e[1];
+          const bg=v>=.7?'var(--red-d)':v>=.4?'var(--yel-d)':'var(--grn-d)';
+          return'<span class="chip" style="background:'+bg+';color:'+tc(v)+'">'+(dimLabels[k]||k)+' '+v.toFixed(2)+'</span>';
         }).join('');
     }
-    var bc=s.toxicity>=.7?'var(--red)':s.toxicity>=.4?'var(--yel)':'var(--grn)';
-    return '<div class="mc" onclick="scrollToSent('+idx+')" style="border-left-color:'+bc+'">'+
-      '<div class="mc-rank" style="color:'+color+'">'+(i+1)+'</div>'+
-      '<div class="mc-body">'+
-      '<div class="mc-top">'+
-      '<span class="mc-score" style="color:'+color+'">'+s.toxicity.toFixed(2)+'</span>'+
-      '<span class="mc-time">'+fmt(s.start)+'</span>'+
-      '<span class="mc-verdict" style="color:'+vc(s.verdict)+'">'+s.verdict+'</span></div>'+
-      '<div class="mc-text">'+s.text+'</div>'+
-      (chips?'<div class="mc-chips">'+chips+'</div>':'')+
-      '</div></div>';
+    const bc=s.toxicity>=.7?'var(--red)':s.toxicity>=.4?'var(--yel)':'var(--grn)';
+    return'<div class="mc" onclick="scrollToSent('+idx+')" style="border-left-color:'+bc+'">'
+      +'<div class="mc-rank" style="color:'+color+'">'+(i+1)+'</div>'
+      +'<div class="mc-body">'
+      +'<div class="mc-top">'
+      +'<span class="mc-score" style="color:'+color+'">'+s.toxicity.toFixed(2)+'</span>'
+      +'<span class="mc-time">'+fmt(s.start)+'</span>'
+      +'<span class="mc-verdict" style="color:'+vc(s.verdict)+'">'+s.verdict+'</span></div>'
+      +'<div class="mc-text">'+s.text+'</div>'
+      +(chips?'<div class="mc-chips">'+chips+'</div>':'')
+      +'</div></div>';
   }).join('');
 
-  return '<div class="section" id="sec-mom">'+
-    '<div class="section-hdr">Top Toxic Moments</div>'+
-    '<div class="moments">'+cards+'</div></div>';
+  return'<div class="section" id="sec-mom">'
+    +'<div class="section-hdr">Top Toxic Moments</div>'
+    +'<div class="moments">'+cards+'</div></div>';
 }
 
 /* ── Sentences Table ──────────────────────────────────── */
 function renderSentences(R){
-  var rows=R.sentences.map(function(s,i){
-    var color=tc(s.toxicity);
-    return '<tr id="sent-'+i+'">'+
-      '<td class="col-time" onclick="scrollToSent('+i+')">'+fmt(s.start)+'</td>'+
-      '<td class="col-text">'+s.text+'</td>'+
-      '<td class="col-score"><span style="color:'+color+'">'+s.toxicity.toFixed(2)+'</span>'+mbar(s.toxicity,color)+'</td>'+
-      '<td class="col-sent" style="color:'+sc(s.sentiment)+'">'+sign(s.sentiment)+'</td>'+
-      '<td class="col-verd" style="color:'+vc(s.verdict)+'">'+s.verdict+'</td></tr>';
+  const rows=R.sentences.map(function(s,i){
+    const color=tc(s.toxicity);
+    return'<tr id="sent-'+i+'">'
+      +'<td class="col-time" onclick="scrollToSent('+i+')">'+fmt(s.start)+'</td>'
+      +'<td class="col-text">'+s.text+'</td>'
+      +'<td class="col-score"><span style="color:'+color+'">'+s.toxicity.toFixed(2)+'</span>'+mbar(s.toxicity,color)+'</td>'
+      +'<td class="col-sent" style="color:'+sc(s.sentiment)+'">'+sign(s.sentiment)+'</td>'
+      +'<td class="col-verd" style="color:'+vc(s.verdict)+'">'+s.verdict+'</td></tr>';
   }).join('');
 
-  return '<div class="section" id="sec-all">'+
-    '<div class="section-hdr">All Sentences</div>'+
-    '<table class="s-table"><thead><tr>'+
-    '<th>Time</th><th>Text</th><th>Toxicity</th><th>Sentiment</th><th>Verdict</th>'+
-    '</tr></thead><tbody>'+rows+'</tbody></table></div>';
+  return'<div class="section" id="sec-all">'
+    +'<div class="section-hdr">All Sentences</div>'
+    +'<table class="s-table"><thead><tr>'
+    +'<th>Time</th><th>Text</th><th>Toxicity</th><th>Sentiment</th><th>Verdict</th>'
+    +'</tr></thead><tbody>'+rows+'</tbody></table></div>';
 }
 
 /* ── Main Render ──────────────────────────────────────── */
 function render(){
-  var R=REPORT;
+  const R=REPORT;
   if(!R||!R.sentences||!R.sentences.length){
     document.getElementById('root').innerHTML='<div style="padding:3rem;color:var(--muted)">No data.</div>';
     return;
   }
-  var isFast=R.fast;
-  var modelLabel='whisper-'+R.model+' \u00b7 '+(isFast?'vader':'toxic-bert');
-  document.title='toxc \u00b7 '+R.audio;
+  const isFast=R.fast;
+  const modelLabel='whisper-'+R.model+' \u00b7 '+(isFast?'vader':'toxic-bert');
+  const displayTitle=(R.youtube&&R.youtube.title)?R.youtube.title:R.audio;
+  document.title='toxc \u00b7 '+displayTitle;
 
-  var saved=localStorage.getItem('toxc-theme');
+  const saved=localStorage.getItem('toxc-theme');
   if(saved)document.documentElement.dataset.theme=saved;
 
-  var hdr='<div class="main-hdr"><h1>'+R.audio+'</h1>'+
-    '<div class="meta">'+fmt(R.duration)+' \u00b7 '+R.overall.sentence_count+' sentences \u00b7 '+modelLabel+(R.analyzed_at?' \u00b7 '+R.analyzed_at:'')+'</div></div>';
+  const ytThumb=R.youtube&&R.youtube.thumbnail
+    ?'<img class="yt-thumb" src="'+R.youtube.thumbnail+'" alt="">'
+    :'';
+  const ytChannel=R.youtube&&R.youtube.channel
+    ?'<div class="yt-channel">'+R.youtube.channel+'</div>'
+    :'';
 
-  var sidebar=renderSidebar(R);
-  var main='<div class="main">'+hdr+renderTimeline(R)+renderCharts(R)+renderHeatmap(R)+renderMoments(R)+renderSentences(R)+'</div>';
+  const hdr='<div class="main-hdr"><h1>'+displayTitle+'</h1>'
+    +(ytThumb||ytChannel?ytThumb+ytChannel:'')
+    +'<div class="meta">'+fmt(R.duration)+' \u00b7 '+R.overall.sentence_count+' sentences \u00b7 '+modelLabel+(R.analyzed_at?' \u00b7 '+R.analyzed_at:'')+'</div></div>';
+
+  const sidebar=renderSidebar(R);
+  const main='<div class="main">'+hdr+renderChannelProfile(R)+renderFinancialImpact(R)+renderConsequenceBreakdown(R)+renderWhatToFix(R)+renderSignalsRecs(R)+renderTimeline(R)+renderCharts(R)+renderHeatmap(R)+renderMoments(R)+renderSentences(R)+'</div>';
   document.getElementById('root').innerHTML='<div class="layout">'+sidebar+main+'</div>';
 
   updIcon();
   setupTips(R);
-  setupActive();
+  setupActive(R);
 }
 
 /* ── Tooltips ─────────────────────────────────────────── */
 function setupTips(R){
-  var tip=document.getElementById('tip');
+  const tip=document.getElementById('tip');
   document.querySelectorAll('.tl-bar').forEach(function(el){
     el.addEventListener('mousemove',function(e){
-      var i=+el.dataset.idx,s=R.sentences[i];
-      var preview=s.text.length>80?s.text.slice(0,80)+'\u2026':s.text;
+      const i=+el.dataset.idx,s=R.sentences[i];
+      const preview=s.text.length>80?s.text.slice(0,80)+'\u2026':s.text;
       tip.style.display='block';
       tip.style.left=(e.clientX+14)+'px';
       tip.style.top=(e.clientY-10)+'px';
@@ -1530,15 +4317,15 @@ function setupTips(R){
     });
     el.addEventListener('mouseleave',function(){tip.style.display='none'});
   });
-  var dl={insult:'Insult',obscene:'Obscene',threat:'Threat',identity_attack:'Identity',severe_toxicity:'Severe'};
+  const dl={insult:'Insult',obscene:'Obscene',threat:'Threat',identity_attack:'Identity',severe_toxicity:'Severe'};
   document.querySelectorAll('.hm-cell').forEach(function(el){
     el.addEventListener('mousemove',function(e){
-      var i=+el.dataset.idx,dim=el.dataset.dim,s=R.sentences[i];
-      var v=(s.dimensions||{})[dim]||0;
+      const i=+el.dataset.idx,dim=el.dataset.dim,s=R.sentences[i];
+      const v=(s.dimensions||{})[dim]||0;
       tip.style.display='block';
       tip.style.left=(e.clientX+14)+'px';
       tip.style.top=(e.clientY-10)+'px';
-      var prev=s.text.length>55?s.text.slice(0,55)+'\u2026':s.text;
+      const prev=s.text.length>55?s.text.slice(0,55)+'\u2026':s.text;
       tip.innerHTML='<span style="font-weight:700;color:'+tc(v)+'">'+v.toFixed(3)+'</span> '+(dl[dim]||dim)+'<br><span style="color:var(--muted)">'+fmt(s.start)+' \u2014 '+prev+'</span>';
     });
     el.addEventListener('mouseleave',function(){tip.style.display='none'});
@@ -1546,23 +4333,23 @@ function setupTips(R){
 }
 
 /* ── Active State Tracking ────────────────────────────── */
-function setupActive(){
-  var secs=['sec-tl','sec-charts','sec-hm','sec-mom','sec-all'];
-  var secObs=new IntersectionObserver(function(entries){
+function setupActive(R){
+  const secs=['sec-channel','sec-finance','sec-consequence','sec-fix','sec-tl','sec-charts','sec-hm','sec-mom','sec-all'];
+  const secObs=new IntersectionObserver(function(entries){
     entries.forEach(function(entry){
       if(entry.isIntersecting){
         document.querySelectorAll('.nav-link').forEach(function(el){el.classList.remove('active')});
-        var link=document.querySelector('.nav-link[data-sec="'+entry.target.id+'"]');
+        const link=document.querySelector('.nav-link[data-sec="'+entry.target.id+'"]');
         if(link)link.classList.add('active');
       }
     });
   },{threshold:.15,rootMargin:'-10% 0px -60% 0px'});
-  secs.forEach(function(id){var el=document.getElementById(id);if(el)secObs.observe(el)});
+  secs.forEach(function(id){const el=document.getElementById(id);if(el)secObs.observe(el)});
 
-  var momObs=new IntersectionObserver(function(entries){
+  const momObs=new IntersectionObserver(function(entries){
     entries.forEach(function(entry){
-      var idx=entry.target.id.replace('sent-','');
-      var link=document.querySelector('.ml[data-midx="'+idx+'"]');
+      const idx=entry.target.id.replace('sent-','');
+      const link=document.querySelector('.ml[data-midx="'+idx+'"]');
       if(link){
         if(entry.isIntersecting)link.classList.add('active');
         else link.classList.remove('active');
@@ -1570,9 +4357,10 @@ function setupActive(){
     });
   },{threshold:.5});
 
-  REPORT.top_toxic.forEach(function(s){
-    var idx=s.idx!=null?s.idx:REPORT.sentences.findIndex(function(x){return x.start===s.start&&x.text===s.text});
-    var el=document.getElementById('sent-'+idx);
+  const top_toxic=R.top_toxic||[...R.sentences].sort(function(a,b){return b.toxicity-a.toxicity}).slice(0,5);
+  top_toxic.forEach(function(s){
+    const idx=s.idx!=null?s.idx:R.sentences.findIndex(function(x){return x.start===s.start&&x.text===s.text});
+    const el=document.getElementById('sent-'+idx);
     if(el)momObs.observe(el);
   });
 }

@@ -10,6 +10,17 @@ PROFILE_PATH = Path.home() / ".config" / "toxc" / "profile.json"
 
 CATEGORIES = ["gaming", "commentary", "education", "news", "kids", "other"]
 
+# Typical CPM ranges by niche (mid-point estimates, USD)
+# Sources: publicly reported creator data, Social Blade, various creator disclosures
+CATEGORY_CPM_DEFAULTS = {
+    "kids":       1.5,   # Low — COPPA restricted, limited advertiser pool
+    "gaming":     3.0,   # Low-mid — large audience, lower purchase intent
+    "commentary": 4.0,   # Mid — general audience
+    "other":      3.5,   # Mid baseline
+    "news":       6.0,   # Higher — engaged, affluent audience
+    "education":  8.0,   # High — strong purchase intent, professional audience
+}
+
 # How strict each category is — lower = stricter thresholds for demonetization risk
 CATEGORY_THRESHOLDS = {
     "kids":        {"high_tox": 0.25, "medium_tox": 0.10, "identity": 0.10, "threat": 0.10, "obscene": 0.10, "flagged_rate": 0.03},
@@ -84,24 +95,58 @@ def prompt_for_profile() -> dict:
     if v is not None:
         profile["subscribers"] = v
 
-    v = ask_float("Avg CPM ($)        ›")
-    if v is not None:
-        profile["cpm"] = v
-
     v = ask_int("Videos per month   ›")
     if v is not None:
         profile["videos_per_month"] = v
 
-    cats_str = " / ".join(CATEGORIES)
-    raw = Prompt.ask(f"  Content category   › [{cats_str}]", default="").strip().lower()
-    if raw in CATEGORIES:
-        profile["category"] = raw
-    elif raw:
-        profile["category"] = "other"
+    # Ask category first so we can show a sensible CPM default
+    console.print("  [dim]  Content category options:[/dim]")
+    cat_notes = {
+        "gaming":      "gaming, let's plays, streams",
+        "commentary":  "opinion, reaction, vlog",
+        "education":   "tutorials, explainers, how-to",
+        "news":        "news, current events, politics",
+        "kids":        "children's content (COPPA applies)",
+        "other":       "anything else",
+    }
+    for name, desc in cat_notes.items():
+        console.print(f"  [dim]    {name:<14} {desc}[/dim]")
 
-    raw = Prompt.ask("  Past strikes?      › [None / 1 / 2+]", default="").strip().lower()
-    strike_map = {"none": 0, "0": 0, "": 0, "1": 1, "2": 2, "2+": 2, "3": 2, "multiple": 2}
-    profile["past_strikes"] = strike_map.get(raw, 0)
+    while True:
+        raw = Prompt.ask("  Content category   ›", default="").strip().lower()
+        if not raw:
+            profile["category"] = "other"
+            break
+        if raw in CATEGORIES:
+            profile["category"] = raw
+            break
+        console.print(f"  [yellow]  \"{raw}\" isn't an option. Choose from: {', '.join(CATEGORIES)}[/yellow]")
+
+    # CPM — show a category-based estimate so the user knows what's reasonable
+    cat = profile.get("category", "other")
+    cpm_default = CATEGORY_CPM_DEFAULTS.get(cat, 3.5)
+    console.print(f"  [dim]  Typical CPM for {cat}: ~${cpm_default:.2f}[/dim]")
+    console.print(f"  [dim]  Find yours: YouTube Studio → Analytics → Revenue → CPM[/dim]")
+    v = ask_float(f"Avg CPM ($)        › [Enter for ~${cpm_default:.2f}]")
+    if v is not None:
+        profile["cpm"] = v
+        profile["cpm_estimated"] = False
+    else:
+        profile["cpm"] = cpm_default
+        profile["cpm_estimated"] = True
+
+    # Past strikes — show what each means
+    console.print("  [dim]  Strike status:[/dim]")
+    console.print("  [dim]    none   clean record[/dim]")
+    console.print("  [dim]    1      2-week freeze + demonetization if you get another[/dim]")
+    console.print("  [dim]    2+     one strike from permanent termination[/dim]")
+    while True:
+        raw = Prompt.ask("  Past strikes?      › [none / 1 / 2+]", default="").strip().lower()
+        strike_map = {"none": 0, "0": 0, "": 0, "1": 1, "2": 2, "2+": 2, "3": 2, "multiple": 2}
+        if raw in strike_map:
+            profile["past_strikes"] = strike_map[raw]
+            break
+        console.print(f"  [yellow]  Enter none, 1, or 2+[/yellow]")
 
     console.print()
 

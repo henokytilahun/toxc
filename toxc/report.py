@@ -115,6 +115,15 @@ def aggregate(
         risk_level = data["monetization"]["risk_level"]
         data["channel"] = channel_context(profile, risk_level)
 
+        # Inject per-edit dollar savings, weighted by each sentence's toxicity share
+        revenue_at_risk = data["channel"].get("financial", {}).get("revenue_at_risk", 0)
+        if revenue_at_risk > 0:
+            edit_recs = [r for r in data["monetization"]["recommendations"] if r["type"] == "edit"]
+            total_tox = sum(r.get("toxicity", 0) for r in edit_recs) or 1
+            for rec in edit_recs:
+                share = rec.get("toxicity", 0) / total_tox
+                rec["saves"] = round(revenue_at_risk * share, 2)
+
     return data
 
 
@@ -183,6 +192,45 @@ def monetization_risk(data: dict, profile: dict | None = None) -> dict:
         ad_verdict = "Full monetization likely"
         ad_detail  = "Content appears advertiser-friendly."
 
+    # Consequence breakdown
+    severe = dims.get("severe_toxicity", 0)
+
+    # Monetization status label
+    mono_status = {"HIGH": "NO ADS", "MEDIUM": "LIMITED ADS", "LOW": "FULL MONETIZATION"}[risk_level]
+    mono_severity = {"HIGH": "high", "MEDIUM": "medium", "LOW": "low"}[risk_level]
+
+    # Strike risk — separate from overall content risk
+    strikes = (profile or {}).get("past_strikes", 0)
+    if has_high or (risk_level == "HIGH"):
+        strike_risk, strike_sev = "ELEVATED", "medium"
+    elif risk_level == "MEDIUM" and strikes >= 1:
+        strike_risk, strike_sev = "ELEVATED", "medium"
+    else:
+        strike_risk, strike_sev = "LOW", "low"
+
+    # Age restriction risk
+    if threat >= 0.5 or severe >= 0.4 or identity >= 0.5:
+        age_restriction, age_sev = "LIKELY", "high"
+    elif threat >= 0.2 or severe >= 0.2:
+        age_restriction, age_sev = "POSSIBLE", "medium"
+    else:
+        age_restriction, age_sev = "NONE", "low"
+
+    # Advertiser opt-out risk
+    if risk_level == "HIGH":
+        optout_risk, optout_sev = "HIGH", "high"
+    elif risk_level == "MEDIUM":
+        optout_risk, optout_sev = "MODERATE", "medium"
+    else:
+        optout_risk, optout_sev = "LOW", "low"
+
+    consequence_breakdown = [
+        {"label": "Monetization",          "value": mono_status,   "severity": mono_severity},
+        {"label": "Strike risk",           "value": strike_risk,   "severity": strike_sev},
+        {"label": "Age restriction",       "value": age_restriction, "severity": age_sev},
+        {"label": "Advertiser opt-out risk", "value": optout_risk, "severity": optout_sev},
+    ]
+
     # Actionable recommendations
     recs = []
     if risk_level == "LOW":
@@ -193,18 +241,19 @@ def monetization_risk(data: dict, profile: dict | None = None) -> dict:
     for s in top_edits:
         m, sec = int(s["start"] // 60), int(s["start"] % 60)
         recs.append({"type": "edit", "text": f"Consider editing {m}:{sec:02d} to protect monetization",
-                     "snippet": s["text"][:70], "timestamp": s["start"]})
+                     "snippet": s["text"][:70], "timestamp": s["start"], "toxicity": s["toxicity"]})
     if not recs:
         recs.append({"type": "pass", "text": "No specific edits needed"})
 
     return {
-        "risk_level":       risk_level,
-        "ad_verdict":       ad_verdict,
-        "ad_detail":        ad_detail,
-        "first7_flagged":   bool(first7_hits),
-        "first7_sentences": first7_hits[:3],
-        "signals":          signals,
-        "recommendations":  recs,
+        "risk_level":            risk_level,
+        "ad_verdict":            ad_verdict,
+        "ad_detail":             ad_detail,
+        "first7_flagged":        bool(first7_hits),
+        "first7_sentences":      first7_hits[:3],
+        "signals":               signals,
+        "consequence_breakdown": consequence_breakdown,
+        "recommendations":       recs,
     }
 
 
