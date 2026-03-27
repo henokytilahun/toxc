@@ -1,0 +1,203 @@
+import json
+from pathlib import Path
+
+from rich.console import Console
+from rich.prompt import Prompt
+
+console = Console()
+
+PROFILE_PATH = Path.home() / ".config" / "toxc" / "profile.json"
+
+CATEGORIES = ["gaming", "commentary", "education", "news", "kids", "other"]
+
+# How strict each category is — lower = stricter thresholds for demonetization risk
+CATEGORY_THRESHOLDS = {
+    "kids":        {"high_tox": 0.25, "medium_tox": 0.10, "identity": 0.10, "threat": 0.10, "obscene": 0.10, "flagged_rate": 0.03},
+    "education":   {"high_tox": 0.45, "medium_tox": 0.18, "identity": 0.20, "threat": 0.20, "obscene": 0.20, "flagged_rate": 0.08},
+    "news":        {"high_tox": 0.60, "medium_tox": 0.28, "identity": 0.25, "threat": 0.25, "obscene": 0.30, "flagged_rate": 0.15},
+    "commentary":  {"high_tox": 0.60, "medium_tox": 0.28, "identity": 0.25, "threat": 0.25, "obscene": 0.30, "flagged_rate": 0.15},
+    "gaming":      {"high_tox": 0.68, "medium_tox": 0.32, "identity": 0.28, "threat": 0.28, "obscene": 0.38, "flagged_rate": 0.18},
+    "other":       {"high_tox": 0.60, "medium_tox": 0.28, "identity": 0.25, "threat": 0.25, "obscene": 0.30, "flagged_rate": 0.15},
+}
+
+_SIZE_LABELS = [
+    (1_000_000, "Large (1M+ subs)"),
+    (100_000,   "Mid-large (100K+ subs)"),
+    (10_000,    "Mid-tier (10K–100K subs)"),
+    (1_000,     "Small (1K–10K subs)"),
+    (1,         "Starter (<1K subs)"),
+    (0,         "Unknown"),
+]
+
+_CATEGORY_NOTES = {
+    "Kids":        "Strictest scrutiny — COPPA compliance required. Zero tolerance.",
+    "Education":   "Higher standards — family-friendly content expected.",
+    "Gaming":      "Moderate scrutiny — gaming language has more tolerance.",
+    "Commentary":  "Standard YouTube advertiser scrutiny.",
+    "News":        "Higher tolerance for difficult topics in news context.",
+    "Other":       "Standard YouTube advertiser thresholds.",
+}
+
+
+def load_profile() -> dict | None:
+    if PROFILE_PATH.exists():
+        try:
+            return json.loads(PROFILE_PATH.read_text())
+        except Exception:
+            return None
+    return None
+
+
+def save_profile(profile: dict) -> None:
+    PROFILE_PATH.parent.mkdir(parents=True, exist_ok=True)
+    PROFILE_PATH.write_text(json.dumps(profile, indent=2))
+
+
+def prompt_for_profile() -> dict:
+    """Interactive onboarding — returns a (possibly partial) profile dict."""
+    console.print()
+    console.print("[bold]  Before we analyze, tell us about your channel:[/bold]")
+    console.print("  [dim](Press Enter to skip any field — estimates will be used)[/dim]")
+    console.print()
+
+    profile: dict = {}
+
+    def ask_int(label: str) -> int | None:
+        raw = Prompt.ask(f"  {label}", default="").strip().replace(",", "")
+        try:
+            return int(raw) if raw else None
+        except ValueError:
+            return None
+
+    def ask_float(label: str) -> float | None:
+        raw = Prompt.ask(f"  {label}", default="").strip()
+        try:
+            return float(raw) if raw else None
+        except ValueError:
+            return None
+
+    v = ask_int("Monthly views      ›")
+    if v is not None:
+        profile["monthly_views"] = v
+
+    v = ask_int("Subscribers        ›")
+    if v is not None:
+        profile["subscribers"] = v
+
+    v = ask_float("Avg CPM ($)        ›")
+    if v is not None:
+        profile["cpm"] = v
+
+    v = ask_int("Videos per month   ›")
+    if v is not None:
+        profile["videos_per_month"] = v
+
+    cats_str = " / ".join(CATEGORIES)
+    raw = Prompt.ask(f"  Content category   › [{cats_str}]", default="").strip().lower()
+    if raw in CATEGORIES:
+        profile["category"] = raw
+    elif raw:
+        profile["category"] = "other"
+
+    raw = Prompt.ask("  Past strikes?      › [None / 1 / 2+]", default="").strip().lower()
+    strike_map = {"none": 0, "0": 0, "": 0, "1": 1, "2": 2, "2+": 2, "3": 2, "multiple": 2}
+    profile["past_strikes"] = strike_map.get(raw, 0)
+
+    console.print()
+
+    if profile:
+        save_yn = Prompt.ask("  Save profile for future runs?", choices=["y", "n"], default="y")
+        if save_yn == "y":
+            save_profile(profile)
+            console.print(f"  [dim]Saved → {PROFILE_PATH}[/dim]")
+    console.print()
+
+    return profile
+
+
+def financial_impact(profile: dict, risk_level: str) -> dict:
+    """Compute estimated revenue impact given channel profile and risk level."""
+    monthly_views = profile.get("monthly_views")
+    cpm = profile.get("cpm")
+
+    if not monthly_views or not cpm:
+        return {}
+
+    videos_per_month = profile.get("videos_per_month") or 4
+    views_per_video = monthly_views / videos_per_month
+    revenue_full = views_per_video * (cpm / 1000)
+    revenue_limited = revenue_full * 0.30  # limited ads ≈ 30 % of normal CPM
+
+    if risk_level == "HIGH":
+        projected = 0.0
+        at_risk = revenue_full
+    elif risk_level == "MEDIUM":
+        projected = revenue_limited
+        at_risk = revenue_full - revenue_limited
+    else:
+        projected = revenue_full
+        at_risk = 0.0
+
+    annual_impact = at_risk * videos_per_month * 12
+
+    return {
+        "revenue_per_video":   round(revenue_full, 2),
+        "limited_ads_revenue": round(revenue_limited, 2),
+        "projected_revenue":   round(projected, 2),
+        "revenue_at_risk":     round(at_risk, 2),
+        "annual_impact":       round(annual_impact, 2),
+        "views_per_video":     round(views_per_video),
+    }
+
+
+def channel_context(profile: dict, risk_level: str) -> dict:
+    """Build the channel context dict that gets embedded in the HTML report."""
+    subs = profile.get("subscribers", 0)
+    size_label = next(label for threshold, label in _SIZE_LABELS if subs >= threshold)
+
+    strikes = profile.get("past_strikes", 0)
+    if strikes == 0:
+        strike_label = "None — clean record"
+        strike_severity = "low"
+    elif strikes == 1:
+        strike_label = "1 of 3 — elevated caution advised"
+        strike_severity = "medium"
+    else:
+        strike_label = "2 of 3 — one strike from permanent ban"
+        strike_severity = "high"
+
+    category = profile.get("category", "other").title()
+
+    escalation: str | None = None
+    if strikes == 1 and risk_level in ("HIGH", "MEDIUM"):
+        escalation = (
+            "A second strike means a 2-week upload freeze, loss of all monetization "
+            "during that period, and leaves you one strike from permanent termination."
+        )
+    elif strikes >= 2 and risk_level != "LOW":
+        escalation = (
+            "CRITICAL: Another strike means permanent channel termination. "
+            "Do not upload without editing all flagged moments."
+        )
+
+    return {
+        "name":           profile.get("channel_name", ""),
+        "subscribers":    profile.get("subscribers", 0),
+        "monthly_views":  profile.get("monthly_views", 0),
+        "cpm":            profile.get("cpm", 0),
+        "videos_per_month": profile.get("videos_per_month", 0),
+        "category":       category,
+        "past_strikes":   strikes,
+        "size_label":     size_label,
+        "strike_label":   strike_label,
+        "strike_severity": strike_severity,
+        "category_note":  _CATEGORY_NOTES.get(category, _CATEGORY_NOTES["Other"]),
+        "financial":      financial_impact(profile, risk_level),
+        "strike_escalation": escalation,
+    }
+
+
+def get_thresholds(profile: dict | None) -> dict:
+    """Return monetization risk thresholds for the given channel category."""
+    category = (profile or {}).get("category", "other").lower()
+    return CATEGORY_THRESHOLDS.get(category, CATEGORY_THRESHOLDS["other"])

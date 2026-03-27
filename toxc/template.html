@@ -47,6 +47,16 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .theme-btn{background:none;border:1px solid var(--border);border-radius:6px;width:30px;height:30px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text2);transition:background .15s,color .15s}
 .theme-btn:hover{background:var(--surface-h);color:var(--text)}
 
+/* ── Monetization Risk Widget ──────────────────────────── */
+.sb-mono-risk{padding:.65rem 0;border-bottom:1px solid var(--border)}
+.sb-mono-risk h3{font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.45rem}
+.mono-risk-row{display:flex;align-items:center;gap:.5rem;margin-bottom:.3rem}
+.risk-pill{font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.2rem .55rem;border-radius:4px}
+.rp-high{background:var(--red-d);color:var(--red)}
+.rp-medium{background:var(--yel-d);color:var(--yel)}
+.rp-low{background:var(--grn-d);color:var(--grn)}
+.mono-ad-ver{font-size:.72rem;color:var(--text2)}
+
 .sb-score{text-align:center;padding:1rem 0}
 .sb-score .big{font-size:2.8rem;font-weight:800;font-family:var(--mono);line-height:1;letter-spacing:-.03em}
 .sb-score .verdict{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;margin-top:.4rem;font-weight:600}
@@ -86,16 +96,35 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .main-hdr h1{font-size:1.3rem;font-weight:700}
 .main-hdr .meta{color:var(--text2);font-size:.82rem;margin-top:.15rem}
 .main-hdr{margin-bottom:2rem}
+.yt-thumb{width:100%;border-radius:6px;margin-top:.75rem;display:block;object-fit:cover;aspect-ratio:16/9;max-width:480px}
+.yt-channel{font-size:.78rem;color:var(--muted);margin-top:.25rem}
 
 /* ── Section ───────────────────────────────────────────── */
 .section{margin-bottom:2.5rem}
 .section-hdr{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin-bottom:.7rem;padding-bottom:.35rem;border-bottom:1px solid var(--border)}
 
+/* ── Signals ───────────────────────────────────────────── */
+.signals-list{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1rem}
+.sig-row{display:inline-flex;align-items:center;gap:.35rem;font-size:.75rem;padding:.3rem .6rem;border-radius:5px;border:1px solid}
+.sig-high{background:var(--red-d);border-color:rgba(239,68,68,.22);color:var(--red)}
+.sig-medium{background:var(--yel-d);border-color:rgba(245,158,11,.2);color:var(--yel)}
+.sig-low{background:var(--grn-d);border-color:rgba(34,197,94,.2);color:var(--grn)}
+
+/* ── Recommendations ───────────────────────────────────── */
+.recs-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.9rem 1.1rem;margin-bottom:1.8rem;box-shadow:var(--shadow)}
+.rec{display:flex;gap:.55rem;align-items:flex-start;padding:.35rem 0;font-size:.83rem;line-height:1.45}
+.rec+.rec{border-top:1px solid var(--border)}
+.rec-icon{flex-shrink:0;padding-top:2px}
+.rec-pass{color:var(--grn)}.rec-warning{color:var(--yel)}.rec-edit{color:var(--text2)}
+.rec-snippet{font-size:.75rem;color:var(--muted);margin-top:.12rem;font-style:italic}
+
 /* ── Timeline Bars ─────────────────────────────────────── */
 .tl-wrap{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1rem;box-shadow:var(--shadow)}
+.tl-bars-outer{position:relative}
+.tl-zone7{position:absolute;top:0;left:0;bottom:0;background:var(--red-d);border-right:1px dashed rgba(239,68,68,.35);pointer-events:none;z-index:1;border-radius:3px 0 0 3px}
 .tl-bars{display:flex;gap:1px;height:44px;border-radius:4px;overflow:hidden}
 .tl-bar{min-width:2px;height:100%;cursor:pointer;transition:opacity .12s,transform .12s;position:relative}
-.tl-bar:hover{opacity:1!important;transform:scaleY(1.2);z-index:1}
+.tl-bar:hover{opacity:1!important;transform:scaleY(1.2);z-index:2}
 .tl-labels{display:flex;justify-content:space-between;margin-top:.45rem;font-size:.65rem;font-family:var(--mono);color:var(--muted)}
 .tl-legend{display:flex;gap:1rem;margin-top:.5rem;font-size:.65rem;color:var(--muted)}
 .tl-legend span{display:flex;align-items:center;gap:.3rem}
@@ -164,6 +193,30 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 /* ── Tooltip ───────────────────────────────────────────── */
 .tip{position:fixed;background:var(--surface);border:1px solid var(--border);padding:.45rem .7rem;font-size:.78rem;pointer-events:none;max-width:320px;line-height:1.4;border-radius:6px;display:none;z-index:100;box-shadow:var(--shadow-lg)}
 
+/* ── Channel Risk Profile ──────────────────────────────── */
+.ch-grid{display:grid;grid-template-columns:1fr 1fr;gap:.4rem;margin-bottom:.75rem}
+.ch-cell{background:var(--bg2);border-radius:6px;padding:.45rem .6rem}
+.ch-cell .cv{font-size:.88rem;font-weight:700;font-family:var(--mono)}
+.ch-cell .cl{font-size:.58rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-top:1px}
+.ch-row{display:flex;justify-content:space-between;align-items:baseline;font-size:.82rem;padding:.28rem 0;border-bottom:1px solid var(--border)}
+.ch-row:last-child{border-bottom:none}
+.ch-key{color:var(--text2)}
+.ch-val{font-family:var(--mono);font-weight:600}
+.escalation-box{background:var(--red-d);border:1px solid rgba(239,68,68,.25);border-radius:6px;padding:.7rem .9rem;font-size:.8rem;line-height:1.5;color:var(--red);margin-top:.75rem}
+
+/* ── Financial Impact ──────────────────────────────────── */
+.fin-scenario{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.5rem;margin-bottom:.75rem}
+.fin-tier{background:var(--bg2);border-radius:6px;padding:.65rem .75rem;text-align:center;position:relative}
+.fin-tier.active{background:var(--surface);border:1px solid var(--border);box-shadow:var(--shadow)}
+.fin-tier .ft-label{font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.35rem}
+.fin-tier .ft-amount{font-size:1.2rem;font-weight:800;font-family:var(--mono);line-height:1}
+.fin-tier .ft-note{font-size:.6rem;color:var(--muted);margin-top:.2rem}
+.fin-tier .ft-arrow{position:absolute;top:.5rem;right:.5rem;font-size:.65rem;color:var(--muted)}
+.fin-impact-row{display:flex;align-items:baseline;justify-content:space-between;font-size:.82rem;padding:.3rem 0;border-bottom:1px solid var(--border)}
+.fin-impact-row:last-child{border-bottom:none}
+.fim-label{color:var(--text2)}
+.fim-val{font-family:var(--mono);font-weight:700}
+
 /* ── Responsive ────────────────────────────────────────── */
 @media(max-width:860px){
   .layout{flex-direction:column}
@@ -221,14 +274,14 @@ function scrollToSec(id){
 }
 
 /* ── Score Breakdown ──────────────────────────────────── */
-function renderScoreBreakdown(b, mainColor){
-  function pill(label, val, tip){
+function renderScoreBreakdown(b){
+  function pill(label,val,tip){
     return '<div class="sbb" title="'+tip+'"><div class="sbv" style="color:'+tc(val)+'">'+val.toFixed(2)+'</div><div class="sbl">'+label+'</div></div>';
   }
   return '<div class="sb-breakdown">'
-    +pill('Density', b.density, 'Length-weighted mean toxicity across all sentences (25%)')
-    +pill('Peak',    b.peak,    'Mean of top 5% most toxic sentences (50%)')
-    +pill('Rate',    b.rate,    'Fraction of sentences classified Toxic ≥0.7 (25%)')
+    +pill('Density',b.density,'Length-weighted mean toxicity across all sentences (25%)')
+    +pill('Peak',b.peak,'Mean of top 5% most toxic sentences (50%)')
+    +pill('Rate',b.rate,'Fraction of sentences classified Toxic >=0.7 (25%)')
     +'</div>';
 }
 
@@ -236,85 +289,215 @@ function renderScoreBreakdown(b, mainColor){
 function renderSidebar(R){
   const O=R.overall;
   const ovc=vc(O.verdict);
+  const M=R.monetization||{};
+  const rl=M.risk_level||'';
+
+  /* monetization risk widget */
+  let monoHtml='';
+  if(rl){
+    const rpc=rl==='HIGH'?'rp-high':rl==='MEDIUM'?'rp-medium':'rp-low';
+    monoHtml='<div class="sb-mono-risk"><h3>Ad Safety</h3>'
+      +'<div class="mono-risk-row"><span class="risk-pill '+rpc+'">'+rl+'</span></div>'
+      +(M.ad_verdict?'<div class="mono-ad-ver">'+M.ad_verdict+'</div>':'')
+      +'</div>';
+  }
 
   /* dimension mini-bars */
   let dimHtml='';
   const dims=O.dimensions||{};
-  const dimKeys=Object.keys(dims);
-  if(dimKeys.length){
+  if(Object.keys(dims).length){
     const labels={insult:'Insult',obscene:'Obscene',threat:'Threat',identity_attack:'Identity',severe_toxicity:'Severe'};
     const sorted=Object.entries(dims).sort(function(a,b){return b[1]-a[1]});
     dimHtml='<div class="sb-dims"><h3>Dimensions</h3>'+sorted.map(function(e){
       var k=e[0],v=e[1];
-      return '<div class="dim-row">'+
-        '<span class="dim-label">'+(labels[k]||k)+'</span>'+
-        '<div class="dim-track"><span class="dim-fill" style="width:'+(v*100).toFixed(1)+'%;background:'+tc(v)+'"></span></div>'+
-        '<span class="dim-val" style="color:'+tc(v)+'">'+v.toFixed(2)+'</span></div>';
+      return '<div class="dim-row">'
+        +'<span class="dim-label">'+(labels[k]||k)+'</span>'
+        +'<div class="dim-track"><span class="dim-fill" style="width:'+(v*100).toFixed(1)+'%;background:'+tc(v)+'"></span></div>'
+        +'<span class="dim-val" style="color:'+tc(v)+'">'+v.toFixed(2)+'</span></div>';
     }).join('')+'</div>';
   }
 
   /* moment nav */
-  var moments=R.top_toxic.filter(function(s){return s.toxicity>0}).slice(0,5);
-  var momentHtml=moments.map(function(s,i){
-    var idx=s.idx!=null?s.idx:R.sentences.findIndex(function(x){return x.start===s.start&&x.text===s.text});
-    var preview=s.text.length>28?s.text.slice(0,28)+'\u2026':s.text;
-    return '<div class="ml" onclick="scrollToSent('+idx+')" data-midx="'+idx+'">'+
-      '<span class="ml-rank" style="color:'+tc(s.toxicity)+'">#'+(i+1)+'</span>'+
-      '<div class="ml-body"><div class="ml-text">'+preview+'</div>'+
-      '<div class="ml-meta">'+fmt(s.start)+' \u00b7 <span style="color:'+tc(s.toxicity)+'">'+s.toxicity.toFixed(2)+'</span></div></div></div>';
+  const top_toxic=R.top_toxic||[...R.sentences].sort(function(a,b){return b.toxicity-a.toxicity}).slice(0,5);
+  const moments=top_toxic.filter(function(s){return s.toxicity>0}).slice(0,5);
+  const momentHtml=moments.map(function(s,i){
+    const idx=s.idx!=null?s.idx:R.sentences.findIndex(function(x){return x.start===s.start&&x.text===s.text});
+    const preview=s.text.length>28?s.text.slice(0,28)+'\u2026':s.text;
+    return '<div class="ml" onclick="scrollToSent('+idx+')" data-midx="'+idx+'">'
+      +'<span class="ml-rank" style="color:'+tc(s.toxicity)+'">#'+(i+1)+'</span>'
+      +'<div class="ml-body"><div class="ml-text">'+preview+'</div>'
+      +'<div class="ml-meta">'+fmt(s.start)+' \u00b7 <span style="color:'+tc(s.toxicity)+'">'+s.toxicity.toFixed(2)+'</span></div></div></div>';
   }).join('');
 
-  return '<div class="sidebar">'+
-    '<div class="sb-brand"><div><h1>toxc</h1><div class="sb-file" title="'+R.audio+'">'+R.audio+'</div></div>'+
-    '<button class="theme-btn" id="theme-btn" onclick="toggleTheme()" title="Toggle theme">'+SUN+'</button></div>'+
+  const displayName=(R.youtube&&R.youtube.title)?R.youtube.title:R.audio;
 
-    '<div class="sb-score"><div class="big" style="color:'+ovc+'">'+O.toxicity.toFixed(2)+'</div>'+
-    '<div class="verdict" style="color:'+ovc+'">'+O.verdict+'</div>'+
-    (O.score_breakdown ? renderScoreBreakdown(O.score_breakdown, ovc) : '')+
-    '</div>'+
+  return '<div class="sidebar">'
+    +'<div class="sb-brand"><div><h1>toxc</h1><div class="sb-file" title="'+displayName+'">'+displayName+'</div></div>'
+    +'<button class="theme-btn" id="theme-btn" onclick="toggleTheme()" title="Toggle theme">'+SUN+'</button></div>'
 
-    dimHtml+
+    +monoHtml
 
-    '<div class="sb-stats"><h3 class="sb-stats-title" style="grid-column:1/-1">Stats</h3>'+
-    '<div class="sb-stat"><div class="sv" style="color:var(--red)">'+O.toxic_count+'</div><div class="sl">Toxic</div></div>'+
-    '<div class="sb-stat"><div class="sv">'+O.sentence_count+'</div><div class="sl">Sentences</div></div>'+
-    '<div class="sb-stat"><div class="sv" style="color:'+sc(O.sentiment)+'">'+sign(O.sentiment)+'</div><div class="sl">Sentiment</div></div>'+
-    '<div class="sb-stat"><div class="sv" style="color:var(--muted)">'+fmt(R.duration)+'</div><div class="sl">Duration</div></div>'+
-    '</div>'+
+    +'<div class="sb-score"><div class="big" style="color:'+ovc+'">'+O.toxicity.toFixed(2)+'</div>'
+    +'<div class="verdict" style="color:'+ovc+'">'+O.verdict+'</div>'
+    +(O.score_breakdown?renderScoreBreakdown(O.score_breakdown):'')
+    +'</div>'
 
-    '<div class="sb-nav"><h3>Sections</h3>'+
-    '<a class="nav-link active" data-sec="sec-tl" onclick="scrollToSec(\'sec-tl\')">Timeline</a>'+
-    '<a class="nav-link" data-sec="sec-charts" onclick="scrollToSec(\'sec-charts\')">Analysis</a>'+
-    (R.fast?'':'<a class="nav-link" data-sec="sec-hm" onclick="scrollToSec(\'sec-hm\')">Heatmap</a>')+
-    '<a class="nav-link" data-sec="sec-mom" onclick="scrollToSec(\'sec-mom\')">Top Moments</a>'+
-    '<a class="nav-link" data-sec="sec-all" onclick="scrollToSec(\'sec-all\')">All Sentences</a></div>'+
+    +dimHtml
 
-    '<div class="sb-moments"><h3>Top Moments</h3>'+momentHtml+'</div>'+
-  '</div>';
+    +'<div class="sb-stats"><h3 class="sb-stats-title" style="grid-column:1/-1">Stats</h3>'
+    +'<div class="sb-stat"><div class="sv" style="color:var(--red)">'+O.toxic_count+'</div><div class="sl">Toxic</div></div>'
+    +'<div class="sb-stat"><div class="sv">'+O.sentence_count+'</div><div class="sl">Sentences</div></div>'
+    +'<div class="sb-stat"><div class="sv" style="color:'+sc(O.sentiment)+'">'+sign(O.sentiment)+'</div><div class="sl">Sentiment</div></div>'
+    +'<div class="sb-stat"><div class="sv" style="color:var(--muted)">'+fmt(R.duration)+'</div><div class="sl">Duration</div></div>'
+    +'</div>'
+
+    +'<div class="sb-nav"><h3>Sections</h3>'
+    +(R.channel?'<a class="nav-link" data-sec="sec-channel" onclick="scrollToSec(\'sec-channel\')">Channel Profile</a>'  :'')
+    +(R.channel&&R.channel.financial&&R.channel.financial.revenue_per_video?'<a class="nav-link" data-sec="sec-finance" onclick="scrollToSec(\'sec-finance\')">Financial Impact</a>':'')
+    +'<a class="nav-link active" data-sec="sec-tl" onclick="scrollToSec(\'sec-tl\')">Timeline</a>'
+    +'<a class="nav-link" data-sec="sec-charts" onclick="scrollToSec(\'sec-charts\')">Analysis</a>'
+    +(R.fast?'':'<a class="nav-link" data-sec="sec-hm" onclick="scrollToSec(\'sec-hm\')">Heatmap</a>')
+    +'<a class="nav-link" data-sec="sec-mom" onclick="scrollToSec(\'sec-mom\')">Top Moments</a>'
+    +'<a class="nav-link" data-sec="sec-all" onclick="scrollToSec(\'sec-all\')">All Sentences</a></div>'
+
+    +'<div class="sb-moments"><h3>Top Moments</h3>'+momentHtml+'</div>'
+    +'</div>';
+}
+
+/* ── Channel Risk Profile ─────────────────────────────── */
+function renderChannelProfile(R){
+  const C=R.channel;
+  if(!C)return'';
+
+  const strikeCls=C.strike_severity==='high'?'var(--red)':C.strike_severity==='medium'?'var(--yel)':'var(--grn)';
+  const F=C.financial||{};
+
+  let statsHtml='';
+  if(C.subscribers) statsHtml+=`<div class="ch-cell"><div class="cv">${C.subscribers.toLocaleString()}</div><div class="cl">Subscribers</div></div>`;
+  if(C.monthly_views) statsHtml+=`<div class="ch-cell"><div class="cv">${C.monthly_views.toLocaleString()}</div><div class="cl">Monthly views</div></div>`;
+  if(C.cpm) statsHtml+=`<div class="ch-cell"><div class="cv">$${C.cpm.toFixed(2)}</div><div class="cl">Avg CPM</div></div>`;
+  if(F.views_per_video) statsHtml+=`<div class="ch-cell"><div class="cv">${F.views_per_video.toLocaleString()}</div><div class="cl">Views / video</div></div>`;
+
+  const rows=[
+    C.size_label   && ['Channel size',  C.size_label,  'var(--text)'],
+    C.category     && ['Category',      C.category,    'var(--text)'],
+    C.strike_label && ['Strike status', C.strike_label, strikeCls],
+  ].filter(Boolean);
+
+  const rowHtml=rows.map(([k,v,col])=>`<div class="ch-row"><span class="ch-key">${k}</span><span class="ch-val" style="color:${col}">${v}</span></div>`).join('');
+
+  const noteHtml=C.category_note?`<div style="font-size:.75rem;color:var(--text2);margin-top:.5rem">${C.category_note}</div>`:'';
+  const escalHtml=C.strike_escalation?`<div class="escalation-box">⚠ ${C.strike_escalation}</div>`:'';
+
+  return`<div class="section" id="sec-channel">`
+    +`<div class="section-hdr">Channel Risk Profile</div>`
+    +(statsHtml?`<div class="ch-grid">${statsHtml}</div>`:'')
+    +`<div class="recs-card" style="margin-bottom:0">${rowHtml}${noteHtml}</div>`
+    +escalHtml
+    +`</div>`;
+}
+
+/* ── Financial Impact ─────────────────────────────────── */
+function renderFinancialImpact(R){
+  const C=R.channel;
+  if(!C)return'';
+  const F=C.financial;
+  if(!F||!F.revenue_per_video)return'';
+
+  const M=R.monetization||{};
+  const rl=M.risk_level||'LOW';
+  const fmt$=v=>'$'+v.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',');
+
+  const tiers=[
+    {label:'Full monetization', amount:F.revenue_per_video,   note:'where you want to be',  active:rl==='LOW'},
+    {label:'Limited ads (yellow)', amount:F.limited_ads_revenue, note:'~70% revenue loss',  active:rl==='MEDIUM'},
+    {label:'Demonetized',       amount:0,                     note:'current risk',           active:rl==='HIGH'},
+  ];
+
+  const tierHtml=tiers.map(t=>{
+    const amtColor=t.active?(rl==='HIGH'?'var(--red)':rl==='MEDIUM'?'var(--yel)':'var(--grn)'):'var(--text2)';
+    const arrow=t.active?'<span class="ft-arrow">◀</span>':'';
+    return`<div class="fin-tier${t.active?' active':''}">${arrow}`
+      +`<div class="ft-label">${t.label}</div>`
+      +`<div class="ft-amount" style="color:${amtColor}">${fmt$(t.amount)}</div>`
+      +`<div class="ft-note">${t.note}</div>`
+      +`</div>`;
+  }).join('');
+
+  const rows=[];
+  if(F.revenue_at_risk>0) rows.push(['Revenue at risk / video', fmt$(F.revenue_at_risk), 'var(--red)']);
+  if(F.annual_impact>0)   rows.push(['Annual impact if pattern', '-'+fmt$(F.annual_impact)+'/yr', 'var(--red)']);
+  if(F.revenue_at_risk===0) rows.push(['No revenue at risk', 'Clean upload ✓', 'var(--grn)']);
+
+  const rowHtml=rows.map(([k,v,col])=>`<div class="fin-impact-row"><span class="fim-label">${k}</span><span class="fim-val" style="color:${col}">${v}</span></div>`).join('');
+
+  return`<div class="section" id="sec-finance">`
+    +`<div class="section-hdr">Financial Impact</div>`
+    +`<div class="fin-scenario">${tierHtml}</div>`
+    +(rowHtml?`<div class="recs-card" style="margin-bottom:0">${rowHtml}</div>`:'')
+    +`</div>`;
+}
+
+/* ── Signals & Recommendations ────────────────────────── */
+function renderSignalsRecs(R){
+  const M=R.monetization||{};
+  const signals=M.signals||[];
+  const recs=M.recommendations||[];
+  if(!signals.length&&!recs.length)return'';
+
+  let html='<div class="section">';
+
+  if(signals.length){
+    html+='<div class="section-hdr">Risk Signals</div>'
+      +'<div class="signals-list">'
+      +signals.map(function(s){
+        const cls=s.severity==='high'?'sig-high':s.severity==='medium'?'sig-medium':'sig-low';
+        const ic=s.severity==='high'?'\u26a0':s.severity==='medium'?'\u00b7':'\u2713';
+        return'<span class="sig-row '+cls+'">'+ic+' '+s.label+'</span>';
+      }).join('')
+      +'</div>';
+  }
+
+  if(recs.length){
+    const iconMap={pass:'\u2713',warning:'\u26a0',edit:'\u2192'};
+    const clsMap={pass:'rec-pass',warning:'rec-warning',edit:'rec-edit'};
+    html+='<div class="recs-card">'
+      +recs.map(function(r){
+        return'<div class="rec"><span class="rec-icon '+clsMap[r.type]+'">'+(iconMap[r.type]||'\u00b7')+'</span>'
+          +'<div><div>'+r.text+'</div>'
+          +(r.snippet?'<div class="rec-snippet">\u201c'+r.snippet+'\u201d</div>':'')
+          +'</div></div>';
+      }).join('')
+      +'</div>';
+  }
+
+  return html+'</div>';
 }
 
 /* ── Timeline ─────────────────────────────────────────── */
 function renderTimeline(R){
-  var dur=R.duration||1;
-  var bars=R.sentences.map(function(s,i){
-    var w=((s.end-s.start)/dur)*100;
-    var op=Math.max(.12,Math.min(s.toxicity*1.3,.95));
-    return '<div class="tl-bar" style="width:'+Math.max(w,.25)+'%;background:'+tc(s.toxicity)+';opacity:'+op.toFixed(2)+'" data-idx="'+i+'" onclick="scrollToSent('+i+')"></div>';
+  const dur=R.duration||1;
+  const bars=R.sentences.map(function(s,i){
+    const w=((s.end-s.start)/dur)*100;
+    const op=Math.max(.12,Math.min(s.toxicity*1.3,.95));
+    return'<div class="tl-bar" style="width:'+Math.max(w,.25)+'%;background:'+tc(s.toxicity)+';opacity:'+op.toFixed(2)+'" data-idx="'+i+'" onclick="scrollToSent('+i+')"></div>';
   }).join('');
 
-  var ticks=[0,.25,.5,.75,1];
-  var labels=ticks.map(function(t){return '<span>'+fmt(t*dur)+'</span>'}).join('');
+  const zone7=dur>7?'<div class="tl-zone7" style="width:'+((7/dur)*100).toFixed(2)+'%"></div>':'';
 
-  return '<div class="section" id="sec-tl">'+
-    '<div class="section-hdr">Timeline</div>'+
-    '<div class="tl-wrap">'+
-    '<div class="tl-bars">'+bars+'</div>'+
-    '<div class="tl-labels">'+labels+'</div>'+
-    '<div class="tl-legend">'+
-    '<span><i style="background:var(--red)"></i> Toxic (\u22650.7)</span>'+
-    '<span><i style="background:var(--yel)"></i> Borderline</span>'+
-    '<span><i style="background:var(--grn)"></i> Clean</span></div>'+
-    '</div></div>';
+  const labels=[0,.25,.5,.75,1].map(function(t){return'<span>'+fmt(t*dur)+'</span>'}).join('');
+
+  return'<div class="section" id="sec-tl">'
+    +'<div class="section-hdr">Timeline'+(dur>7?' <span style="font-size:.6rem;opacity:.5;font-family:var(--mono)">\u258f= first 7s</span>':'')+'</div>'
+    +'<div class="tl-wrap">'
+    +'<div class="tl-bars-outer">'+zone7+'<div class="tl-bars">'+bars+'</div></div>'
+    +'<div class="tl-labels">'+labels+'</div>'
+    +'<div class="tl-legend">'
+    +'<span><i style="background:var(--red)"></i> Toxic (\u22650.7)</span>'
+    +'<span><i style="background:var(--yel)"></i> Borderline</span>'
+    +'<span><i style="background:var(--grn)"></i> Clean</span>'
+    +'</div>'
+    +'</div></div>';
 }
 
 /* ── Smooth SVG path (Catmull-Rom) ─────────────────────── */
@@ -363,14 +546,14 @@ function renderLineChart(R){
   });
 
   var dots=pts.map(function(p){
-    return '<circle cx="'+p.x.toFixed(1)+'" cy="'+p.ty.toFixed(1)+'" r="2.5" fill="var(--red)" opacity=".6"/>';
+    return'<circle cx="'+p.x.toFixed(1)+'" cy="'+p.ty.toFixed(1)+'" r="2.5" fill="var(--red)" opacity=".6"/>';
   }).join('');
 
   var lg='<g transform="translate('+(W-P.r-160)+','+(P.t-6)+')">'
     +'<line x1="0" y1="0" x2="14" y2="0" stroke="var(--red)" stroke-width="2"/><text x="18" y="3" fill="var(--text2)" font-size="7.5">Toxicity</text>'
     +'<line x1="72" y1="0" x2="86" y2="0" stroke="var(--blu)" stroke-width="1.5" stroke-dasharray="3,2"/><text x="90" y="3" fill="var(--text2)" font-size="7.5">Sentiment</text></g>';
 
-  return '<svg width="100%" viewBox="0 0 '+W+' '+H+'" style="overflow:visible">'+grid+thresh+xTicks
+  return'<svg width="100%" viewBox="0 0 '+W+' '+H+'" style="overflow:visible">'+grid+thresh+xTicks
     +'<path d="'+areaD+'" fill="var(--red)" opacity=".05"/>'
     +'<path d="'+toxD+'" fill="none" stroke="var(--red)" stroke-width="1.8" stroke-linejoin="round"/>'
     +'<path d="'+senD+'" fill="none" stroke="var(--blu)" stroke-width="1.3" stroke-linejoin="round" stroke-dasharray="4,3"/>'
@@ -382,16 +565,16 @@ function renderDistribution(R){
   var bk=new Array(10).fill(0);
   R.sentences.forEach(function(s){bk[Math.min(Math.floor(s.toxicity*10),9)]++});
   var mx=Math.max.apply(null,bk)||1;
-  return '<div class="dist">'+bk.map(function(c,i){
+  return'<div class="dist">'+bk.map(function(c,i){
     var h=(c/mx)*100;
     var cl=i>=7?'var(--red)':i>=4?'var(--yel)':'var(--grn)';
-    return '<div class="dist-col"><div class="dist-count">'+(c||'')+'</div><div class="dist-bar-wrap"><div class="dist-bar" style="height:'+h+'%;background:'+cl+'"></div></div><div class="dist-label">'+(i/10).toFixed(1)+'</div></div>';
+    return'<div class="dist-col"><div class="dist-count">'+(c||'')+'</div><div class="dist-bar-wrap"><div class="dist-bar" style="height:'+h+'%;background:'+cl+'"></div></div><div class="dist-label">'+(i/10).toFixed(1)+'</div></div>';
   }).join('')+'</div>';
 }
 
 /* ── Charts Section ───────────────────────────────────── */
 function renderCharts(R){
-  return '<div class="section" id="sec-charts">'
+  return'<div class="section" id="sec-charts">'
     +'<div class="section-hdr">Analysis</div>'
     +'<div class="charts-grid">'
     +'<div class="chart-card"><div class="chart-title">Toxicity &amp; Sentiment Over Time</div>'+renderLineChart(R)+'</div>'
@@ -410,17 +593,17 @@ function renderHeatmap(R){
     var cells=R.sentences.map(function(s,i){
       var v=(s.dimensions||{})[dim]||0;
       var op=v<.01?.08:(.15+v*.85);
-      return '<div class="hm-cell" style="background:'+tc(v)+';opacity:'+op.toFixed(2)+'" data-dim="'+dim+'" data-idx="'+i+'" onclick="scrollToSent('+i+')"></div>';
+      return'<div class="hm-cell" style="background:'+tc(v)+';opacity:'+op.toFixed(2)+'" data-dim="'+dim+'" data-idx="'+i+'" onclick="scrollToSent('+i+')"></div>';
     }).join('');
-    return '<div class="hm-row"><div class="hm-label">'+(dl[dim]||dim)+'</div><div class="hm-cells">'+cells+'</div></div>';
+    return'<div class="hm-row"><div class="hm-label">'+(dl[dim]||dim)+'</div><div class="hm-cells">'+cells+'</div></div>';
   }).join('');
 
   var step=Math.max(1,Math.floor(n/6));
   var timeLbls=R.sentences.filter(function(_,i){return i%step===0||i===n-1}).map(function(s){
-    return '<span>'+fmt(s.start)+'</span>';
+    return'<span>'+fmt(s.start)+'</span>';
   }).join('');
 
-  return '<div class="section" id="sec-hm">'
+  return'<div class="section" id="sec-hm">'
     +'<div class="section-hdr">Dimension Heatmap</div>'
     +'<div class="hm-wrap">'+rows
     +'<div class="hm-time-labels">'+timeLbls+'</div>'
@@ -430,91 +613,101 @@ function renderHeatmap(R){
 
 /* ── Moment Cards ─────────────────────────────────────── */
 function renderMoments(R){
-  var isFast=R.fast;
-  var cards=R.top_toxic.filter(function(s){return s.toxicity>0}).slice(0,5).map(function(s,i){
-    var idx=s.idx!=null?s.idx:R.sentences.findIndex(function(x){return x.start===s.start&&x.text===s.text});
-    var color=tc(s.toxicity);
-    var chips='';
+  const isFast=R.fast;
+  const top_toxic=R.top_toxic||[...R.sentences].sort(function(a,b){return b.toxicity-a.toxicity}).slice(0,5);
+  const cards=top_toxic.filter(function(s){return s.toxicity>0}).slice(0,5).map(function(s,i){
+    const idx=s.idx!=null?s.idx:R.sentences.findIndex(function(x){return x.start===s.start&&x.text===s.text});
+    const color=tc(s.toxicity);
+    let chips='';
     if(!isFast&&s.dimensions){
-      var dimLabels={insult:'Insult',obscene:'Obscene',threat:'Threat',identity_attack:'Identity',severe_toxicity:'Severe'};
+      const dimLabels={insult:'Insult',obscene:'Obscene',threat:'Threat',identity_attack:'Identity',severe_toxicity:'Severe'};
       chips=Object.entries(s.dimensions)
         .sort(function(a,b){return b[1]-a[1]})
         .map(function(e){
-          var k=e[0],v=e[1];
-          var bg=v>=.7?'var(--red-d)':v>=.4?'var(--yel-d)':'var(--grn-d)';
-          return '<span class="chip" style="background:'+bg+';color:'+tc(v)+'">'+(dimLabels[k]||k)+' '+v.toFixed(2)+'</span>';
+          const k=e[0],v=e[1];
+          const bg=v>=.7?'var(--red-d)':v>=.4?'var(--yel-d)':'var(--grn-d)';
+          return'<span class="chip" style="background:'+bg+';color:'+tc(v)+'">'+(dimLabels[k]||k)+' '+v.toFixed(2)+'</span>';
         }).join('');
     }
-    var bc=s.toxicity>=.7?'var(--red)':s.toxicity>=.4?'var(--yel)':'var(--grn)';
-    return '<div class="mc" onclick="scrollToSent('+idx+')" style="border-left-color:'+bc+'">'+
-      '<div class="mc-rank" style="color:'+color+'">'+(i+1)+'</div>'+
-      '<div class="mc-body">'+
-      '<div class="mc-top">'+
-      '<span class="mc-score" style="color:'+color+'">'+s.toxicity.toFixed(2)+'</span>'+
-      '<span class="mc-time">'+fmt(s.start)+'</span>'+
-      '<span class="mc-verdict" style="color:'+vc(s.verdict)+'">'+s.verdict+'</span></div>'+
-      '<div class="mc-text">'+s.text+'</div>'+
-      (chips?'<div class="mc-chips">'+chips+'</div>':'')+
-      '</div></div>';
+    const bc=s.toxicity>=.7?'var(--red)':s.toxicity>=.4?'var(--yel)':'var(--grn)';
+    return'<div class="mc" onclick="scrollToSent('+idx+')" style="border-left-color:'+bc+'">'
+      +'<div class="mc-rank" style="color:'+color+'">'+(i+1)+'</div>'
+      +'<div class="mc-body">'
+      +'<div class="mc-top">'
+      +'<span class="mc-score" style="color:'+color+'">'+s.toxicity.toFixed(2)+'</span>'
+      +'<span class="mc-time">'+fmt(s.start)+'</span>'
+      +'<span class="mc-verdict" style="color:'+vc(s.verdict)+'">'+s.verdict+'</span></div>'
+      +'<div class="mc-text">'+s.text+'</div>'
+      +(chips?'<div class="mc-chips">'+chips+'</div>':'')
+      +'</div></div>';
   }).join('');
 
-  return '<div class="section" id="sec-mom">'+
-    '<div class="section-hdr">Top Toxic Moments</div>'+
-    '<div class="moments">'+cards+'</div></div>';
+  return'<div class="section" id="sec-mom">'
+    +'<div class="section-hdr">Top Toxic Moments</div>'
+    +'<div class="moments">'+cards+'</div></div>';
 }
 
 /* ── Sentences Table ──────────────────────────────────── */
 function renderSentences(R){
-  var rows=R.sentences.map(function(s,i){
-    var color=tc(s.toxicity);
-    return '<tr id="sent-'+i+'">'+
-      '<td class="col-time" onclick="scrollToSent('+i+')">'+fmt(s.start)+'</td>'+
-      '<td class="col-text">'+s.text+'</td>'+
-      '<td class="col-score"><span style="color:'+color+'">'+s.toxicity.toFixed(2)+'</span>'+mbar(s.toxicity,color)+'</td>'+
-      '<td class="col-sent" style="color:'+sc(s.sentiment)+'">'+sign(s.sentiment)+'</td>'+
-      '<td class="col-verd" style="color:'+vc(s.verdict)+'">'+s.verdict+'</td></tr>';
+  const rows=R.sentences.map(function(s,i){
+    const color=tc(s.toxicity);
+    return'<tr id="sent-'+i+'">'
+      +'<td class="col-time" onclick="scrollToSent('+i+')">'+fmt(s.start)+'</td>'
+      +'<td class="col-text">'+s.text+'</td>'
+      +'<td class="col-score"><span style="color:'+color+'">'+s.toxicity.toFixed(2)+'</span>'+mbar(s.toxicity,color)+'</td>'
+      +'<td class="col-sent" style="color:'+sc(s.sentiment)+'">'+sign(s.sentiment)+'</td>'
+      +'<td class="col-verd" style="color:'+vc(s.verdict)+'">'+s.verdict+'</td></tr>';
   }).join('');
 
-  return '<div class="section" id="sec-all">'+
-    '<div class="section-hdr">All Sentences</div>'+
-    '<table class="s-table"><thead><tr>'+
-    '<th>Time</th><th>Text</th><th>Toxicity</th><th>Sentiment</th><th>Verdict</th>'+
-    '</tr></thead><tbody>'+rows+'</tbody></table></div>';
+  return'<div class="section" id="sec-all">'
+    +'<div class="section-hdr">All Sentences</div>'
+    +'<table class="s-table"><thead><tr>'
+    +'<th>Time</th><th>Text</th><th>Toxicity</th><th>Sentiment</th><th>Verdict</th>'
+    +'</tr></thead><tbody>'+rows+'</tbody></table></div>';
 }
 
 /* ── Main Render ──────────────────────────────────────── */
 function render(){
-  var R=REPORT;
+  const R=REPORT;
   if(!R||!R.sentences||!R.sentences.length){
     document.getElementById('root').innerHTML='<div style="padding:3rem;color:var(--muted)">No data.</div>';
     return;
   }
-  var isFast=R.fast;
-  var modelLabel='whisper-'+R.model+' \u00b7 '+(isFast?'vader':'toxic-bert');
-  document.title='toxc \u00b7 '+R.audio;
+  const isFast=R.fast;
+  const modelLabel='whisper-'+R.model+' \u00b7 '+(isFast?'vader':'toxic-bert');
+  const displayTitle=(R.youtube&&R.youtube.title)?R.youtube.title:R.audio;
+  document.title='toxc \u00b7 '+displayTitle;
 
-  var saved=localStorage.getItem('toxc-theme');
+  const saved=localStorage.getItem('toxc-theme');
   if(saved)document.documentElement.dataset.theme=saved;
 
-  var hdr='<div class="main-hdr"><h1>'+R.audio+'</h1>'+
-    '<div class="meta">'+fmt(R.duration)+' \u00b7 '+R.overall.sentence_count+' sentences \u00b7 '+modelLabel+(R.analyzed_at?' \u00b7 '+R.analyzed_at:'')+'</div></div>';
+  const ytThumb=R.youtube&&R.youtube.thumbnail
+    ?'<img class="yt-thumb" src="'+R.youtube.thumbnail+'" alt="">'
+    :'';
+  const ytChannel=R.youtube&&R.youtube.channel
+    ?'<div class="yt-channel">'+R.youtube.channel+'</div>'
+    :'';
 
-  var sidebar=renderSidebar(R);
-  var main='<div class="main">'+hdr+renderTimeline(R)+renderCharts(R)+renderHeatmap(R)+renderMoments(R)+renderSentences(R)+'</div>';
+  const hdr='<div class="main-hdr"><h1>'+displayTitle+'</h1>'
+    +(ytThumb||ytChannel?ytThumb+ytChannel:'')
+    +'<div class="meta">'+fmt(R.duration)+' \u00b7 '+R.overall.sentence_count+' sentences \u00b7 '+modelLabel+(R.analyzed_at?' \u00b7 '+R.analyzed_at:'')+'</div></div>';
+
+  const sidebar=renderSidebar(R);
+  const main='<div class="main">'+hdr+renderChannelProfile(R)+renderFinancialImpact(R)+renderSignalsRecs(R)+renderTimeline(R)+renderCharts(R)+renderHeatmap(R)+renderMoments(R)+renderSentences(R)+'</div>';
   document.getElementById('root').innerHTML='<div class="layout">'+sidebar+main+'</div>';
 
   updIcon();
   setupTips(R);
-  setupActive();
+  setupActive(R);
 }
 
 /* ── Tooltips ─────────────────────────────────────────── */
 function setupTips(R){
-  var tip=document.getElementById('tip');
+  const tip=document.getElementById('tip');
   document.querySelectorAll('.tl-bar').forEach(function(el){
     el.addEventListener('mousemove',function(e){
-      var i=+el.dataset.idx,s=R.sentences[i];
-      var preview=s.text.length>80?s.text.slice(0,80)+'\u2026':s.text;
+      const i=+el.dataset.idx,s=R.sentences[i];
+      const preview=s.text.length>80?s.text.slice(0,80)+'\u2026':s.text;
       tip.style.display='block';
       tip.style.left=(e.clientX+14)+'px';
       tip.style.top=(e.clientY-10)+'px';
@@ -522,15 +715,15 @@ function setupTips(R){
     });
     el.addEventListener('mouseleave',function(){tip.style.display='none'});
   });
-  var dl={insult:'Insult',obscene:'Obscene',threat:'Threat',identity_attack:'Identity',severe_toxicity:'Severe'};
+  const dl={insult:'Insult',obscene:'Obscene',threat:'Threat',identity_attack:'Identity',severe_toxicity:'Severe'};
   document.querySelectorAll('.hm-cell').forEach(function(el){
     el.addEventListener('mousemove',function(e){
-      var i=+el.dataset.idx,dim=el.dataset.dim,s=R.sentences[i];
-      var v=(s.dimensions||{})[dim]||0;
+      const i=+el.dataset.idx,dim=el.dataset.dim,s=R.sentences[i];
+      const v=(s.dimensions||{})[dim]||0;
       tip.style.display='block';
       tip.style.left=(e.clientX+14)+'px';
       tip.style.top=(e.clientY-10)+'px';
-      var prev=s.text.length>55?s.text.slice(0,55)+'\u2026':s.text;
+      const prev=s.text.length>55?s.text.slice(0,55)+'\u2026':s.text;
       tip.innerHTML='<span style="font-weight:700;color:'+tc(v)+'">'+v.toFixed(3)+'</span> '+(dl[dim]||dim)+'<br><span style="color:var(--muted)">'+fmt(s.start)+' \u2014 '+prev+'</span>';
     });
     el.addEventListener('mouseleave',function(){tip.style.display='none'});
@@ -538,23 +731,23 @@ function setupTips(R){
 }
 
 /* ── Active State Tracking ────────────────────────────── */
-function setupActive(){
-  var secs=['sec-tl','sec-charts','sec-hm','sec-mom','sec-all'];
-  var secObs=new IntersectionObserver(function(entries){
+function setupActive(R){
+  const secs=['sec-channel','sec-finance','sec-tl','sec-charts','sec-hm','sec-mom','sec-all'];
+  const secObs=new IntersectionObserver(function(entries){
     entries.forEach(function(entry){
       if(entry.isIntersecting){
         document.querySelectorAll('.nav-link').forEach(function(el){el.classList.remove('active')});
-        var link=document.querySelector('.nav-link[data-sec="'+entry.target.id+'"]');
+        const link=document.querySelector('.nav-link[data-sec="'+entry.target.id+'"]');
         if(link)link.classList.add('active');
       }
     });
   },{threshold:.15,rootMargin:'-10% 0px -60% 0px'});
-  secs.forEach(function(id){var el=document.getElementById(id);if(el)secObs.observe(el)});
+  secs.forEach(function(id){const el=document.getElementById(id);if(el)secObs.observe(el)});
 
-  var momObs=new IntersectionObserver(function(entries){
+  const momObs=new IntersectionObserver(function(entries){
     entries.forEach(function(entry){
-      var idx=entry.target.id.replace('sent-','');
-      var link=document.querySelector('.ml[data-midx="'+idx+'"]');
+      const idx=entry.target.id.replace('sent-','');
+      const link=document.querySelector('.ml[data-midx="'+idx+'"]');
       if(link){
         if(entry.isIntersecting)link.classList.add('active');
         else link.classList.remove('active');
@@ -562,9 +755,10 @@ function setupActive(){
     });
   },{threshold:.5});
 
-  REPORT.top_toxic.forEach(function(s){
-    var idx=s.idx!=null?s.idx:REPORT.sentences.findIndex(function(x){return x.start===s.start&&x.text===s.text});
-    var el=document.getElementById('sent-'+idx);
+  const top_toxic=R.top_toxic||[...R.sentences].sort(function(a,b){return b.toxicity-a.toxicity}).slice(0,5);
+  top_toxic.forEach(function(s){
+    const idx=s.idx!=null?s.idx:R.sentences.findIndex(function(x){return x.start===s.start&&x.text===s.text});
+    const el=document.getElementById('sent-'+idx);
     if(el)momObs.observe(el);
   });
 }

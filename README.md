@@ -1,8 +1,8 @@
 # toxc
 
-**CLI toxicity & sentiment analysis for text and audio/video.**
+**CLI toxicity & sentiment analysis for text, audio, and video — with YouTube ad safety scoring.**
 
-Analyze a single string, a batch of lines, or a full audio/video file — toxc transcribes speech with Whisper, scores every sentence for toxicity and sentiment, and renders an interactive HTML report.
+Analyze a string, a batch of lines, or a full video. toxc transcribes speech with Whisper, scores every sentence for toxicity and sentiment, maps the results to YouTube's advertiser-friendliness tiers, and renders an interactive HTML report that tells you exactly what a video will cost you if you upload it now — and the 3 edits that fix it.
 
 ```bash
 pip install toxc
@@ -77,53 +77,93 @@ toxc voice "https://www.youtube.com/watch?v=dQw4w9WgXcQ" --html report.html
 toxc voice "https://youtu.be/dQw4w9WgXcQ" --html report.html
 ```
 
+On first run, toxc will prompt for your channel profile (takes ~30 seconds). This unlocks financial impact estimates in the report. Skip with `--no-profile`.
+
+---
+
+## Channel Profile & Financial Impact
+
+The first time you run `toxc voice`, you'll see:
+
 ```
-╭──────────────────── toxc voice ────────────────────╮
-│                                                    │
-│  ██░░░░░░░░  Toxicity   0.12  CLEAN                │
-│  ████░░░░░░  Sentiment  +0.34  Positive            │
-│                                                    │
-│  Sentences  3 toxic / 24 total                     │
-│                                                    │
-│  Top moments                                       │
-│  1:42  0.84  You are completely wrong about…       │
-│  3:05  0.71  This is utterly ridiculous and…       │
-│                                                    │
-│  Verdict: Clean — voice analysis                   │
-│                                                    │
-╰────────────────────────────────────────────────────╯
-│
-Report saved → report.html
+  Before we analyze, tell us about your channel:
+  (Press Enter to skip any field — estimates will be used)
+
+  Monthly views      › 125000
+  Subscribers        › 48000
+  Avg CPM ($)        › 4.50
+  Videos per month   › 4
+  Content category   › [gaming / commentary / education / news / kids / other]
+  Past strikes?      › [None / 1 / 2+]
+
+  Save profile for future runs? [y/n]: y
 ```
 
-### HTML Report
+This transforms the report from "here's what's toxic" into "here's exactly what this video will cost you":
+
+```
+── Financial Impact ─────────────────────────────────────
+  Full monetization     $562   ← where you want to be
+  Limited ads (yellow)  $168   ← ~70% revenue loss
+  Demonetized             $0   ← current risk ◀
+
+  Revenue at risk / video    $562
+  Annual impact if pattern   -$9,516/yr
+```
+
+**Category-aware thresholds** — a gaming channel saying "idiot" is scored differently from a kids' channel. toxc adjusts its risk thresholds based on your content category.
+
+**Strike escalation warnings** — if you already have a strike, the report flags exactly what a second one means:
+
+```
+⚠ A second strike means a 2-week upload freeze, loss of all monetization during
+  that period, and leaves you one strike from permanent termination.
+```
+
+### Managing your profile
+
+```bash
+toxc config show                          # view saved profile
+toxc config set --cpm 4.50 --subscribers 48000  # update individual fields
+toxc config setup                         # re-run interactive setup
+toxc config reset                         # delete profile
+```
+
+---
+
+## HTML Report
 
 The `--html` flag generates a full interactive dashboard:
 
 | Panel | Contents |
 |---|---|
-| Sticky sidebar | Overall score, dimension mini-bars, stats, section nav, top moment links |
-| Timeline | Proportional bar chart — each segment colored and scaled by toxicity score |
-| Analysis | Dual-axis line chart (toxicity + sentiment over time) · Score distribution histogram |
-| Dimension heatmap | 5 sub-dimensions × every sentence — hover to inspect, click to jump |
-| Top 5 moment cards | Score, timestamp, verdict, dimension chips |
-| All sentences | Full table with toxicity bar, sentiment, and verdict |
+| Sidebar | Ad safety risk badge, toxicity score, score breakdown pills (density / peak / rate), dimension mini-bars, stats, section nav, top moment links |
+| Channel Risk Profile | Channel size, category, strike status, category-specific content note, escalation warning |
+| Financial Impact | Three-tier revenue scenario (full / limited / demonetized) with current risk highlighted, revenue-at-risk and annual impact |
+| Risk Signals | Per-signal badges (hate speech, profanity, density, first-7-seconds) color-coded by severity |
+| Recommendations | Actionable edits with timestamps and snippet previews |
+| Timeline | Proportional bar chart — each segment colored and scaled by toxicity, first-7-seconds zone highlighted |
+| Analysis | Dual-axis Catmull-Rom line chart (toxicity + sentiment) · Score distribution histogram |
+| Dimension Heatmap | 5 sub-dimensions × every sentence — hover to inspect, click to jump |
+| Top 5 Moments | Score, timestamp, verdict, dimension chips |
+| All Sentences | Full table with toxicity bar, sentiment, and verdict |
 
-Light/dark theme toggle (defaults dark), scroll-to-sentence cross-linking from every component.
+Light/dark theme toggle (defaults dark, persists via localStorage), scroll-to-sentence cross-linking from every component.
 
-### Options
+### Voice options
 
 ```
 toxc voice SOURCE [OPTIONS]
 
 Arguments:
-  SOURCE          Audio/video file path OR a YouTube URL
+  SOURCE            Audio/video file path OR a YouTube URL
 
 Options:
-  --html PATH     Save interactive HTML report to path
-  -m, --model     Whisper model: tiny | base | small | medium | large  [default: small]
-  --fast          Use VADER only (skip Detoxify)
-  --json          Output full analysis as JSON
+  --html PATH       Save interactive HTML report to path
+  -m, --model       Whisper model: tiny | base | small | medium | large  [default: small]
+  --fast            Use VADER only (skip Detoxify)
+  --no-profile      Skip channel profile / financial analysis
+  --json            Output full analysis as JSON
 ```
 
 ### Whisper model guide
@@ -158,7 +198,14 @@ VADER  ──► sentiment score per sentence
 Detoxify ► toxicity + 5 sub-dimensions per sentence
     │
     ▼
-Aggregate (length-weighted averages, top moments, peaks by dim)
+Composite toxicity score
+  density (25%) + peak-of-top-5% (50%) + toxic-rate (25%)
+    │
+    ▼
+Monetization risk assessment (category-aware thresholds)
+    │
+    ▼
+Financial impact calculations (if channel profile present)
     │
     ├── Terminal summary (Rich)
     ├── HTML report (interactive dashboard)
@@ -198,26 +245,48 @@ brew install ffmpeg
 apt install ffmpeg
 ```
 
+### Voice dependencies
+
+```bash
+pip install "toxc[voice]"
+# installs: openai-whisper, nltk, yt-dlp
+```
+
 ---
 
-## All Options
+## All Commands
 
 ```
-toxc [TEXT] [OPTIONS]          — analyze text
-toxc voice AUDIO [OPTIONS]     — analyze audio/video
+toxc [TEXT] [OPTIONS]           analyze text
+toxc voice SOURCE [OPTIONS]     analyze audio/video
+toxc check TEXT [OPTIONS]       quick YouTube title/thumbnail safety check
+toxc config show                view saved channel profile
+toxc config set [OPTIONS]       update profile fields
+toxc config setup               run interactive setup
+toxc config reset               delete profile
 
 Text options:
-  TEXT            Text to analyze (or omit for pipe/file input)
-  -f, --file      Path to file with one text per line
-  --json          Output as JSON
-  --fast          Use VADER only (no Detoxify)
+  TEXT              Text to analyze (or omit for pipe/file input)
+  -f, --file        Path to file with one text per line
+  --json            Output as JSON
+  --fast            Use VADER only (no Detoxify)
 
 Voice options:
-  SOURCE          Audio/video file path or YouTube URL
-  --html PATH     Save HTML report
-  -m, --model     Whisper model size  [default: small]
-  --fast          Use VADER only
-  --json          Output full JSON analysis
+  SOURCE            Audio/video file path or YouTube URL
+  --html PATH       Save HTML report
+  -m, --model       Whisper model size  [default: small]
+  --fast            Use VADER only
+  --no-profile      Skip channel profile prompts
+  --json            Output full JSON analysis
+
+Config set options:
+  --channel-name    Channel display name
+  --monthly-views   Monthly view count
+  --subscribers     Subscriber count
+  --cpm             Average CPM in dollars
+  --videos-per-month  Videos published per month
+  --category        gaming / commentary / education / news / kids / other
+  --past-strikes    0, 1, or 2
 ```
 
 ---
@@ -228,6 +297,7 @@ Voice options:
 - [Detoxify](https://github.com/unitaryai/detoxify) — DistilBERT toxicity classifier
 - [VADER](https://github.com/cjhutto/vaderSentiment) — rule-based sentiment
 - [NLTK](https://www.nltk.org/) — sentence segmentation
+- [yt-dlp](https://github.com/yt-dlp/yt-dlp) — YouTube audio download
 - [Typer](https://typer.tiangolo.com/) — CLI framework
 - [Rich](https://github.com/Textualize/rich) — terminal formatting
 
