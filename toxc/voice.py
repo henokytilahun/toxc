@@ -138,10 +138,35 @@ def _diarize(audio_path: str, hf_token: str) -> list[tuple[float, float, str]]:
         )
 
     with _console.status("[dim]Running speaker diarization…[/dim]", spinner="dots"):
-        diarization = pipeline(str(audio_path))
+        import subprocess, torchaudio
+        # Convert to WAV first — torchaudio can't decode webm/opus natively
+        wav_tmp = tempfile.NamedTemporaryFile(suffix=".wav", delete=False)
+        wav_tmp.close()
+        try:
+            subprocess.run(
+                ["ffmpeg", "-i", str(audio_path), "-ar", "16000", "-ac", "1",
+                 "-y", "-loglevel", "error", wav_tmp.name],
+                capture_output=True, check=True,
+            )
+            waveform, sample_rate = torchaudio.load(wav_tmp.name)
+            diarization = pipeline({"waveform": waveform, "sample_rate": sample_rate})
+        finally:
+            if os.path.exists(wav_tmp.name):
+                os.unlink(wav_tmp.name)
+
+    # pyannote v4 wraps the result in DiarizeOutput; unwrap to Annotation
+    if hasattr(diarization, 'itertracks'):
+        annotation = diarization
+    elif hasattr(diarization, 'speaker_diarization'):
+        annotation = diarization.speaker_diarization
+    else:
+        raise TypeError(
+            f"Unexpected diarization result type: {type(diarization).__name__}. "
+            "You may need to update pyannote.audio."
+        )
 
     turns = []
-    for turn, _, speaker in diarization.itertracks(yield_label=True):
+    for turn, _, speaker in annotation.itertracks(yield_label=True):
         turns.append((float(turn.start), float(turn.end), speaker))
     return sorted(turns, key=lambda t: t[0])
 
