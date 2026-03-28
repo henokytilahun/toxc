@@ -1,8 +1,8 @@
 # toxc
 
-**CLI toxicity & sentiment analysis for text, audio, and video — with YouTube ad safety scoring.**
+**CLI toxicity & sentiment analysis for text, audio, and video — with YouTube ad safety scoring and local LLM context verification.**
 
-Analyze a string, a batch of lines, or a full video. toxc transcribes speech with Whisper, scores every sentence for toxicity and sentiment, maps the results to YouTube's advertiser-friendliness tiers, and renders an interactive HTML report that tells you exactly what a video will cost you if you upload it now — and the 3 edits that fix it.
+Analyze a string, a batch of lines, or a full video. toxc transcribes speech with Whisper, scores every sentence for toxicity and sentiment, maps the results to YouTube's advertiser-friendliness tiers, and renders an interactive HTML report that tells you exactly what a video will cost you if you upload it now — and the edits that fix it. An optional second pass through a local Ollama LLM separates genuine harm from hyperbole, sarcasm, and compliments, and generates ad-safe rewrites that preserve your voice.
 
 ```bash
 pip install toxc
@@ -81,6 +81,82 @@ On first run, toxc will prompt for your channel profile (takes ~30 seconds). Thi
 
 ---
 
+## Context Check — Local LLM False-Positive Detection
+
+Detoxify scores sentences in isolation — it has no concept of sarcasm, sports metaphors, hyperbole, or compliments. A fitness creator saying *"he absolutely destroys this argument"* scores 0.71 threat. A gaming channel saying *"you're killing it"* scores 0.68 toxicity. These are false positives, and one bad flag is enough for a creator to distrust the whole tool.
+
+The `--context-check` flag runs a second pass through a local Ollama LLM. Every sentence that scored above 0.35 is sent to the model with one sentence of context on each side. The LLM returns:
+
+- Whether the sentence is **genuine harm** or a **false positive**
+- The **intent** (compliment, hyperbole, sarcasm, criticism, harmful, ...)
+- An **adjusted score** reflecting context
+- A **reason** in plain English
+- Two **ad-safe rewrites** that preserve the creator's voice and energy
+
+```bash
+# Enable context check (requires Ollama running locally)
+toxc voice myvideo.mp4 --html report.html --context-check
+
+# Use a specific model
+toxc voice myvideo.mp4 --html report.html --context-check --ollama-model mistral
+```
+
+**Example terminal output:**
+```
+Context check: using llama3.2 via Ollama
+Checking 7 flagged sentences…
+```
+
+**Example report output (What to Fix section):**
+```
+✓ Context check ran with llama3.2 · 5 false positives cleared of 7 flagged · 2 confirmed genuine
+
+⚠ 2 CONFIRMED FLAGS
+  1:43  "shut the hell up" → saves ~$394/video  harmful
+        Direct insult with profanity — genuine flag
+        Safe:   "come on, be serious"
+        Alt:    "that's genuinely ridiculous"
+
+✓ 5 CLEARED BY CONTEXT CHECK
+  0:23  "you're absolutely killing it"  Compliment
+        Was 0.71 → adjusted 0.05 · Hyperbolic praise — clearly a compliment in context
+  1:12  "this is completely brutal"  Criticism
+        Was 0.58 → adjusted 0.09 · Brutal means incisive/thorough, not violent
+  ...
+```
+
+The adjusted scores flow through to the overall toxicity composite and risk level — so if context check clears most flags, the headline risk level drops accordingly.
+
+### Setting up Ollama
+
+```bash
+# Install Ollama
+brew install ollama          # macOS
+# or: https://ollama.com/download
+
+# Pull a model (llama3.2 recommended, ~2 GB)
+ollama pull llama3.2
+
+# Start the server (runs as a background service after install)
+ollama serve
+
+# Install the Python client
+pip install ollama
+```
+
+If Ollama is not running or not installed, `--context-check` is silently skipped with a warning — the report still generates normally using Detoxify scores.
+
+**Supported models** — any model pulled via `ollama pull`:
+
+| Model | Size | Notes |
+|---|---|---|
+| `llama3.2` | ~2 GB | **Default** — fast, accurate |
+| `mistral` | ~4 GB | Strong reasoning |
+| `gemma2` | ~5 GB | Good at nuance |
+| `phi3` | ~2 GB | Lightweight alternative |
+
+---
+
 ## Channel Profile & Financial Impact
 
 The first time you run `toxc voice`, you'll see:
@@ -123,32 +199,43 @@ This transforms the report from "here's what's toxic" into "here's exactly what 
 ### Managing your profile
 
 ```bash
-toxc config show                          # view saved profile
-toxc config set --cpm 4.50 --subscribers 48000  # update individual fields
-toxc config setup                         # re-run interactive setup
-toxc config reset                         # delete profile
+toxc config show                                 # view saved profile
+toxc config set --cpm 4.50 --subscribers 48000   # update individual fields
+toxc config setup                                # re-run interactive setup
+toxc config reset                                # delete profile
 ```
 
 ---
 
 ## HTML Report
 
-The `--html` flag generates a full interactive dashboard:
+The `--html` flag generates a full interactive dashboard organized into three tabs:
+
+### Overview tab
 
 | Panel | Contents |
 |---|---|
-| Sidebar | Ad safety risk badge, toxicity score, score breakdown pills (density / peak / rate), dimension mini-bars, stats, section nav, top moment links |
+| Hero cards | Toxicity score · Ad safety · Flagged sentences · Avg sentiment · Context cleared (when `--context-check` ran) |
 | Channel Risk Profile | Channel size, category, strike status, category-specific content note, escalation warning |
-| Financial Impact | Three-tier revenue scenario (full / limited / demonetized) with current risk highlighted, revenue-at-risk and annual impact |
-| Risk Signals | Per-signal badges (hate speech, profanity, density, first-7-seconds) color-coded by severity |
-| Recommendations | Actionable edits with timestamps and snippet previews |
-| Timeline | Proportional bar chart — each segment colored and scaled by toxicity, first-7-seconds zone highlighted |
-| Analysis | Dual-axis Catmull-Rom line chart (toxicity + sentiment) · Score distribution histogram |
-| Dimension Heatmap | 5 sub-dimensions × every sentence — hover to inspect, click to jump |
-| Top 5 Moments | Score, timestamp, verdict, dimension chips |
-| All Sentences | Full table with toxicity bar, sentiment, and verdict |
+| Financial Impact | Three-tier revenue scenario (full / limited / demonetized) with current risk highlighted, revenue-at-risk and annual impact rows |
+| Consequence Breakdown | Monetization status · Strike risk · Age restriction · Advertiser opt-out risk — all color-coded by severity |
+| What to Fix | Confirmed genuine flags with intent label, LLM reason, dollar savings, and two copyable rewrites · Cleared false positives with original vs. adjusted score |
+| Risk Signals | Tiered by YouTube policy: Instant demonetization (identity attacks, threats, severe) · Limited ads (profanity) · Pattern signals (density, first-7s) — each with raw score |
 
-Light/dark theme toggle (defaults dark, persists via localStorage), scroll-to-sentence cross-linking from every component.
+### Visualizations tab *(collapsible sections)*
+
+| Panel | Contents |
+|---|---|
+| Timeline | Proportional bar chart — each segment colored and scaled by toxicity, first-7-seconds zone highlighted |
+| Analysis | Dual-axis Catmull-Rom line chart (toxicity + sentiment over time) · Score distribution histogram |
+| Dimension Heatmap | 5 sub-dimensions × every sentence — hover to inspect, click to jump |
+| Top Moments | Adjusted score, raw score, timestamp, verdict, dimension chips, context badge, rewrite preview |
+
+### Transcript tab
+
+Full sentence table with sticky headers, zebra striping, and — when `--context-check` ran — a Context column showing ✓ Cleared (with intent) or ⚠ Confirmed per row, plus before/after score comparison.
+
+Light/dark theme toggle (defaults dark, persists via localStorage), sidebar nav switches tabs and scrolls simultaneously.
 
 ### Voice options
 
@@ -156,14 +243,16 @@ Light/dark theme toggle (defaults dark, persists via localStorage), scroll-to-se
 toxc voice SOURCE [OPTIONS]
 
 Arguments:
-  SOURCE            Audio/video file path OR a YouTube URL
+  SOURCE              Audio/video file path OR a YouTube URL
 
 Options:
-  --html PATH       Save interactive HTML report to path
-  -m, --model       Whisper model: tiny | base | small | medium | large  [default: small]
-  --fast            Use VADER only (skip Detoxify)
-  --no-profile      Skip channel profile / financial analysis
-  --json            Output full analysis as JSON
+  --html PATH         Save interactive HTML report to path
+  -m, --model         Whisper model: tiny | base | small | medium | large  [default: small]
+  --fast              Use VADER only (skip Detoxify)
+  --no-profile        Skip channel profile prompts
+  --context-check     Run local LLM (Ollama) to verify flagged sentences and generate safe rewrites
+  --ollama-model      Ollama model to use  [default: llama3.2]
+  --json              Output full analysis as JSON
 ```
 
 ### Whisper model guide
@@ -194,21 +283,31 @@ Whisper (transcription + word timestamps)
 NLTK sentence segmentation → timed sentence list
     │
     ▼
-VADER  ──► sentiment score per sentence
-Detoxify ► toxicity + 5 sub-dimensions per sentence
+VADER    ──► sentiment score per sentence
+Detoxify ──► toxicity + 5 sub-dimensions per sentence
     │
     ▼
-Composite toxicity score
+Pass 2 (optional, --context-check)
+Ollama LLM ──► genuine harm vs. false positive per flagged sentence
+             ├─ intent classification (compliment / hyperbole / harmful / ...)
+             ├─ adjusted toxicity score
+             └─ two ad-safe rewrites preserving creator voice
+    │
+    ▼
+Composite toxicity score (using adjusted scores when available)
   density (25%) + peak-of-top-5% (50%) + toxic-rate (25%)
     │
     ▼
 Monetization risk assessment (category-aware thresholds)
+  Tier 1: identity attacks / threats / severe → instant demonetization
+  Tier 2: profanity → limited ads (yellow icon)
+  Tier 3: density pattern / first-7s / category
     │
     ▼
 Financial impact calculations (if channel profile present)
     │
     ├── Terminal summary (Rich)
-    ├── HTML report (interactive dashboard)
+    ├── HTML report (tabbed interactive dashboard)
     └── JSON (--json flag)
 ```
 
@@ -219,6 +318,7 @@ Financial impact calculations (if channel profile present)
 | [OpenAI Whisper](https://github.com/openai/whisper) | Speech-to-text with word timestamps | Depends on model size |
 | [VADER](https://github.com/cjhutto/vaderSentiment) | Sentiment scoring | Instant, offline |
 | [Detoxify](https://github.com/unitaryai/detoxify) | Toxicity + 5 sub-dimensions | ~1s first run (downloads DistilBERT) |
+| [Ollama](https://ollama.com) *(optional)* | Contextual false-positive detection + rewrites | ~1–3s/sentence locally |
 
 **Toxicity dimensions:** `insult` · `obscene` · `threat` · `identity_attack` · `severe_toxicity`
 
@@ -252,6 +352,14 @@ pip install "toxc[voice]"
 # installs: openai-whisper, nltk, yt-dlp
 ```
 
+### Context check dependencies *(optional)*
+
+```bash
+pip install ollama
+brew install ollama   # or https://ollama.com/download
+ollama pull llama3.2
+```
+
 ---
 
 ## All Commands
@@ -266,27 +374,29 @@ toxc config setup               run interactive setup
 toxc config reset               delete profile
 
 Text options:
-  TEXT              Text to analyze (or omit for pipe/file input)
-  -f, --file        Path to file with one text per line
-  --json            Output as JSON
-  --fast            Use VADER only (no Detoxify)
+  TEXT                Text to analyze (or omit for pipe/file input)
+  -f, --file          Path to file with one text per line
+  --json              Output as JSON
+  --fast              Use VADER only (no Detoxify)
 
 Voice options:
-  SOURCE            Audio/video file path or YouTube URL
-  --html PATH       Save HTML report
-  -m, --model       Whisper model size  [default: small]
-  --fast            Use VADER only
-  --no-profile      Skip channel profile prompts
-  --json            Output full JSON analysis
+  SOURCE              Audio/video file path or YouTube URL
+  --html PATH         Save HTML report
+  -m, --model         Whisper model size  [default: small]
+  --fast              Use VADER only
+  --no-profile        Skip channel profile prompts
+  --context-check     Verify flagged sentences with local Ollama LLM
+  --ollama-model      Ollama model to use  [default: llama3.2]
+  --json              Output full JSON analysis
 
 Config set options:
-  --channel-name    Channel display name
-  --monthly-views   Monthly view count
-  --subscribers     Subscriber count
-  --cpm             Average CPM in dollars
+  --channel-name      Channel display name
+  --monthly-views     Monthly view count
+  --subscribers       Subscriber count
+  --cpm               Average CPM in dollars
   --videos-per-month  Videos published per month
-  --category        gaming / commentary / education / news / kids / other
-  --past-strikes    0, 1, or 2
+  --category          gaming / commentary / education / news / kids / other
+  --past-strikes      0, 1, or 2
 ```
 
 ---
@@ -298,6 +408,7 @@ Config set options:
 - [VADER](https://github.com/cjhutto/vaderSentiment) — rule-based sentiment
 - [NLTK](https://www.nltk.org/) — sentence segmentation
 - [yt-dlp](https://github.com/yt-dlp/yt-dlp) — YouTube audio download
+- [Ollama](https://ollama.com) — local LLM inference for context checking *(optional)*
 - [Typer](https://typer.tiangolo.com/) — CLI framework
 - [Rich](https://github.com/Textualize/rich) — terminal formatting
 

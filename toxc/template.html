@@ -205,6 +205,21 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .wf-saves{font-family:var(--mono);font-weight:700;color:var(--grn)}
 .wf-sub{font-size:.75rem;color:var(--muted);margin-top:.1rem;font-style:italic}
 
+/* ── Context Check badges ──────────────────────────────── */
+.cc-cleared{display:inline-flex;align-items:center;gap:.28rem;font-size:.62rem;font-weight:600;padding:.15rem .45rem;border-radius:4px;background:var(--grn-d);color:var(--grn);border:1px solid rgba(34,197,94,.2)}
+.cc-confirmed{display:inline-flex;align-items:center;gap:.28rem;font-size:.62rem;font-weight:600;padding:.15rem .45rem;border-radius:4px;background:var(--red-d);color:var(--red);border:1px solid rgba(239,68,68,.22)}
+.cc-intent{font-size:.62rem;color:var(--muted);margin-left:.3rem;text-transform:capitalize}
+.rewrite-block{margin-top:.6rem;border-top:1px solid var(--border);padding-top:.6rem;display:flex;flex-direction:column;gap:.4rem}
+.rewrite-row{display:flex;align-items:baseline;gap:.5rem;font-size:.8rem}
+.rewrite-label{font-size:.58rem;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);min-width:52px;flex-shrink:0}
+.rewrite-text{color:var(--text);line-height:1.4;font-style:italic}
+.rewrite-copy{background:none;border:1px solid var(--border);border-radius:4px;padding:.1rem .4rem;font-size:.6rem;color:var(--text2);cursor:pointer;transition:background .12s,color .12s;flex-shrink:0}
+.rewrite-copy:hover{background:var(--surface-h);color:var(--text)}
+.wf-section-lbl{font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);padding:.45rem 0 .25rem;margin-top:.3rem;border-top:1px solid var(--border)}
+.wf-section-lbl:first-child{border-top:none;margin-top:0}
+.cc-summary-bar{display:flex;align-items:center;gap:.6rem;background:var(--grn-d);border:1px solid rgba(34,197,94,.2);border-radius:6px;padding:.5rem .75rem;margin-bottom:.9rem;font-size:.78rem;color:var(--grn)}
+.cc-summary-bar strong{font-family:var(--mono);font-weight:800}
+
 /* ── Highlight flash ───────────────────────────────────── */
 @keyframes hl-flash{0%{background:var(--blu-d)}100%{background:transparent}}
 .sent-hl{animation:hl-flash 2s ease-out}
@@ -386,11 +401,21 @@ function renderHero(R){
   function card(ic,val,valColor,label,sub){
     return`<div class="hero-card"><div class="hero-ic">${ic}</div><div class="hero-val" style="color:${valColor}">${val}</div><div class="hero-label">${label}</div>${sub?`<div class="hero-sub">${sub}</div>`:''}</div>`;
   }
+  const CC=R.context_check||{};
+  const hasCc=CC.ran&&CC.checked>0;
+  const CC_IC='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>';
+
+  // Dynamic grid: 4 cards normally, 5 when context check ran
+  const cols=hasCc?5:4;
   let cards=card(SCORE_IC,O.toxicity.toFixed(2),vc(O.verdict),'Toxicity Score',O.verdict);
   if(rl)cards+=card(AD_IC,rl,rlColor,'Ad Safety',M.ad_verdict||'');
   cards+=card(FLAG_IC,String(flaggedCount),flaggedCount>0?'var(--red)':'var(--grn)','Flagged Sentences',flaggedPct+'% of total');
   cards+=card(SENT_IC,sign(O.sentiment),sc(O.sentiment),'Avg Sentiment',O.sentiment>0.05?'Positive':O.sentiment<-0.05?'Negative':'Neutral');
-  return`<div class="hero-cards">${cards}</div>`;
+  if(hasCc){
+    const clearedColor=CC.cleared>0?'var(--grn)':'var(--text2)';
+    cards+=card(CC_IC,`${CC.cleared}/${CC.checked}`,clearedColor,'Context Cleared',`${CC.confirmed} genuine · ${CC.cleared} false pos`);
+  }
+  return`<div class="hero-cards" style="grid-template-columns:repeat(${cols},1fr)">${cards}</div>`;
 }
 
 /* ── Sidebar ──────────────────────────────────────────── */
@@ -577,51 +602,111 @@ function renderWhatToFix(R){
   const M=R.monetization||{};
   const recs=M.recommendations||[];
   const rl=M.risk_level||'LOW';
+  const CC=R.context_check||{};
+  const hasCc=CC.ran;
   const fmt$=v=>'$'+v.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',');
 
-  const items=[];
+  function copyBtn(text){
+    const safe=text.replace(/'/g,"\\'");
+    return`<button class="rewrite-copy" onclick="navigator.clipboard.writeText('${safe}').then(()=>{this.textContent='✓';setTimeout(()=>this.textContent='Copy',1200)})">Copy</button>`;
+  }
 
-  // Edit recommendations with savings
-  recs.filter(r=>r.type==='edit').forEach(r=>{
+  function rewriteBlock(r){
+    if(!r.safe_rewrite&&!r.alt_rewrite)return'';
+    let html='<div class="rewrite-block">';
+    if(r.safe_rewrite) html+=`<div class="rewrite-row"><span class="rewrite-label">Safe</span><span class="rewrite-text">\u201c${r.safe_rewrite}\u201d</span>${copyBtn(r.safe_rewrite)}</div>`;
+    if(r.alt_rewrite)  html+=`<div class="rewrite-row"><span class="rewrite-label">Alt</span><span class="rewrite-text">\u201c${r.alt_rewrite}\u201d</span>${copyBtn(r.alt_rewrite)}</div>`;
+    html+='</div>';
+    return html;
+  }
+
+  let html='';
+
+  // ── Context-check summary bar ──────────────────────────
+  if(hasCc&&CC.checked>0){
+    const net=CC.cleared;
+    html+=`<div class="cc-summary-bar">\u2713 Context check ran with ${CC.model} \u00b7 `
+      +`<strong>${CC.cleared}</strong> false positive${CC.cleared!==1?'s':''} cleared of ${CC.checked} flagged`
+      +(CC.confirmed?` \u00b7 <strong style="color:var(--red)">${CC.confirmed}</strong> confirmed genuine`:'')
+      +'</div>';
+  }
+
+  // ── Confirmed genuine flags (show rewrites when available) ─
+  const editRecs=recs.filter(r=>r.type==='edit');
+  let hasConfirmed=false;
+  let confirmedHtml='';
+
+  if(hasCc) confirmedHtml+=`<div class="wf-section-lbl">\u26a0 ${editRecs.length} confirmed flag${editRecs.length!==1?'s':''}</div>`;
+
+  editRecs.forEach(r=>{
+    hasConfirmed=true;
     const ts=fmt(r.timestamp||0);
-    const savesHtml=r.saves?` <span class="wf-saves">→ saves ~${fmt$(r.saves)}/video</span>`:'';
-    items.push({icon:'→',cls:'wf-edit',html:`Edit ${ts}${savesHtml}`,sub:r.snippet?`\u201c${r.snippet}\u2026\u201d`:''});
+    const savesHtml=r.saves?` <span class="wf-saves">\u2192 saves ~${fmt$(r.saves)}/video</span>`:'';
+    const intentBadge=r.intent?`<span class="cc-intent">${r.intent}</span>`:'';
+    const reasonHtml=r.reason?`<div class="wf-sub">${r.reason}</div>`:'';
+    const snippetHtml=(!r.reason&&r.snippet)?`<div class="wf-sub">\u201c${r.snippet}\u2026\u201d</div>`:'';
+    confirmedHtml+=`<div class="wf-row">`
+      +`<span class="wf-icon wf-warn">\u26a0</span>`
+      +`<div><div class="wf-text">Edit ${ts}${savesHtml}${intentBadge}</div>`
+      +reasonHtml+snippetHtml
+      +rewriteBlock(r)
+      +'</div></div>';
   });
 
   // First-7-seconds warning
   if(M.first7_flagged){
-    items.push({icon:'\u26a0',cls:'wf-warn',html:'Move flagged content out of first 7 seconds',sub:''});
+    hasConfirmed=true;
+    confirmedHtml+=`<div class="wf-row"><span class="wf-icon wf-warn">\u26a0</span>`
+      +`<div><div class="wf-text">Move flagged content out of first 7 seconds</div></div></div>`;
   }
 
-  // Flagged sentences summary
-  const flagged=R.sentences.filter(s=>s.toxicity>=0.4);
-  if(flagged.length>0){
-    const maxTs=Math.max(...flagged.map(s=>s.start));
-    const mins=Math.ceil(maxTs/60);
-    const allEarly=maxTs<120;
-    const suffix=allEarly?` \u2192 all in first ${mins} minute${mins>1?'s':''}`:` \u2192 last at ${fmt(maxTs)}`;
-    items.push({icon:'\u00b7',cls:'wf-info',html:`${flagged.length} sentence${flagged.length>1?'s':''} flagged${suffix}`,sub:''});
+  html+=confirmedHtml;
+
+  // ── Cleared false positives (collapsed, informational) ─
+  const cleared=R.sentences.filter(s=>{
+    const cc=s.context_check;
+    return cc&&!cc.error&&cc.genuine_harm===false;
+  });
+  if(cleared.length){
+    html+=`<div class="wf-section-lbl">\u2713 ${cleared.length} cleared by context check</div>`;
+    cleared.forEach(s=>{
+      const cc=s.context_check;
+      html+=`<div class="wf-row">`
+        +`<span class="wf-icon wf-pass">\u2713</span>`
+        +`<div><div class="wf-text" style="color:var(--text2)">${fmt(s.start)} \u00b7 \u201c${s.text.slice(0,55)}\u2026\u201d`
+        +`<span class="cc-intent">${cc.intent||''}</span></div>`
+        +`<div class="wf-sub">Was ${s.toxicity.toFixed(2)} \u2192 adjusted ${cc.adjusted_score.toFixed(2)} \u00b7 ${cc.reason||''}</div>`
+        +'</div></div>';
+    });
   }
 
-  // Title reminder for YouTube videos at risk
+  // ── Flagged sentences summary (no context check) ─
+  if(!hasCc){
+    const flagged=R.sentences.filter(s=>s.toxicity>=0.4);
+    if(flagged.length>0){
+      const maxTs=Math.max(...flagged.map(s=>s.start));
+      const mins=Math.ceil(maxTs/60);
+      const suffix=maxTs<120?` \u2192 all in first ${mins} minute${mins>1?'s':''}`:` \u2192 last at ${fmt(maxTs)}`;
+      html+=`<div class="wf-row"><span class="wf-icon wf-info">\u00b7</span>`
+        +`<div><div class="wf-text">${flagged.length} sentence${flagged.length>1?'s':''} flagged${suffix}</div></div></div>`;
+    }
+  }
+
+  // ── Title reminder ─
   if(R.youtube&&R.youtube.title&&rl!=='LOW'){
-    items.push({icon:'\u2192',cls:'wf-edit',html:'Review title for ad safety — <span style="font-family:var(--mono);font-size:.78rem;color:var(--muted)">toxc check "your title"</span>',sub:''});
+    html+=`<div class="wf-row"><span class="wf-icon wf-edit">\u2192</span>`
+      +`<div><div class="wf-text">Review title for ad safety \u2014 <span style="font-family:var(--mono);font-size:.78rem;color:var(--muted)">toxc check "your title"</span></div></div></div>`;
   }
 
-  // Pass message when nothing to fix
-  if(!items.length){
-    items.push({icon:'\u2713',cls:'wf-pass',html:'No edits needed — safe to upload',sub:''});
+  // ── Pass message ─
+  if(!html.trim()||(!hasConfirmed&&!cleared.length&&!R.sentences.some(s=>s.toxicity>=0.4))){
+    html+=`<div class="wf-row"><span class="wf-icon wf-pass">\u2713</span>`
+      +`<div><div class="wf-text">No edits needed \u2014 safe to upload</div></div></div>`;
   }
-
-  const rowHtml=items.map(item=>`<div class="wf-row">`
-    +`<span class="wf-icon ${item.cls}">${item.icon}</span>`
-    +`<div><div class="wf-text">${item.html}</div>`
-    +(item.sub?`<div class="wf-sub">${item.sub}</div>`:'')
-    +`</div></div>`).join('');
 
   return`<div class="section" id="sec-fix">`
     +`<div class="section-hdr">What to Fix</div>`
-    +`<div class="recs-card" style="margin-bottom:0">${rowHtml}</div>`
+    +`<div class="recs-card" style="margin-bottom:0">${html}</div>`
     +`</div>`;
 }
 
@@ -812,15 +897,34 @@ function renderMoments(R){
         }).join('');
     }
     const bc=s.toxicity>=.7?'var(--red)':s.toxicity>=.4?'var(--yel)':'var(--grn)';
+    const adjTox=s.adjusted_toxicity!=null?s.adjusted_toxicity:s.toxicity;
+    const adjColor=tc(adjTox);
+    const cc=s.context_check;
+    let ccBadge='';
+    if(cc&&!cc.error){
+      if(cc.genuine_harm===false) ccBadge='<span class="cc-cleared">\u2713 Cleared \u00b7 '+cc.intent+'</span>';
+      else ccBadge='<span class="cc-confirmed">\u26a0 Confirmed</span>';
+    }
+    let mcRewrite='';
+    if(cc&&!cc.error&&cc.safe_rewrite){
+      mcRewrite='<div class="rewrite-block">'
+        +(cc.safe_rewrite?'<div class="rewrite-row"><span class="rewrite-label">Safe</span><span class="rewrite-text">\u201c'+cc.safe_rewrite+'\u201d</span></div>':'')
+        +(cc.alt_rewrite ?'<div class="rewrite-row"><span class="rewrite-label">Alt</span><span class="rewrite-text">\u201c'+cc.alt_rewrite+'\u201d</span></div>':'')
+        +'</div>';
+    }
     return'<div class="mc" onclick="scrollToSent('+idx+')" style="border-left-color:'+bc+'">'
-      +'<div class="mc-rank" style="color:'+color+'">'+(i+1)+'</div>'
+      +'<div class="mc-rank" style="color:'+adjColor+'">'+(i+1)+'</div>'
       +'<div class="mc-body">'
       +'<div class="mc-top">'
-      +'<span class="mc-score" style="color:'+color+'">'+s.toxicity.toFixed(2)+'</span>'
+      +'<span class="mc-score" style="color:'+adjColor+'">'+adjTox.toFixed(2)+'</span>'
+      +(adjTox!==s.toxicity?'<span style="font-size:.65rem;color:var(--muted);font-family:var(--mono)">(raw '+s.toxicity.toFixed(2)+')</span>':'')
       +'<span class="mc-time">'+fmt(s.start)+'</span>'
-      +'<span class="mc-verdict" style="color:'+vc(s.verdict)+'">'+s.verdict+'</span></div>'
+      +'<span class="mc-verdict" style="color:'+vc(s.verdict)+'">'+s.verdict+'</span>'
+      +(ccBadge?ccBadge:'')
+      +'</div>'
       +'<div class="mc-text">'+s.text+'</div>'
       +(chips?'<div class="mc-chips">'+chips+'</div>':'')
+      +mcRewrite
       +'</div></div>';
   }).join('');
 
@@ -831,21 +935,41 @@ function renderMoments(R){
 
 /* ── Sentences Table ──────────────────────────────────── */
 function renderSentences(R){
-  const rows=R.sentences.map(function(s,i){
-    const color=tc(s.toxicity);
-    return'<tr id="sent-'+i+'">'
-      +'<td class="col-time" onclick="scrollToSent('+i+')">'+fmt(s.start)+'</td>'
-      +'<td class="col-text">'+s.text+'</td>'
-      +'<td class="col-score"><span style="color:'+color+'">'+s.toxicity.toFixed(2)+'</span>'+mbar(s.toxicity,color)+'</td>'
-      +'<td class="col-sent" style="color:'+sc(s.sentiment)+'">'+sign(s.sentiment)+'</td>'
-      +'<td class="col-verd" style="color:'+vc(s.verdict)+'">'+s.verdict+'</td></tr>';
-  }).join('');
+  function rows(hasCtx){
+    return R.sentences.map(function(s,i){
+      const adjTox=s.adjusted_toxicity!=null?s.adjusted_toxicity:s.toxicity;
+      const color=tc(adjTox);
+      const cc=s.context_check;
+      let ctxCell='';
+      if(hasCtx){
+        if(cc&&!cc.error){
+          if(cc.genuine_harm===false) ctxCell='<td><span class="cc-cleared">\u2713 Cleared</span> <span class="cc-intent">'+cc.intent+'</span></td>';
+          else ctxCell='<td><span class="cc-confirmed">\u26a0 Confirmed</span></td>';
+        } else {
+          ctxCell='<td style="color:var(--muted);font-size:.7rem">—</td>';
+        }
+      }
+      let scoreCell='<td class="col-score"><span style="color:'+color+'">'+adjTox.toFixed(2)+'</span>'+mbar(adjTox,color);
+      if(cc&&!cc.error&&cc.genuine_harm===false) scoreCell+=' <span style="font-size:.6rem;color:var(--muted);font-family:var(--mono)">(was '+s.toxicity.toFixed(2)+')</span>';
+      scoreCell+='</td>';
+      return'<tr id="sent-'+i+'">'
+        +'<td class="col-time" onclick="scrollToSent('+i+')">'+fmt(s.start)+'</td>'
+        +'<td class="col-text">'+s.text+'</td>'
+        +scoreCell
+        +ctxCell
+        +'<td class="col-sent" style="color:'+sc(s.sentiment)+'">'+sign(s.sentiment)+'</td>'
+        +'<td class="col-verd" style="color:'+vc(s.verdict)+'">'+s.verdict+'</td></tr>';
+    }).join('');
+  }
 
+  const hasCtx=R.sentences.some(s=>s.context_check);
   return'<div class="section" id="sec-all">'
     +'<div class="section-hdr">All Sentences</div>'
     +'<div class="s-table-wrap"><table class="s-table"><thead><tr>'
-    +'<th>Time</th><th>Text</th><th>Toxicity</th><th>Sentiment</th><th>Verdict</th>'
-    +'</tr></thead><tbody>'+rows+'</tbody></table></div></div>';
+    +'<th>Time</th><th>Text</th><th>Toxicity</th>'
+    +(hasCtx?'<th>Context</th>':'')
+    +'<th>Sentiment</th><th>Verdict</th>'
+    +'</tr></thead><tbody>'+rows(hasCtx)+'</tbody></table></div></div>';
 }
 
 /* ── Main Render ──────────────────────────────────────── */

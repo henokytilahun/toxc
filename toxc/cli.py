@@ -134,6 +134,8 @@ def voice_cmd(
     fast: bool = typer.Option(False, "--fast", help="Use VADER only (no Detoxify)"),
     json: bool = typer.Option(False, "--json", help="Output as JSON"),
     no_profile: bool = typer.Option(False, "--no-profile", help="Skip channel profile / financial analysis"),
+    context_check: bool = typer.Option(False, "--context-check", "-cc", help="Use local Ollama LLM to verify flagged sentences and generate safe rewrites"),
+    ollama_model: str = typer.Option("llama3.2", "--ollama-model", help="Ollama model to use for context checking"),
 ):
     from toxc.voice import transcribe_and_segment, is_youtube_url
     from toxc.report import aggregate, write_html
@@ -152,6 +154,18 @@ def voice_cmd(
             typer.echo(f"File not found: {source}", err=True)
             raise typer.Exit(1)
         display_name = p.name
+
+    # Validate Ollama availability early so we fail before transcription starts
+    resolved_ollama_model: str | None = None
+    if context_check:
+        from toxc.ollama_check import is_available as _ollama_available
+        ok, msg = _ollama_available(ollama_model)
+        if ok:
+            resolved_ollama_model = msg
+            console.print(f"[dim]Context check: using [bold]{resolved_ollama_model}[/bold] via Ollama[/dim]")
+        else:
+            console.print(f"[yellow]⚠ Context check unavailable — {msg}[/yellow]")
+            console.print("[dim]Continuing without context check.[/dim]")
 
     # Load or prompt for channel profile
     profile: dict | None = None
@@ -175,7 +189,8 @@ def voice_cmd(
             result["start"] = sentence["start"]
             result["end"] = sentence["end"]
 
-        data = aggregate(results, display_name, model, duration, profile=profile)
+        data = aggregate(results, display_name, model, duration, profile=profile,
+                         ollama_model=resolved_ollama_model)
 
         if yt_meta:
             data["youtube"] = yt_meta

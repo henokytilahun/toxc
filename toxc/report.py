@@ -28,7 +28,7 @@ _DEFAULT_THRESHOLDS = {
 }
 
 
-def _composite_toxicity(sentences: list[dict]) -> tuple[float, dict]:
+def _composite_toxicity(sentences: list[dict], tox_key: str = "toxicity") -> tuple[float, dict]:
     """
     Peak-aware composite score so sparse-but-severe toxicity isn't buried
     by a majority of clean filler sentences.
@@ -38,15 +38,18 @@ def _composite_toxicity(sentences: list[dict]) -> tuple[float, dict]:
       peak     (50%) — mean of the top 5 % most toxic sentences
       rate     (25%) — fraction of sentences classified as Toxic (≥ 0.7)
 
+    tox_key: which field to read from each sentence dict.
+             Use "adjusted_toxicity" for context-check-adjusted scoring.
+
     Returns (composite_score, breakdown_dict).
     """
     n = len(sentences)
     lengths = [len(s["text"]) for s in sentences]
     total_len = sum(lengths) or 1
-    toxicities = [s["toxicity"] for s in sentences]
+    toxicities = [s.get(tox_key, s["toxicity"]) for s in sentences]
 
-    # 1. Density — same length-weighted mean as before
-    density = sum(s["toxicity"] * len(s["text"]) for s in sentences) / total_len
+    # 1. Density — length-weighted mean
+    density = sum(toxicities[i] * lengths[i] for i in range(n)) / total_len
 
     # 2. Peak severity — mean of top 5 % (minimum 1 sentence)
     top_n = max(1, round(n * 0.05))
@@ -60,8 +63,8 @@ def _composite_toxicity(sentences: list[dict]) -> tuple[float, dict]:
 
     breakdown = {
         "density": round(density, 4),
-        "peak": round(peak, 4),
-        "rate": round(rate, 4),
+        "peak":    round(peak,    4),
+        "rate":    round(rate,    4),
     }
     return round(min(composite, 1.0), 4), breakdown
 
@@ -72,15 +75,66 @@ def aggregate(
     model_size: str,
     duration: float,
     profile: dict | None = None,
+    ollama_model: str | None = None,
 ) -> dict:
     for i, s in enumerate(sentences):
         s["idx"] = i
 
-    lengths = [len(s["text"]) for s in sentences]
-    total_len = sum(lengths) or 1
-    toxicities = [s["toxicity"] for s in sentences]
+    # ── Pass 2: contextual false-positive check via Ollama ────────────────────
+    context_check_ran = False
+    context_summary: dict = {"ran": False}
 
-    composite_tox, score_breakdown = _composite_toxicity(sentences)
+    if ollama_model:
+        try:
+            import os
+            from rich.console import Console as _RC
+            _rc = _RC(stderr=True)
+            from toxc.ollama_check import contextual_check_batch
+            candidates = [s for s in sentences if s.get("toxicity", 0) >= 0.35]
+            n_check = len(candidates)
+            if n_check:
+                with _rc.status(
+                    f"[dim]Context-checking {n_check} flagged sentences with {ollama_model}…[/dim]",
+                    spinner="dots",
+                ):
+                    contextual_check_batch(sentences, model=ollama_model, threshold=0.35)
+                context_check_ran = True
+        except Exception:
+            pass  # gracefully skip — Detoxify scores remain intact
+
+    # Apply adjusted toxicity per sentence
+    cleared = confirmed = 0
+    for s in sentences:
+        cc = s.get("context_check")
+        if cc and not cc.get("error"):
+            s["adjusted_toxicity"] = cc["adjusted_score"]
+            if cc.get("genuine_harm"):
+                confirmed += 1
+            else:
+                cleared += 1
+        else:
+            s["adjusted_toxicity"] = s["toxicity"]
+
+    if context_check_ran:
+        context_summary = {
+            "ran":       True,
+            "model":     ollama_model,
+            "checked":   cleared + confirmed,
+            "cleared":   cleared,
+            "confirmed": confirmed,
+        }
+
+    # ── Composite scores ──────────────────────────────────────────────────────
+    lengths   = [len(s["text"]) for s in sentences]
+    total_len = sum(lengths) or 1
+
+    raw_composite,  raw_breakdown  = _composite_toxicity(sentences, "toxicity")
+    adj_composite,  adj_breakdown  = _composite_toxicity(sentences, "adjusted_toxicity")
+
+    # Use adjusted composite for the public verdict when context check ran
+    composite_tox   = adj_composite
+    score_breakdown = adj_breakdown
+
     weighted_sent = sum(s["sentiment"] * len(s["text"]) for s in sentences) / total_len
 
     if composite_tox >= 0.7:
@@ -92,13 +146,15 @@ def aggregate(
 
     fast = sentences[0].get("fast", False) if sentences else False
 
-    # Weighted-average each sub-dimension across all sentences
     agg_dims = {}
     if not fast:
         for dim in DIMS:
-            agg_dims[dim] = sum(s["dimensions"].get(dim, 0) * len(s["text"]) for s in sentences) / total_len
+            agg_dims[dim] = (
+                sum(s["dimensions"].get(dim, 0) * len(s["text"]) for s in sentences) / total_len
+            )
 
-    top5 = sorted(sentences, key=lambda s: s["toxicity"], reverse=True)[:5]
+    # Top-5 by adjusted toxicity so cleared false-positives don't dominate
+    top5 = sorted(sentences, key=lambda s: s["adjusted_toxicity"], reverse=True)[:5]
 
     peaks = {}
     if not fast:
@@ -107,23 +163,25 @@ def aggregate(
             peaks[dim] = {"score": best["dimensions"].get(dim, 0), "sentence": best}
 
     data = {
-        "audio": str(audio_path),
-        "model": model_size,
-        "duration": duration,
+        "audio":       str(audio_path),
+        "model":       model_size,
+        "duration":    duration,
         "analyzed_at": datetime.datetime.now().strftime("%b %d %Y"),
         "overall": {
-            "toxicity": composite_tox,
+            "toxicity":       composite_tox,
+            "raw_toxicity":   raw_composite,
             "score_breakdown": score_breakdown,
-            "sentiment": weighted_sent,
-            "verdict": verdict,
-            "toxic_count": sum(1 for t in toxicities if t >= 0.7),
+            "sentiment":      weighted_sent,
+            "verdict":        verdict,
+            "toxic_count":    sum(1 for s in sentences if s["adjusted_toxicity"] >= 0.7),
             "sentence_count": len(sentences),
-            "dimensions": agg_dims,
+            "dimensions":     agg_dims,
         },
-        "sentences": sentences,
-        "top_toxic": top5,
-        "peaks_by_dim": peaks,
-        "fast": fast,
+        "context_check": context_summary,
+        "sentences":     sentences,
+        "top_toxic":     top5,
+        "peaks_by_dim":  peaks,
+        "fast":          fast,
     }
     data["monetization"] = monetization_risk(data, profile=profile)
 
@@ -132,7 +190,6 @@ def aggregate(
         risk_level = data["monetization"]["risk_level"]
         data["channel"] = channel_context(profile, risk_level)
 
-        # Inject per-edit dollar savings, weighted by each sentence's toxicity share
         revenue_at_risk = data["channel"].get("financial", {}).get("revenue_at_risk", 0)
         if revenue_at_risk > 0:
             edit_recs = [r for r in data["monetization"]["recommendations"] if r["type"] == "edit"]
@@ -165,8 +222,8 @@ def monetization_risk(data: dict, profile: dict | None = None) -> dict:
     severe       = dims.get("severe_toxicity", 0)
     flagged_rate = breakdown.get("rate", 0)
 
-    # First-7-seconds rule — historically YouTube's strictest window
-    first7_hits = [s for s in sentences if s.get("start", 99) < 7 and s["toxicity"] >= 0.35]
+    # First-7-seconds rule — use adjusted toxicity so cleared false-positives don't fire
+    first7_hits = [s for s in sentences if s.get("start", 99) < 7 and s.get("adjusted_toxicity", s["toxicity"]) >= 0.35]
 
     # Build signals in priority order, reflecting YouTube's actual demonetization hierarchy:
     # identity_attack > threat > severe_toxicity > obscene (high) > obscene (mild) > density
@@ -282,11 +339,33 @@ def monetization_risk(data: dict, profile: dict | None = None) -> dict:
         recs.append({"type": "pass", "text": "Safe to upload with full monetization"})
     if first7_hits:
         recs.append({"type": "warning", "text": "Move or remove flagged content from first 7 seconds"})
-    top_edits = sorted([s for s in sentences if s["toxicity"] >= 0.35], key=lambda s: s["toxicity"], reverse=True)[:3]
+    # Only surface as "edit" recommendations those that are confirmed genuine harm
+    # (context_check.genuine_harm = True) or have no context check at all.
+    def _is_genuine(s):
+        cc = s.get("context_check")
+        if cc and not cc.get("error"):
+            return cc.get("genuine_harm", True)
+        return True
+
+    top_edits = sorted(
+        [s for s in sentences if s.get("adjusted_toxicity", s["toxicity"]) >= 0.35 and _is_genuine(s)],
+        key=lambda s: s.get("adjusted_toxicity", s["toxicity"]),
+        reverse=True,
+    )[:3]
     for s in top_edits:
         m, sec = int(s["start"] // 60), int(s["start"] % 60)
-        recs.append({"type": "edit", "text": f"Consider editing {m}:{sec:02d} to protect monetization",
-                     "snippet": s["text"][:70], "timestamp": s["start"], "toxicity": s["toxicity"]})
+        cc = s.get("context_check") or {}
+        recs.append({
+            "type":      "edit",
+            "text":      f"Consider editing {m}:{sec:02d} to protect monetization",
+            "snippet":   s["text"][:70],
+            "timestamp": s["start"],
+            "toxicity":  s.get("adjusted_toxicity", s["toxicity"]),
+            "intent":    cc.get("intent"),
+            "reason":    cc.get("reason"),
+            "safe_rewrite": cc.get("safe_rewrite"),
+            "alt_rewrite":  cc.get("alt_rewrite"),
+        })
     if not recs:
         recs.append({"type": "pass", "text": "No specific edits needed"})
 
