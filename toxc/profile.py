@@ -6,7 +6,8 @@ from rich.prompt import Prompt
 
 console = Console()
 
-PROFILE_PATH = Path.home() / ".config" / "toxc" / "profile.json"
+PROFILE_PATH   = Path.home() / ".config" / "toxc" / "profile.json"
+HF_TOKEN_PATH  = Path.home() / ".config" / "toxc" / "hf_token"
 
 CATEGORIES = ["gaming", "commentary", "education", "news", "kids", "other"]
 
@@ -51,6 +52,19 @@ _CATEGORY_NOTES = {
     "News":        "Higher tolerance for difficult topics in news context.",
     "Other":       "Standard YouTube advertiser thresholds.",
 }
+
+
+def load_hf_token() -> str | None:
+    """Return the saved HuggingFace token, or None if not set."""
+    if HF_TOKEN_PATH.exists():
+        return HF_TOKEN_PATH.read_text().strip() or None
+    return None
+
+
+def save_hf_token(token: str) -> None:
+    """Persist a HuggingFace token to disk."""
+    HF_TOKEN_PATH.parent.mkdir(parents=True, exist_ok=True)
+    HF_TOKEN_PATH.write_text(token.strip())
 
 
 def load_profile() -> dict | None:

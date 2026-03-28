@@ -154,6 +154,20 @@ def render_voice_summary(data: dict):
     lines.append(" / ", style="dim")
     lines.append(f"{O['sentence_count']} total\n", style="dim")
 
+    # Per-speaker breakdown
+    speakers = data.get("speakers") or []
+    if speakers:
+        lines.append("\n  [bold]Speakers[/bold]\n")
+        for spk in speakers:
+            sc_map = {"Review": "red", "Borderline": "yellow", "Clean": "green"}
+            sc = sc_map.get(spk["verdict"], "dim")
+            lines.append(f"  {spk['speaker']:<16}", style="dim")
+            lines.append(f"{spk['avg_toxicity']:.2f}  ", style=sc + " bold")
+            lines.append(f"{spk['sentence_count']} sent", style="dim")
+            if spk["flagged"]:
+                lines.append(f"  {spk['flagged']} flagged", style="yellow")
+            lines.append(f"  {spk['verdict']}\n", style=sc)
+
     # Risk signals
     signals = M.get("signals", [])
     if signals:
@@ -184,6 +198,44 @@ def render_voice_summary(data: dict):
         for r in recs:
             lines.append(f"  ·  ", style="yellow")
             lines.append(r["text"] + "\n", style="dim")
+
+    # Policy review verdict (Pass 3)
+    PR = data.get("policy_review") or {}
+    if PR.get("ran") and not PR.get("error"):
+        v = PR.get("monetization_verdict", "yellow")
+        vc_map = {"green": "green", "yellow": "yellow", "red": "red"}
+        prc = vc_map.get(v, "yellow")
+        label_map = {
+            "green":  "Full monetization likely",
+            "yellow": "Limited ads likely",
+            "red":    "Demonetization likely",
+        }
+        rec_map = {
+            "safe":        "Safe to publish",
+            "edit_first":  "Edit before publishing",
+            "reconsider":  "Reconsider content",
+        }
+        lines.append("\n  [bold]AI Policy Review[/bold]  ", style="bold")
+        lines.append(f"[{prc}]{label_map.get(v, v)}[/{prc}]", style="")
+        conf = PR.get("confidence")
+        if conf is not None:
+            lines.append(f"  {int(conf*100)}% confidence\n", style="dim")
+        else:
+            lines.append("\n")
+        if PR.get("overall_summary"):
+            summary = PR["overall_summary"]
+            lines.append(f"  {summary}\n", style="dim")
+        rec = PR.get("publish_recommendation", "edit_first")
+        lines.append(f"  Recommendation  ", style="bold")
+        lines.append(rec_map.get(rec, rec) + "\n", style="dim")
+        viols = PR.get("policy_violations") or []
+        if viols:
+            lines.append(f"\n  {len(viols)} policy flag{'s' if len(viols) != 1 else ''}\n", style="yellow")
+            for vi in viols[:3]:
+                ts = vi.get("timestamp", "")
+                policy = vi.get("policy", "")
+                lines.append(f"  ⚠  {ts}  ", style="yellow dim")
+                lines.append(f"{policy}\n", style="dim")
 
     lines.append("\n")
 

@@ -103,6 +103,55 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .section{margin-bottom:2.5rem}
 .section-hdr{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin-bottom:.7rem;padding-bottom:.35rem;border-bottom:1px solid var(--border)}
 
+/* ── Speaker Analysis ──────────────────────────────────── */
+.spk-grid{display:flex;flex-direction:column;gap:0}
+.spk-row{display:grid;grid-template-columns:130px 1fr 70px 70px 80px;align-items:center;gap:.75rem;padding:.6rem .9rem;border-bottom:1px solid var(--border);font-size:.8rem}
+.spk-row:last-child{border-bottom:none}
+.spk-row.spk-hdr{font-size:.6rem;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);padding-bottom:.35rem;border-bottom:1px solid var(--border2)}
+.spk-label{font-family:var(--mono);font-weight:600;font-size:.75rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.spk-bar-wrap{display:flex;align-items:center;gap:.5rem}
+.spk-bar-track{flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden}
+.spk-bar-fill{height:100%;border-radius:3px;transition:width .4s}
+.spk-bar-val{font-family:var(--mono);font-size:.68rem;color:var(--text2);min-width:28px;text-align:right}
+.spk-count{color:var(--text2);font-family:var(--mono);font-size:.75rem}
+.spk-flagged{font-family:var(--mono);font-size:.75rem}
+.spk-verdict{font-size:.65rem;font-weight:700;letter-spacing:.06em;padding:.15rem .4rem;border-radius:3px;text-align:center}
+.sv-review{background:var(--red-d);color:var(--red)}.sv-borderline{background:var(--yel-d);color:var(--yel)}.sv-clean{background:var(--grn-d);color:var(--grn)}
+.spk-riskiest{margin-top:.6rem;padding:.55rem .75rem;background:var(--yel-d);border:1px solid rgba(245,158,11,.2);border-radius:6px;font-size:.78rem;color:var(--yel)}
+
+/* ── Policy Review ─────────────────────────────────────── */
+.pr-verdict-row{display:flex;align-items:center;gap:.75rem;margin-bottom:.9rem;flex-wrap:wrap}
+.pr-badge{font-size:.78rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.28rem .7rem;border-radius:5px;display:inline-flex;align-items:center;gap:.35rem}
+.pr-green{background:var(--grn-d);color:var(--grn);border:1px solid rgba(34,197,94,.2)}
+.pr-yellow{background:var(--yel-d);color:var(--yel);border:1px solid rgba(245,158,11,.2)}
+.pr-red{background:var(--red-d);color:var(--red);border:1px solid rgba(239,68,68,.22)}
+.pr-conf{font-size:.72rem;color:var(--text2)}
+.pr-rec{font-size:.72rem;padding:.22rem .55rem;border-radius:4px;background:var(--surface-a);color:var(--text2);font-family:var(--mono)}
+.pr-summary{font-size:.84rem;color:var(--text2);line-height:1.6;padding:.7rem .9rem;background:var(--bg2);border-radius:6px;border-left:3px solid var(--border2);margin-bottom:.9rem}
+.pr-section-lbl{font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin:.8rem 0 .35rem}
+.pr-violation{display:flex;gap:.6rem;align-items:flex-start;padding:.5rem 0;border-top:1px solid var(--border)}
+.pr-violation:first-of-type{border-top:none}
+.pr-vi-icon{flex-shrink:0;padding-top:2px}
+.pr-vi-high{color:var(--red)}.pr-vi-med{color:var(--yel)}.pr-vi-low{color:var(--text2)}
+.pr-vi-body{flex:1;min-width:0}
+.pr-vi-top{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin-bottom:.2rem}
+.pr-vi-policy{font-size:.72rem;font-weight:600;color:var(--text)}
+.pr-vi-ts{font-size:.68rem;color:var(--muted);font-family:var(--mono)}
+.pr-vi-sev{font-size:.6rem;text-transform:uppercase;letter-spacing:.08em;padding:.1rem .35rem;border-radius:3px}
+.pr-vi-sev-high{background:var(--red-d);color:var(--red)}.pr-vi-sev-med{background:var(--yel-d);color:var(--yel)}.pr-vi-sev-low{background:var(--surface-a);color:var(--text2)}
+.pr-vi-quote{font-size:.75rem;color:var(--muted);font-style:italic;margin-bottom:.2rem}
+.pr-vi-reason{font-size:.75rem;color:var(--text2)}
+.pr-clear-item{font-size:.75rem;color:var(--text2);padding:.3rem 0;border-top:1px solid var(--border);display:flex;gap:.4rem;align-items:baseline}
+.pr-clear-item:first-of-type{border-top:none}
+.pr-clear-ic{color:var(--grn);flex-shrink:0}
+.pr-title-row{display:flex;align-items:center;gap:.55rem;padding:.5rem 0;flex-wrap:wrap}
+.pr-title-label{font-size:.78rem;color:var(--text2)}
+.pr-title-reason{font-size:.75rem;color:var(--muted)}
+.pr-model-note{font-size:.65rem;color:var(--muted);text-align:right;margin-top:.5rem;font-family:var(--mono)}
+.pr-error{font-size:.78rem;color:var(--yel);padding:.5rem .7rem;background:var(--yel-d);border-radius:5px;border:1px solid rgba(245,158,11,.2)}
+.pr-quote-link{cursor:pointer;text-decoration:underline;text-decoration-style:dotted;text-underline-offset:2px}
+.pr-quote-link:hover{opacity:.8}
+
 /* ── Signals ───────────────────────────────────────────── */
 .sig-tier{margin-bottom:.55rem}
 .sig-tier-hdr{font-size:.6rem;text-transform:uppercase;letter-spacing:.09em;padding:.22rem .65rem;border-radius:4px 4px 0 0;font-weight:700}
@@ -342,7 +391,8 @@ function updIcon(){
 
 /* ── Tabs ─────────────────────────────────────────────── */
 const SEC_TAB={
-  'sec-channel':'overview','sec-finance':'overview','sec-consequence':'overview',
+  'sec-speakers':'overview','sec-channel':'overview','sec-finance':'overview',
+  'sec-consequence':'overview','sec-policy':'overview',
   'sec-fix':'overview','sec-signals':'overview',
   'sec-tl':'viz','sec-charts':'viz','sec-hm':'viz','sec-mom':'viz',
   'sec-all':'transcript'
@@ -485,9 +535,11 @@ function renderSidebar(R){
     +'</div>'
 
     +'<div class="sb-nav"><h3>Sections</h3>'
+    +(R.speakers&&R.speakers.length?'<a class="nav-link" data-sec="sec-speakers" onclick="scrollToSec(\'sec-speakers\')">Speaker Analysis</a>':'')
     +(R.channel?'<a class="nav-link" data-sec="sec-channel" onclick="scrollToSec(\'sec-channel\')">Channel Profile</a>'  :'')
     +(R.channel&&R.channel.financial&&R.channel.financial.revenue_per_video?'<a class="nav-link" data-sec="sec-finance" onclick="scrollToSec(\'sec-finance\')">Financial Impact</a>':'')
     +'<a class="nav-link" data-sec="sec-consequence" onclick="scrollToSec(\'sec-consequence\')">Consequences</a>'
+    +(R.policy_review&&R.policy_review.ran?'<a class="nav-link" data-sec="sec-policy" onclick="scrollToSec(\'sec-policy\')">AI Policy Review</a>':'')
     +'<a class="nav-link" data-sec="sec-fix" onclick="scrollToSec(\'sec-fix\')">What to Fix</a>'
     +'<a class="nav-link" data-sec="sec-signals" onclick="scrollToSec(\'sec-signals\')">Risk Signals</a>'
     +'<a class="nav-link active" data-sec="sec-tl" onclick="scrollToSec(\'sec-tl\')">Timeline</a>'
@@ -708,6 +760,179 @@ function renderWhatToFix(R){
     +`<div class="section-hdr">What to Fix</div>`
     +`<div class="recs-card" style="margin-bottom:0">${html}</div>`
     +`</div>`;
+}
+
+/* ── Speaker Analysis ─────────────────────────────────── */
+function renderSpeakers(R){
+  const speakers=R.speakers||[];
+  if(!speakers.length)return'';
+
+  const hdr='<div class="spk-row spk-hdr">'
+    +'<span>Speaker</span>'
+    +'<span>Avg Toxicity</span>'
+    +'<span>Sentences</span>'
+    +'<span>Flagged</span>'
+    +'<span>Verdict</span>'
+    +'</div>';
+
+  const rows=speakers.map(function(spk){
+    const vc=tc(spk.avg_toxicity);
+    const vcls=spk.verdict==='Review'?'sv-review':spk.verdict==='Borderline'?'sv-borderline':'sv-clean';
+    const flagColor=spk.flagged>0?'var(--yel)':'var(--grn)';
+    return'<div class="spk-row">'
+      +'<span class="spk-label" style="color:'+vc+'">'+spk.speaker+'</span>'
+      +'<div class="spk-bar-wrap">'
+      +'<div class="spk-bar-track"><div class="spk-bar-fill" style="width:'+(spk.avg_toxicity*100).toFixed(1)+'%;background:'+vc+'"></div></div>'
+      +'<span class="spk-bar-val" style="color:'+vc+'">'+spk.avg_toxicity.toFixed(2)+'</span>'
+      +'</div>'
+      +'<span class="spk-count">'+spk.sentence_count+'</span>'
+      +'<span class="spk-flagged" style="color:'+flagColor+'">'+spk.flagged+'</span>'
+      +'<span class="spk-verdict '+vcls+'">'+spk.verdict+'</span>'
+      +'</div>';
+  }).join('');
+
+  const riskiest=speakers[0];
+  let riskyHtml='';
+  if(riskiest&&riskiest.avg_toxicity>=0.15){
+    riskyHtml='<div class="spk-riskiest">'
+      +'\u26a0 Riskiest speaker: <strong>'+riskiest.speaker+'</strong>'
+      +(riskiest.peak_sentence?' \u00b7 peak at \u201c'+riskiest.peak_sentence+(riskiest.peak_sentence.length>=80?'\u2026':'')+'\u201d':'')
+      +'</div>';
+  }
+
+  return'<div class="section" id="sec-speakers">'
+    +'<div class="section-hdr">Speaker Analysis</div>'
+    +'<div class="recs-card" style="margin-bottom:0">'
+    +'<div class="spk-grid">'+hdr+rows+'</div>'
+    +riskyHtml
+    +'</div>'
+    +'</div>';
+}
+
+/* ── Policy Review ────────────────────────────────────── */
+function renderPolicyReview(R){
+  const PR=R.policy_review||{};
+  if(!PR.ran)return'';
+
+  const verdictLabel={green:'Full monetization likely',yellow:'Limited ads likely',red:'Demonetization likely'};
+  const recLabel={safe:'Safe to publish',edit_first:'Edit before publishing',reconsider:'Reconsider content'};
+  const verdictDot={green:'\u25cf',yellow:'\u25cf',red:'\u25cf'};
+
+  const v=PR.monetization_verdict||'yellow';
+  const badgeCls='pr-badge pr-'+v;
+  const verdictHtml='<span class="'+badgeCls+'">'+verdictDot[v]+' '+(verdictLabel[v]||v.toUpperCase())+'</span>';
+  const confHtml=PR.confidence!=null?'<span class="pr-conf">'+Math.round(PR.confidence*100)+'% confidence</span>':'';
+  const rec=PR.publish_recommendation||'edit_first';
+  const recHtml='<span class="pr-rec">'+(recLabel[rec]||rec)+'</span>';
+
+  let html='<div class="pr-verdict-row">'+verdictHtml+confHtml+recHtml+'</div>';
+
+  if(PR.error){
+    html+='<div class="pr-error">Policy review ran but encountered an error: '+(PR.error_detail||'unknown')+'</div>';
+  } else {
+    // Overall summary
+    if(PR.overall_summary){
+      html+='<div class="pr-summary">'+PR.overall_summary+'</div>';
+    }
+
+    // Title risk
+    const tr=PR.title_risk||'green';
+    if(tr!=='green'||PR.title_reason){
+      const trCls='pr-badge pr-'+tr;
+      html+='<div class="pr-section-lbl">Title risk</div>'
+        +'<div class="pr-title-row">'
+        +'<span class="'+trCls+'">'+verdictDot[tr]+' Title</span>'
+        +(PR.title_reason?'<span class="pr-title-reason">'+PR.title_reason+'</span>':'')
+        +'</div>';
+    }
+
+    // Helper: find sentence index by text match, for jump-to-transcript links
+    function findSentIdx(text){
+      if(!text)return -1;
+      const needle=String(text).toLowerCase().trim();
+      const short=needle.slice(0,60);
+      let best=-1,bestLen=0;
+      R.sentences.forEach(function(s,i){
+        const hay=s.text.toLowerCase();
+        if(hay.includes(short)||short.includes(hay.slice(0,50))){
+          if(short.length>bestLen){bestLen=short.length;best=i;}
+        }
+      });
+      return best;
+    }
+    function quoteLink(text){
+      const idx=findSentIdx(text);
+      const q='\u201c'+text+'\u201d';
+      if(idx<0)return'<span class="pr-vi-quote">'+q+'</span>';
+      return'<span class="pr-vi-quote pr-quote-link" title="Jump to transcript" onclick="scrollToSent('+idx+')">'+q+' <span style="font-size:.6rem;opacity:.5">\u2197</span></span>';
+    }
+    function prCopyBtn(text){
+      const safe=String(text).replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+      return'<button class="rewrite-copy" onclick="navigator.clipboard.writeText(\''+safe+'\').then(()=>{this.textContent=\'\u2713\';setTimeout(()=>this.textContent=\'Copy\',1200)})">Copy</button>';
+    }
+
+    // Policy violations
+    const viols=PR.policy_violations||[];
+    if(viols.length){
+      html+='<div class="pr-section-lbl">\u26a0 '+viols.length+' policy flag'+(viols.length!==1?'s':'')+'</div>';
+      viols.forEach(function(vi){
+        const sev=vi.severity||'medium';
+        const sevCls='pr-vi-sev pr-vi-sev-'+(sev==='high'?'high':sev==='medium'?'med':'low');
+        const iconCls='pr-vi-icon '+(sev==='high'?'pr-vi-high':sev==='medium'?'pr-vi-med':'pr-vi-low');
+        const icon=sev==='high'?'\u26a0':'\u00b7';
+        html+='<div class="pr-violation">'
+          +'<span class="'+iconCls+'">'+icon+'</span>'
+          +'<div class="pr-vi-body">'
+          +'<div class="pr-vi-top">'
+          +(vi.policy?'<span class="pr-vi-policy">'+vi.policy+'</span>':'')
+          +(vi.timestamp?'<span class="pr-vi-ts">'+vi.timestamp+'</span>':'')
+          +'<span class="'+sevCls+'">'+sev+'</span>'
+          +'</div>'
+          +(vi.quote?quoteLink(vi.quote):'')
+          +(vi.reason?'<div class="pr-vi-reason">'+vi.reason+'</div>':'')
+          +'</div></div>';
+      });
+    }
+
+    // Rewrites from policy review (only items with actual content)
+    const rewrites=(PR.rewrites||[]).filter(function(rw){return rw.safe_rewrite||rw.conservative_rewrite;});
+    if(rewrites.length){
+      html+='<div class="pr-section-lbl">Suggested rewrites</div>';
+      rewrites.forEach(function(rw){
+        html+='<div class="pr-violation">'
+          +'<span class="pr-vi-icon pr-vi-med">\u2192</span>'
+          +'<div class="pr-vi-body">'
+          +(rw.timestamp?'<div class="pr-vi-top"><span class="pr-vi-ts">'+rw.timestamp+'</span></div>':'')
+          +(rw.original?quoteLink(rw.original):'')
+          +'<div class="rewrite-block">'
+          +(rw.safe_rewrite?'<div class="rewrite-row"><span class="rewrite-label">Safe</span><span class="rewrite-text">\u201c'+rw.safe_rewrite+'\u201d</span>'+prCopyBtn(rw.safe_rewrite)+'</div>':'')
+          +(rw.conservative_rewrite?'<div class="rewrite-row"><span class="rewrite-label">Conservative</span><span class="rewrite-text">\u201c'+rw.conservative_rewrite+'\u201d</span>'+prCopyBtn(rw.conservative_rewrite)+'</div>':'')
+          +'</div>'
+          +'</div></div>';
+      });
+    }
+
+    // False positives cleared by policy review LLM
+    const fps=PR.false_positives||[];
+    if(fps.length){
+      html+='<div class="pr-section-lbl">\u2713 '+fps.length+' cleared by LLM as false positive'+(fps.length!==1?'s':'')+'</div>';
+      fps.forEach(function(fp){
+        // fp may still be an object if the LLM misbehaved — extract text defensively
+        const fpText=typeof fp==='string'?fp:(fp&&(fp.text||fp.quote||fp.sentence))||JSON.stringify(fp);
+        const idx=findSentIdx(fpText);
+        const clickable=idx>=0?' pr-quote-link" onclick="scrollToSent('+idx+')" title="Jump to transcript':"'";
+        html+='<div class="pr-clear-item"><span class="pr-clear-ic">\u2713</span>'
+          +'<span class="'+clickable+'">'+fpText+(idx>=0?' <span style="font-size:.6rem;opacity:.5">\u2197</span>':'')+'</span></div>';
+      });
+    }
+  }
+
+  html+='<div class="pr-model-note">LLM policy review \u00b7 '+PR.model+'</div>';
+
+  return'<div class="section" id="sec-policy">'
+    +'<div class="section-hdr">AI Policy Review</div>'
+    +'<div class="recs-card" style="margin-bottom:0">'+html+'</div>'
+    +'</div>';
 }
 
 /* ── Signals & Recommendations ────────────────────────── */
@@ -935,25 +1160,34 @@ function renderMoments(R){
 
 /* ── Sentences Table ──────────────────────────────────── */
 function renderSentences(R){
-  function rows(hasCtx){
+  const hasCtx=R.sentences.some(function(s){return s.context_check;});
+  const hasSpk=R.sentences.some(function(s){return s.speaker;});
+
+  function rows(){
     return R.sentences.map(function(s,i){
       const adjTox=s.adjusted_toxicity!=null?s.adjusted_toxicity:s.toxicity;
       const color=tc(adjTox);
       const cc=s.context_check;
+
       let ctxCell='';
       if(hasCtx){
         if(cc&&!cc.error){
           if(cc.genuine_harm===false) ctxCell='<td><span class="cc-cleared">\u2713 Cleared</span> <span class="cc-intent">'+cc.intent+'</span></td>';
           else ctxCell='<td><span class="cc-confirmed">\u26a0 Confirmed</span></td>';
         } else {
-          ctxCell='<td style="color:var(--muted);font-size:.7rem">—</td>';
+          ctxCell='<td style="color:var(--muted);font-size:.7rem">\u2014</td>';
         }
       }
+
       let scoreCell='<td class="col-score"><span style="color:'+color+'">'+adjTox.toFixed(2)+'</span>'+mbar(adjTox,color);
       if(cc&&!cc.error&&cc.genuine_harm===false) scoreCell+=' <span style="font-size:.6rem;color:var(--muted);font-family:var(--mono)">(was '+s.toxicity.toFixed(2)+')</span>';
       scoreCell+='</td>';
+
+      const spkCell=hasSpk?'<td style="font-family:var(--mono);font-size:.68rem;color:var(--muted);white-space:nowrap">'+(s.speaker||'\u2014')+'</td>':'';
+
       return'<tr id="sent-'+i+'">'
         +'<td class="col-time" onclick="scrollToSent('+i+')">'+fmt(s.start)+'</td>'
+        +(hasSpk?spkCell:'')
         +'<td class="col-text">'+s.text+'</td>'
         +scoreCell
         +ctxCell
@@ -962,14 +1196,15 @@ function renderSentences(R){
     }).join('');
   }
 
-  const hasCtx=R.sentences.some(s=>s.context_check);
   return'<div class="section" id="sec-all">'
     +'<div class="section-hdr">All Sentences</div>'
     +'<div class="s-table-wrap"><table class="s-table"><thead><tr>'
-    +'<th>Time</th><th>Text</th><th>Toxicity</th>'
+    +'<th>Time</th>'
+    +(hasSpk?'<th>Speaker</th>':'')
+    +'<th>Text</th><th>Toxicity</th>'
     +(hasCtx?'<th>Context</th>':'')
     +'<th>Sentiment</th><th>Verdict</th>'
-    +'</tr></thead><tbody>'+rows(hasCtx)+'</tbody></table></div></div>';
+    +'</tr></thead><tbody>'+rows()+'</tbody></table></div></div>';
 }
 
 /* ── Main Render ──────────────────────────────────────── */
@@ -1004,7 +1239,7 @@ function render(){
     +'<button class="tab-btn" data-tab="transcript" onclick="switchTab(\'transcript\')">Transcript</button>'
     +'</div>';
 
-  const overviewPanel=renderChannelProfile(R)+renderFinancialImpact(R)+renderConsequenceBreakdown(R)+renderWhatToFix(R)+renderSignalsRecs(R);
+  const overviewPanel=renderSpeakers(R)+renderChannelProfile(R)+renderFinancialImpact(R)+renderConsequenceBreakdown(R)+renderPolicyReview(R)+renderWhatToFix(R)+renderSignalsRecs(R);
   const vizPanel=renderTimeline(R)+renderCharts(R)+renderHeatmap(R)+renderMoments(R);
   const transcriptPanel=renderSentences(R);
 
@@ -1052,7 +1287,7 @@ function setupTips(R){
 
 /* ── Active State Tracking ────────────────────────────── */
 function setupActive(R){
-  const secs=['sec-channel','sec-finance','sec-consequence','sec-fix','sec-signals','sec-tl','sec-charts','sec-hm','sec-mom','sec-all'];
+  const secs=['sec-speakers','sec-channel','sec-finance','sec-consequence','sec-policy','sec-fix','sec-signals','sec-tl','sec-charts','sec-hm','sec-mom','sec-all'];
   const secObs=new IntersectionObserver(function(entries){
     entries.forEach(function(entry){
       if(entry.isIntersecting){

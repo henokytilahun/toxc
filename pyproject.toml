@@ -28,6 +28,9 @@ voice = [
     "nltk>=3.8",
     "yt-dlp>=2023.1.1",
 ]
+diarize = [
+    "pyannote.audio>=3.1",
+]
 
 [project.scripts]
 toxc = "toxc.cli:run"

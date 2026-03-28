@@ -76,6 +76,7 @@ def aggregate(
     duration: float,
     profile: dict | None = None,
     ollama_model: str | None = None,
+    policy_review_model: str | None = None,
 ) -> dict:
     for i, s in enumerate(sentences):
         s["idx"] = i
@@ -123,6 +124,29 @@ def aggregate(
             "cleared":   cleared,
             "confirmed": confirmed,
         }
+
+    # ── Pass 3: full LLM policy review ───────────────────────────────────────
+    policy_review_result: dict = {"ran": False}
+
+    if policy_review_model:
+        try:
+            from rich.console import Console as _RC2
+            _rc2 = _RC2(stderr=True)
+            from toxc.policy_review import policy_review as _policy_review
+            title = str(audio_path)
+            category = (profile or {}).get("category", "other")
+            with _rc2.status(
+                f"[dim]Running LLM policy review with {policy_review_model}…[/dim]",
+                spinner="dots",
+            ):
+                policy_review_result = _policy_review(
+                    sentences,
+                    title=title,
+                    channel_category=category,
+                    model=policy_review_model,
+                )
+        except Exception:
+            pass  # gracefully skip — existing scores remain intact
 
     # ── Composite scores ──────────────────────────────────────────────────────
     lengths   = [len(s["text"]) for s in sentences]
@@ -177,12 +201,56 @@ def aggregate(
             "sentence_count": len(sentences),
             "dimensions":     agg_dims,
         },
-        "context_check": context_summary,
-        "sentences":     sentences,
+        "context_check":  context_summary,
+        "policy_review":  policy_review_result,
+        "sentences":      sentences,
         "top_toxic":     top5,
         "peaks_by_dim":  peaks,
         "fast":          fast,
     }
+    # ── Per-speaker breakdown (only when diarization ran) ────────────────────
+    speaker_map: dict[str, dict] = {}
+    for s in sentences:
+        spk = s.get("speaker")
+        if not spk:
+            continue
+        if spk not in speaker_map:
+            speaker_map[spk] = {
+                "speaker":        spk,
+                "sentence_count": 0,
+                "tox_sum":        0.0,
+                "flagged":        0,
+                "peak_tox":       0.0,
+                "peak_sentence":  None,
+            }
+        tox = s.get("adjusted_toxicity", s["toxicity"])
+        speaker_map[spk]["sentence_count"] += 1
+        speaker_map[spk]["tox_sum"]        += tox
+        if tox >= 0.4:
+            speaker_map[spk]["flagged"] += 1
+        if tox > speaker_map[spk]["peak_tox"]:
+            speaker_map[spk]["peak_tox"]      = tox
+            speaker_map[spk]["peak_sentence"] = s["text"][:80]
+
+    speakers_list = []
+    for spk_data in speaker_map.values():
+        n = spk_data["sentence_count"]
+        avg = round(spk_data["tox_sum"] / n, 4) if n else 0.0
+        spk_data["avg_toxicity"] = avg
+        spk_data["peak_tox"]     = round(spk_data["peak_tox"], 4)
+        del spk_data["tox_sum"]
+        if avg >= 0.4:
+            spk_data["verdict"] = "Review"
+        elif avg >= 0.15:
+            spk_data["verdict"] = "Borderline"
+        else:
+            spk_data["verdict"] = "Clean"
+        speakers_list.append(spk_data)
+
+    # Sort by avg toxicity descending so riskiest speaker is first
+    speakers_list.sort(key=lambda x: x["avg_toxicity"], reverse=True)
+    data["speakers"] = speakers_list
+
     data["monetization"] = monetization_risk(data, profile=profile)
 
     if profile:
@@ -343,9 +411,13 @@ def monetization_risk(data: dict, profile: dict | None = None) -> dict:
     # (context_check.genuine_harm = True) or have no context check at all.
     def _is_genuine(s):
         cc = s.get("context_check")
-        if cc and not cc.get("error"):
+        if cc:
+            # Parse errors mean we genuinely don't know — don't surface as a
+            # confirmed flag. The raw score is still visible in the transcript.
+            if cc.get("error"):
+                return False
             return cc.get("genuine_harm", True)
-        return True
+        return True  # no context check ran → trust Detoxify score
 
     top_edits = sorted(
         [s for s in sentences if s.get("adjusted_toxicity", s["toxicity"]) >= 0.35 and _is_genuine(s)],
