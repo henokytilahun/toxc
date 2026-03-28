@@ -1,4 +1,5 @@
 # toxc
+[![DevProof Score](https://orenda.vision/api/badge/score/henokytilahun/toxc)](https://orenda.vision/score/henokytilahun/toxc)
 
 **CLI toxicity & sentiment analysis for text, audio, and video — with YouTube ad safety scoring and local LLM context verification.**
 
@@ -444,9 +445,6 @@ Config set options:
 
 Built on research from a comparative toxicity study across Twitter/X and Bluesky (~19k posts). The short finding: platform culture shapes toxicity patterns more than moderation rules do.
 
-## SCORE FROM DEVPROOF
-
-[![DevProof Score](https://orenda.vision/api/badge/score/henokytilahun/toxc)](https://orenda.vision/score/henokytilahun/toxc)
 ---
 
 MIT License · [@henokytilahun](https://henokytilahun.com)
