@@ -205,6 +205,21 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .wf-saves{font-family:var(--mono);font-weight:700;color:var(--grn)}
 .wf-sub{font-size:.75rem;color:var(--muted);margin-top:.1rem;font-style:italic}
 
+/* ── Context Check badges ──────────────────────────────── */
+.cc-cleared{display:inline-flex;align-items:center;gap:.28rem;font-size:.62rem;font-weight:600;padding:.15rem .45rem;border-radius:4px;background:var(--grn-d);color:var(--grn);border:1px solid rgba(34,197,94,.2)}
+.cc-confirmed{display:inline-flex;align-items:center;gap:.28rem;font-size:.62rem;font-weight:600;padding:.15rem .45rem;border-radius:4px;background:var(--red-d);color:var(--red);border:1px solid rgba(239,68,68,.22)}
+.cc-intent{font-size:.62rem;color:var(--muted);margin-left:.3rem;text-transform:capitalize}
+.rewrite-block{margin-top:.6rem;border-top:1px solid var(--border);padding-top:.6rem;display:flex;flex-direction:column;gap:.4rem}
+.rewrite-row{display:flex;align-items:baseline;gap:.5rem;font-size:.8rem}
+.rewrite-label{font-size:.58rem;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);min-width:52px;flex-shrink:0}
+.rewrite-text{color:var(--text);line-height:1.4;font-style:italic}
+.rewrite-copy{background:none;border:1px solid var(--border);border-radius:4px;padding:.1rem .4rem;font-size:.6rem;color:var(--text2);cursor:pointer;transition:background .12s,color .12s;flex-shrink:0}
+.rewrite-copy:hover{background:var(--surface-h);color:var(--text)}
+.wf-section-lbl{font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);padding:.45rem 0 .25rem;margin-top:.3rem;border-top:1px solid var(--border)}
+.wf-section-lbl:first-child{border-top:none;margin-top:0}
+.cc-summary-bar{display:flex;align-items:center;gap:.6rem;background:var(--grn-d);border:1px solid rgba(34,197,94,.2);border-radius:6px;padding:.5rem .75rem;margin-bottom:.9rem;font-size:.78rem;color:var(--grn)}
+.cc-summary-bar strong{font-family:var(--mono);font-weight:800}
+
 /* ── Highlight flash ───────────────────────────────────── */
 @keyframes hl-flash{0%{background:var(--blu-d)}100%{background:transparent}}
 .sent-hl{animation:hl-flash 2s ease-out}
@@ -299,7 +314,7 @@ details.acc[open]>summary{margin-bottom:.7rem}
 <div class="tip" id="tip"></div>
 <div id="root"></div>
 <script>
-const REPORT = {"audio": "test.mp3", "model": "tiny", "duration": 30.0, "analyzed_at": "Mar 27 2026", "overall": {"toxicity": 0.5905, "score_breakdown": {"density": 0.322, "peak": 0.82, "rate": 0.4}, "sentiment": 0.033149171270718245, "verdict": "Borderline", "toxic_count": 2, "sentence_count": 5, "dimensions": {"insult": 0.2511049723756906, "obscene": 0.15486187845303867, "threat": 0.038895027624309395, "identity_attack": 0.04066298342541436, "severe_toxicity": 0.08839779005524862}}, "sentences": [{"start": 0.0, "end": 3.0, "text": "Hello everyone welcome to the channel", "toxicity": 0.05, "sentiment": 0.4, "verdict": "Clean", "dimensions": {"insult": 0.01, "obscene": 0.01, "threat": 0.0, "identity_attack": 0.0, "severe_toxicity": 0.0}, "idx": 0}, {"start": 3.0, "end": 8.0, "text": "You stupid idiot get out of here", "toxicity": 0.82, "sentiment": -0.7, "verdict": "Toxic", "dimensions": {"insult": 0.78, "obscene": 0.55, "threat": 0.1, "identity_attack": 0.05, "severe_toxicity": 0.3}, "idx": 1}, {"start": 8.0, "end": 15.0, "text": "Anyway today we are going to talk about gaming", "toxicity": 0.12, "sentiment": 0.2, "verdict": "Clean", "dimensions": {"insult": 0.02, "obscene": 0.01, "threat": 0.0, "identity_attack": 0.0, "severe_toxicity": 0.0}, "idx": 2}, {"start": 15.0, "end": 22.0, "text": "Those people are disgusting scum", "toxicity": 0.75, "sentiment": -0.5, "verdict": "Toxic", "dimensions": {"insult": 0.6, "obscene": 0.3, "threat": 0.12, "identity_attack": 0.18, "severe_toxicity": 0.2}, "idx": 3}, {"start": 22.0, "end": 30.0, "text": "Subscribe if you enjoy the content", "toxicity": 0.02, "sentiment": 0.6, "verdict": "Clean", "dimensions": {"insult": 0.0, "obscene": 0.0, "threat": 0.0, "identity_attack": 0.0, "severe_toxicity": 0.0}, "idx": 4}], "top_toxic": [{"start": 3.0, "end": 8.0, "text": "You stupid idiot get out of here", "toxicity": 0.82, "sentiment": -0.7, "verdict": "Toxic", "dimensions": {"insult": 0.78, "obscene": 0.55, "threat": 0.1, "identity_attack": 0.05, "severe_toxicity": 0.3}, "idx": 1}, {"start": 15.0, "end": 22.0, "text": "Those people are disgusting scum", "toxicity": 0.75, "sentiment": -0.5, "verdict": "Toxic", "dimensions": {"insult": 0.6, "obscene": 0.3, "threat": 0.12, "identity_attack": 0.18, "severe_toxicity": 0.2}, "idx": 3}, {"start": 8.0, "end": 15.0, "text": "Anyway today we are going to talk about gaming", "toxicity": 0.12, "sentiment": 0.2, "verdict": "Clean", "dimensions": {"insult": 0.02, "obscene": 0.01, "threat": 0.0, "identity_attack": 0.0, "severe_toxicity": 0.0}, "idx": 2}, {"start": 0.0, "end": 3.0, "text": "Hello everyone welcome to the channel", "toxicity": 0.05, "sentiment": 0.4, "verdict": "Clean", "dimensions": {"insult": 0.01, "obscene": 0.01, "threat": 0.0, "identity_attack": 0.0, "severe_toxicity": 0.0}, "idx": 0}, {"start": 22.0, "end": 30.0, "text": "Subscribe if you enjoy the content", "toxicity": 0.02, "sentiment": 0.6, "verdict": "Clean", "dimensions": {"insult": 0.0, "obscene": 0.0, "threat": 0.0, "identity_attack": 0.0, "severe_toxicity": 0.0}, "idx": 4}], "peaks_by_dim": {"insult": {"score": 0.78, "sentence": {"start": 3.0, "end": 8.0, "text": "You stupid idiot get out of here", "toxicity": 0.82, "sentiment": -0.7, "verdict": "Toxic", "dimensions": {"insult": 0.78, "obscene": 0.55, "threat": 0.1, "identity_attack": 0.05, "severe_toxicity": 0.3}, "idx": 1}}, "obscene": {"score": 0.55, "sentence": {"start": 3.0, "end": 8.0, "text": "You stupid idiot get out of here", "toxicity": 0.82, "sentiment": -0.7, "verdict": "Toxic", "dimensions": {"insult": 0.78, "obscene": 0.55, "threat": 0.1, "identity_attack": 0.05, "severe_toxicity": 0.3}, "idx": 1}}, "threat": {"score": 0.12, "sentence": {"start": 15.0, "end": 22.0, "text": "Those people are disgusting scum", "toxicity": 0.75, "sentiment": -0.5, "verdict": "Toxic", "dimensions": {"insult": 0.6, "obscene": 0.3, "threat": 0.12, "identity_attack": 0.18, "severe_toxicity": 0.2}, "idx": 3}}, "identity_attack": {"score": 0.18, "sentence": {"start": 15.0, "end": 22.0, "text": "Those people are disgusting scum", "toxicity": 0.75, "sentiment": -0.5, "verdict": "Toxic", "dimensions": {"insult": 0.6, "obscene": 0.3, "threat": 0.12, "identity_attack": 0.18, "severe_toxicity": 0.2}, "idx": 3}}, "severe_toxicity": {"score": 0.3, "sentence": {"start": 3.0, "end": 8.0, "text": "You stupid idiot get out of here", "toxicity": 0.82, "sentiment": -0.7, "verdict": "Toxic", "dimensions": {"insult": 0.78, "obscene": 0.55, "threat": 0.1, "identity_attack": 0.05, "severe_toxicity": 0.3}, "idx": 1}}}, "fast": false, "monetization": {"risk_level": "HIGH", "ad_verdict": "No ads likely", "ad_detail": "Content will likely be demonetized. Edit flagged moments before uploading.", "first7_flagged": true, "first7_sentences": [{"start": 3.0, "end": 8.0, "text": "You stupid idiot get out of here", "toxicity": 0.82, "sentiment": -0.7, "verdict": "Toxic", "dimensions": {"insult": 0.78, "obscene": 0.55, "threat": 0.1, "identity_attack": 0.05, "severe_toxicity": 0.3}, "idx": 1}], "signals": [{"signal": "density", "severity": "high", "label": "40% of sentences flagged \u2014 pattern risk", "value": 0.4}, {"signal": "first7", "severity": "medium", "label": "Flagged content in first 7 seconds", "value": 0.82}], "consequence_breakdown": [{"label": "Monetization", "value": "NO ADS", "severity": "high"}, {"label": "Strike risk", "value": "ELEVATED", "severity": "medium"}, {"label": "Age restriction", "value": "NONE", "severity": "low"}, {"label": "Advertiser opt-out risk", "value": "HIGH", "severity": "high"}], "recommendations": [{"type": "warning", "text": "Move or remove flagged content from first 7 seconds"}, {"type": "edit", "text": "Consider editing 0:03 to protect monetization", "snippet": "You stupid idiot get out of here", "timestamp": 3.0, "toxicity": 0.82, "saves": 52.23}, {"type": "edit", "text": "Consider editing 0:15 to protect monetization", "snippet": "Those people are disgusting scum", "timestamp": 15.0, "toxicity": 0.75, "saves": 47.77}]}, "channel": {"name": "Test Channel", "subscribers": 50000, "monthly_views": 200000, "cpm": 4.0, "videos_per_month": 8, "category": "Gaming", "past_strikes": 1, "size_label": "Mid-tier (10K\u2013100K subs)", "strike_label": "1 of 3 \u2014 elevated caution advised", "strike_severity": "medium", "category_note": "Moderate scrutiny \u2014 gaming language has more tolerance.", "financial": {"revenue_per_video": 100.0, "limited_ads_revenue": 30.0, "projected_revenue": 0.0, "revenue_at_risk": 100.0, "annual_impact": 9600.0, "views_per_video": 25000}, "strike_escalation": "A second strike means a 2-week upload freeze, loss of all monetization during that period, and leaves you one strike from permanent termination."}};
+const REPORT = {"audio": "test.mp3", "model": "tiny", "duration": 22.0, "analyzed_at": "Mar 27 2026", "overall": {"toxicity": 0.5575, "raw_toxicity": 0.7017, "score_breakdown": {"density": 0.2199, "peak": 0.88, "rate": 0.25}, "sentiment": 0.2028776978417266, "verdict": "Borderline", "toxic_count": 1, "sentence_count": 4, "dimensions": {"insult": 0.29654676258992807, "obscene": 0.1550359712230216, "threat": 0.033453237410071945, "identity_attack": 0.009352517985611512, "severe_toxicity": 0.08906474820143884}}, "context_check": {"ran": true, "model": "llama3.2", "checked": 3, "cleared": 2, "confirmed": 1}, "sentences": [{"start": 0.0, "end": 3.0, "text": "you are absolutely killing it right now", "toxicity": 0.71, "adjusted_toxicity": 0.06, "sentiment": 0.6, "verdict": "Toxic", "dimensions": {"insult": 0.3, "obscene": 0.1, "threat": 0.0, "identity_attack": 0.0, "severe_toxicity": 0.0}, "context_check": {"genuine_harm": false, "intent": "compliment", "adjusted_score": 0.06, "reason": "Hyperbolic praise \u2014 clearly a compliment in context", "safe_rewrite": "you are absolutely crushing it right now", "alt_rewrite": "your performance right now is unreal"}, "idx": 0}, {"start": 3.0, "end": 8.0, "text": "Shut the hell up you idiot", "toxicity": 0.88, "adjusted_toxicity": 0.88, "sentiment": -0.8, "verdict": "Toxic", "dimensions": {"insult": 0.82, "obscene": 0.6, "threat": 0.1, "identity_attack": 0.05, "severe_toxicity": 0.35}, "context_check": {"genuine_harm": true, "intent": "harmful", "adjusted_score": 0.88, "reason": "Direct personal insult with profanity \u2014 genuine flag"}, "idx": 1}, {"start": 8.0, "end": 15.0, "text": "Anyway this analysis is completely brutal", "toxicity": 0.58, "adjusted_toxicity": 0.09, "sentiment": -0.1, "verdict": "Borderline", "dimensions": {"insult": 0.2, "obscene": 0.05, "threat": 0.05, "identity_attack": 0.0, "severe_toxicity": 0.08}, "context_check": {"genuine_harm": false, "intent": "criticism", "adjusted_score": 0.09, "reason": "Brutal here means incisive/thorough, not violent", "safe_rewrite": "this analysis is completely thorough", "alt_rewrite": "this is a remarkably sharp breakdown"}, "idx": 2}, {"start": 15.0, "end": 22.0, "text": "This product is amazing I love it", "toxicity": 0.05, "adjusted_toxicity": 0.05, "sentiment": 0.9, "verdict": "Clean", "dimensions": {"insult": 0.0, "obscene": 0.0, "threat": 0.0, "identity_attack": 0.0, "severe_toxicity": 0.0}, "idx": 3}], "top_toxic": [{"start": 3.0, "end": 8.0, "text": "Shut the hell up you idiot", "toxicity": 0.88, "adjusted_toxicity": 0.88, "sentiment": -0.8, "verdict": "Toxic", "dimensions": {"insult": 0.82, "obscene": 0.6, "threat": 0.1, "identity_attack": 0.05, "severe_toxicity": 0.35}, "context_check": {"genuine_harm": true, "intent": "harmful", "adjusted_score": 0.88, "reason": "Direct personal insult with profanity \u2014 genuine flag"}, "idx": 1}, {"start": 8.0, "end": 15.0, "text": "Anyway this analysis is completely brutal", "toxicity": 0.58, "adjusted_toxicity": 0.09, "sentiment": -0.1, "verdict": "Borderline", "dimensions": {"insult": 0.2, "obscene": 0.05, "threat": 0.05, "identity_attack": 0.0, "severe_toxicity": 0.08}, "context_check": {"genuine_harm": false, "intent": "criticism", "adjusted_score": 0.09, "reason": "Brutal here means incisive/thorough, not violent", "safe_rewrite": "this analysis is completely thorough", "alt_rewrite": "this is a remarkably sharp breakdown"}, "idx": 2}, {"start": 0.0, "end": 3.0, "text": "you are absolutely killing it right now", "toxicity": 0.71, "adjusted_toxicity": 0.06, "sentiment": 0.6, "verdict": "Toxic", "dimensions": {"insult": 0.3, "obscene": 0.1, "threat": 0.0, "identity_attack": 0.0, "severe_toxicity": 0.0}, "context_check": {"genuine_harm": false, "intent": "compliment", "adjusted_score": 0.06, "reason": "Hyperbolic praise \u2014 clearly a compliment in context", "safe_rewrite": "you are absolutely crushing it right now", "alt_rewrite": "your performance right now is unreal"}, "idx": 0}, {"start": 15.0, "end": 22.0, "text": "This product is amazing I love it", "toxicity": 0.05, "adjusted_toxicity": 0.05, "sentiment": 0.9, "verdict": "Clean", "dimensions": {"insult": 0.0, "obscene": 0.0, "threat": 0.0, "identity_attack": 0.0, "severe_toxicity": 0.0}, "idx": 3}], "peaks_by_dim": {"insult": {"score": 0.82, "sentence": {"start": 3.0, "end": 8.0, "text": "Shut the hell up you idiot", "toxicity": 0.88, "adjusted_toxicity": 0.88, "sentiment": -0.8, "verdict": "Toxic", "dimensions": {"insult": 0.82, "obscene": 0.6, "threat": 0.1, "identity_attack": 0.05, "severe_toxicity": 0.35}, "context_check": {"genuine_harm": true, "intent": "harmful", "adjusted_score": 0.88, "reason": "Direct personal insult with profanity \u2014 genuine flag"}, "idx": 1}}, "obscene": {"score": 0.6, "sentence": {"start": 3.0, "end": 8.0, "text": "Shut the hell up you idiot", "toxicity": 0.88, "adjusted_toxicity": 0.88, "sentiment": -0.8, "verdict": "Toxic", "dimensions": {"insult": 0.82, "obscene": 0.6, "threat": 0.1, "identity_attack": 0.05, "severe_toxicity": 0.35}, "context_check": {"genuine_harm": true, "intent": "harmful", "adjusted_score": 0.88, "reason": "Direct personal insult with profanity \u2014 genuine flag"}, "idx": 1}}, "threat": {"score": 0.1, "sentence": {"start": 3.0, "end": 8.0, "text": "Shut the hell up you idiot", "toxicity": 0.88, "adjusted_toxicity": 0.88, "sentiment": -0.8, "verdict": "Toxic", "dimensions": {"insult": 0.82, "obscene": 0.6, "threat": 0.1, "identity_attack": 0.05, "severe_toxicity": 0.35}, "context_check": {"genuine_harm": true, "intent": "harmful", "adjusted_score": 0.88, "reason": "Direct personal insult with profanity \u2014 genuine flag"}, "idx": 1}}, "identity_attack": {"score": 0.05, "sentence": {"start": 3.0, "end": 8.0, "text": "Shut the hell up you idiot", "toxicity": 0.88, "adjusted_toxicity": 0.88, "sentiment": -0.8, "verdict": "Toxic", "dimensions": {"insult": 0.82, "obscene": 0.6, "threat": 0.1, "identity_attack": 0.05, "severe_toxicity": 0.35}, "context_check": {"genuine_harm": true, "intent": "harmful", "adjusted_score": 0.88, "reason": "Direct personal insult with profanity \u2014 genuine flag"}, "idx": 1}}, "severe_toxicity": {"score": 0.35, "sentence": {"start": 3.0, "end": 8.0, "text": "Shut the hell up you idiot", "toxicity": 0.88, "adjusted_toxicity": 0.88, "sentiment": -0.8, "verdict": "Toxic", "dimensions": {"insult": 0.82, "obscene": 0.6, "threat": 0.1, "identity_attack": 0.05, "severe_toxicity": 0.35}, "context_check": {"genuine_harm": true, "intent": "harmful", "adjusted_score": 0.88, "reason": "Direct personal insult with profanity \u2014 genuine flag"}, "idx": 1}}}, "fast": false, "monetization": {"risk_level": "HIGH", "ad_verdict": "No ads likely", "ad_detail": "Content will likely be demonetized. Edit flagged moments before uploading.", "first7_flagged": true, "first7_sentences": [{"start": 3.0, "end": 8.0, "text": "Shut the hell up you idiot", "toxicity": 0.88, "adjusted_toxicity": 0.88, "sentiment": -0.8, "verdict": "Toxic", "dimensions": {"insult": 0.82, "obscene": 0.6, "threat": 0.1, "identity_attack": 0.05, "severe_toxicity": 0.35}, "context_check": {"genuine_harm": true, "intent": "harmful", "adjusted_score": 0.88, "reason": "Direct personal insult with profanity \u2014 genuine flag"}, "idx": 1}], "signals": [{"signal": "density", "severity": "high", "label": "25% of sentences flagged \u2014 pattern risk", "value": 0.25}, {"signal": "first7", "severity": "medium", "label": "Flagged content in first 7 seconds", "value": 0.88}], "consequence_breakdown": [{"label": "Monetization", "value": "NO ADS", "severity": "high"}, {"label": "Strike risk", "value": "ELEVATED", "severity": "medium"}, {"label": "Age restriction", "value": "NONE", "severity": "low"}, {"label": "Advertiser opt-out risk", "value": "HIGH", "severity": "high"}], "recommendations": [{"type": "warning", "text": "Move or remove flagged content from first 7 seconds"}, {"type": "edit", "text": "Consider editing 0:03 to protect monetization", "snippet": "Shut the hell up you idiot", "timestamp": 3.0, "toxicity": 0.88, "intent": "harmful", "reason": "Direct personal insult with profanity \u2014 genuine flag", "safe_rewrite": null, "alt_rewrite": null, "saves": 100.0}]}, "channel": {"name": "Test Channel", "subscribers": 50000, "monthly_views": 200000, "cpm": 4.0, "videos_per_month": 8, "category": "Gaming", "past_strikes": 1, "size_label": "Mid-tier (10K\u2013100K subs)", "strike_label": "1 of 3 \u2014 elevated caution advised", "strike_severity": "medium", "category_note": "Moderate scrutiny \u2014 gaming language has more tolerance.", "financial": {"revenue_per_video": 100.0, "limited_ads_revenue": 30.0, "projected_revenue": 0.0, "revenue_at_risk": 100.0, "annual_impact": 9600.0, "views_per_video": 25000}, "strike_escalation": "A second strike means a 2-week upload freeze, loss of all monetization during that period, and leaves you one strike from permanent termination."}};
 
 /* ── Helpers ──────────────────────────────────────────── */
 function fmt(s){const m=Math.floor(s/60),sec=Math.floor(s%60);return m+':'+String(sec).padStart(2,'0')}
@@ -386,11 +401,21 @@ function renderHero(R){
   function card(ic,val,valColor,label,sub){
     return`<div class="hero-card"><div class="hero-ic">${ic}</div><div class="hero-val" style="color:${valColor}">${val}</div><div class="hero-label">${label}</div>${sub?`<div class="hero-sub">${sub}</div>`:''}</div>`;
   }
+  const CC=R.context_check||{};
+  const hasCc=CC.ran&&CC.checked>0;
+  const CC_IC='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>';
+
+  // Dynamic grid: 4 cards normally, 5 when context check ran
+  const cols=hasCc?5:4;
   let cards=card(SCORE_IC,O.toxicity.toFixed(2),vc(O.verdict),'Toxicity Score',O.verdict);
   if(rl)cards+=card(AD_IC,rl,rlColor,'Ad Safety',M.ad_verdict||'');
   cards+=card(FLAG_IC,String(flaggedCount),flaggedCount>0?'var(--red)':'var(--grn)','Flagged Sentences',flaggedPct+'% of total');
   cards+=card(SENT_IC,sign(O.sentiment),sc(O.sentiment),'Avg Sentiment',O.sentiment>0.05?'Positive':O.sentiment<-0.05?'Negative':'Neutral');
-  return`<div class="hero-cards">${cards}</div>`;
+  if(hasCc){
+    const clearedColor=CC.cleared>0?'var(--grn)':'var(--text2)';
+    cards+=card(CC_IC,`${CC.cleared}/${CC.checked}`,clearedColor,'Context Cleared',`${CC.confirmed} genuine · ${CC.cleared} false pos`);
+  }
+  return`<div class="hero-cards" style="grid-template-columns:repeat(${cols},1fr)">${cards}</div>`;
 }
 
 /* ── Sidebar ──────────────────────────────────────────── */
@@ -577,51 +602,111 @@ function renderWhatToFix(R){
   const M=R.monetization||{};
   const recs=M.recommendations||[];
   const rl=M.risk_level||'LOW';
+  const CC=R.context_check||{};
+  const hasCc=CC.ran;
   const fmt$=v=>'$'+v.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',');
 
-  const items=[];
+  function copyBtn(text){
+    const safe=text.replace(/'/g,"\\'");
+    return`<button class="rewrite-copy" onclick="navigator.clipboard.writeText('${safe}').then(()=>{this.textContent='✓';setTimeout(()=>this.textContent='Copy',1200)})">Copy</button>`;
+  }
 
-  // Edit recommendations with savings
-  recs.filter(r=>r.type==='edit').forEach(r=>{
+  function rewriteBlock(r){
+    if(!r.safe_rewrite&&!r.alt_rewrite)return'';
+    let html='<div class="rewrite-block">';
+    if(r.safe_rewrite) html+=`<div class="rewrite-row"><span class="rewrite-label">Safe</span><span class="rewrite-text">\u201c${r.safe_rewrite}\u201d</span>${copyBtn(r.safe_rewrite)}</div>`;
+    if(r.alt_rewrite)  html+=`<div class="rewrite-row"><span class="rewrite-label">Alt</span><span class="rewrite-text">\u201c${r.alt_rewrite}\u201d</span>${copyBtn(r.alt_rewrite)}</div>`;
+    html+='</div>';
+    return html;
+  }
+
+  let html='';
+
+  // ── Context-check summary bar ──────────────────────────
+  if(hasCc&&CC.checked>0){
+    const net=CC.cleared;
+    html+=`<div class="cc-summary-bar">\u2713 Context check ran with ${CC.model} \u00b7 `
+      +`<strong>${CC.cleared}</strong> false positive${CC.cleared!==1?'s':''} cleared of ${CC.checked} flagged`
+      +(CC.confirmed?` \u00b7 <strong style="color:var(--red)">${CC.confirmed}</strong> confirmed genuine`:'')
+      +'</div>';
+  }
+
+  // ── Confirmed genuine flags (show rewrites when available) ─
+  const editRecs=recs.filter(r=>r.type==='edit');
+  let hasConfirmed=false;
+  let confirmedHtml='';
+
+  if(hasCc) confirmedHtml+=`<div class="wf-section-lbl">\u26a0 ${editRecs.length} confirmed flag${editRecs.length!==1?'s':''}</div>`;
+
+  editRecs.forEach(r=>{
+    hasConfirmed=true;
     const ts=fmt(r.timestamp||0);
-    const savesHtml=r.saves?` <span class="wf-saves">→ saves ~${fmt$(r.saves)}/video</span>`:'';
-    items.push({icon:'→',cls:'wf-edit',html:`Edit ${ts}${savesHtml}`,sub:r.snippet?`\u201c${r.snippet}\u2026\u201d`:''});
+    const savesHtml=r.saves?` <span class="wf-saves">\u2192 saves ~${fmt$(r.saves)}/video</span>`:'';
+    const intentBadge=r.intent?`<span class="cc-intent">${r.intent}</span>`:'';
+    const reasonHtml=r.reason?`<div class="wf-sub">${r.reason}</div>`:'';
+    const snippetHtml=(!r.reason&&r.snippet)?`<div class="wf-sub">\u201c${r.snippet}\u2026\u201d</div>`:'';
+    confirmedHtml+=`<div class="wf-row">`
+      +`<span class="wf-icon wf-warn">\u26a0</span>`
+      +`<div><div class="wf-text">Edit ${ts}${savesHtml}${intentBadge}</div>`
+      +reasonHtml+snippetHtml
+      +rewriteBlock(r)
+      +'</div></div>';
   });
 
   // First-7-seconds warning
   if(M.first7_flagged){
-    items.push({icon:'\u26a0',cls:'wf-warn',html:'Move flagged content out of first 7 seconds',sub:''});
+    hasConfirmed=true;
+    confirmedHtml+=`<div class="wf-row"><span class="wf-icon wf-warn">\u26a0</span>`
+      +`<div><div class="wf-text">Move flagged content out of first 7 seconds</div></div></div>`;
   }
 
-  // Flagged sentences summary
-  const flagged=R.sentences.filter(s=>s.toxicity>=0.4);
-  if(flagged.length>0){
-    const maxTs=Math.max(...flagged.map(s=>s.start));
-    const mins=Math.ceil(maxTs/60);
-    const allEarly=maxTs<120;
-    const suffix=allEarly?` \u2192 all in first ${mins} minute${mins>1?'s':''}`:` \u2192 last at ${fmt(maxTs)}`;
-    items.push({icon:'\u00b7',cls:'wf-info',html:`${flagged.length} sentence${flagged.length>1?'s':''} flagged${suffix}`,sub:''});
+  html+=confirmedHtml;
+
+  // ── Cleared false positives (collapsed, informational) ─
+  const cleared=R.sentences.filter(s=>{
+    const cc=s.context_check;
+    return cc&&!cc.error&&cc.genuine_harm===false;
+  });
+  if(cleared.length){
+    html+=`<div class="wf-section-lbl">\u2713 ${cleared.length} cleared by context check</div>`;
+    cleared.forEach(s=>{
+      const cc=s.context_check;
+      html+=`<div class="wf-row">`
+        +`<span class="wf-icon wf-pass">\u2713</span>`
+        +`<div><div class="wf-text" style="color:var(--text2)">${fmt(s.start)} \u00b7 \u201c${s.text.slice(0,55)}\u2026\u201d`
+        +`<span class="cc-intent">${cc.intent||''}</span></div>`
+        +`<div class="wf-sub">Was ${s.toxicity.toFixed(2)} \u2192 adjusted ${cc.adjusted_score.toFixed(2)} \u00b7 ${cc.reason||''}</div>`
+        +'</div></div>';
+    });
   }
 
-  // Title reminder for YouTube videos at risk
+  // ── Flagged sentences summary (no context check) ─
+  if(!hasCc){
+    const flagged=R.sentences.filter(s=>s.toxicity>=0.4);
+    if(flagged.length>0){
+      const maxTs=Math.max(...flagged.map(s=>s.start));
+      const mins=Math.ceil(maxTs/60);
+      const suffix=maxTs<120?` \u2192 all in first ${mins} minute${mins>1?'s':''}`:` \u2192 last at ${fmt(maxTs)}`;
+      html+=`<div class="wf-row"><span class="wf-icon wf-info">\u00b7</span>`
+        +`<div><div class="wf-text">${flagged.length} sentence${flagged.length>1?'s':''} flagged${suffix}</div></div></div>`;
+    }
+  }
+
+  // ── Title reminder ─
   if(R.youtube&&R.youtube.title&&rl!=='LOW'){
-    items.push({icon:'\u2192',cls:'wf-edit',html:'Review title for ad safety — <span style="font-family:var(--mono);font-size:.78rem;color:var(--muted)">toxc check "your title"</span>',sub:''});
+    html+=`<div class="wf-row"><span class="wf-icon wf-edit">\u2192</span>`
+      +`<div><div class="wf-text">Review title for ad safety \u2014 <span style="font-family:var(--mono);font-size:.78rem;color:var(--muted)">toxc check "your title"</span></div></div></div>`;
   }
 
-  // Pass message when nothing to fix
-  if(!items.length){
-    items.push({icon:'\u2713',cls:'wf-pass',html:'No edits needed — safe to upload',sub:''});
+  // ── Pass message ─
+  if(!html.trim()||(!hasConfirmed&&!cleared.length&&!R.sentences.some(s=>s.toxicity>=0.4))){
+    html+=`<div class="wf-row"><span class="wf-icon wf-pass">\u2713</span>`
+      +`<div><div class="wf-text">No edits needed \u2014 safe to upload</div></div></div>`;
   }
-
-  const rowHtml=items.map(item=>`<div class="wf-row">`
-    +`<span class="wf-icon ${item.cls}">${item.icon}</span>`
-    +`<div><div class="wf-text">${item.html}</div>`
-    +(item.sub?`<div class="wf-sub">${item.sub}</div>`:'')
-    +`</div></div>`).join('');
 
   return`<div class="section" id="sec-fix">`
     +`<div class="section-hdr">What to Fix</div>`
-    +`<div class="recs-card" style="margin-bottom:0">${rowHtml}</div>`
+    +`<div class="recs-card" style="margin-bottom:0">${html}</div>`
     +`</div>`;
 }
 
@@ -812,15 +897,34 @@ function renderMoments(R){
         }).join('');
     }
     const bc=s.toxicity>=.7?'var(--red)':s.toxicity>=.4?'var(--yel)':'var(--grn)';
+    const adjTox=s.adjusted_toxicity!=null?s.adjusted_toxicity:s.toxicity;
+    const adjColor=tc(adjTox);
+    const cc=s.context_check;
+    let ccBadge='';
+    if(cc&&!cc.error){
+      if(cc.genuine_harm===false) ccBadge='<span class="cc-cleared">\u2713 Cleared \u00b7 '+cc.intent+'</span>';
+      else ccBadge='<span class="cc-confirmed">\u26a0 Confirmed</span>';
+    }
+    let mcRewrite='';
+    if(cc&&!cc.error&&cc.safe_rewrite){
+      mcRewrite='<div class="rewrite-block">'
+        +(cc.safe_rewrite?'<div class="rewrite-row"><span class="rewrite-label">Safe</span><span class="rewrite-text">\u201c'+cc.safe_rewrite+'\u201d</span></div>':'')
+        +(cc.alt_rewrite ?'<div class="rewrite-row"><span class="rewrite-label">Alt</span><span class="rewrite-text">\u201c'+cc.alt_rewrite+'\u201d</span></div>':'')
+        +'</div>';
+    }
     return'<div class="mc" onclick="scrollToSent('+idx+')" style="border-left-color:'+bc+'">'
-      +'<div class="mc-rank" style="color:'+color+'">'+(i+1)+'</div>'
+      +'<div class="mc-rank" style="color:'+adjColor+'">'+(i+1)+'</div>'
       +'<div class="mc-body">'
       +'<div class="mc-top">'
-      +'<span class="mc-score" style="color:'+color+'">'+s.toxicity.toFixed(2)+'</span>'
+      +'<span class="mc-score" style="color:'+adjColor+'">'+adjTox.toFixed(2)+'</span>'
+      +(adjTox!==s.toxicity?'<span style="font-size:.65rem;color:var(--muted);font-family:var(--mono)">(raw '+s.toxicity.toFixed(2)+')</span>':'')
       +'<span class="mc-time">'+fmt(s.start)+'</span>'
-      +'<span class="mc-verdict" style="color:'+vc(s.verdict)+'">'+s.verdict+'</span></div>'
+      +'<span class="mc-verdict" style="color:'+vc(s.verdict)+'">'+s.verdict+'</span>'
+      +(ccBadge?ccBadge:'')
+      +'</div>'
       +'<div class="mc-text">'+s.text+'</div>'
       +(chips?'<div class="mc-chips">'+chips+'</div>':'')
+      +mcRewrite
       +'</div></div>';
   }).join('');
 
@@ -831,21 +935,41 @@ function renderMoments(R){
 
 /* ── Sentences Table ──────────────────────────────────── */
 function renderSentences(R){
-  const rows=R.sentences.map(function(s,i){
-    const color=tc(s.toxicity);
-    return'<tr id="sent-'+i+'">'
-      +'<td class="col-time" onclick="scrollToSent('+i+')">'+fmt(s.start)+'</td>'
-      +'<td class="col-text">'+s.text+'</td>'
-      +'<td class="col-score"><span style="color:'+color+'">'+s.toxicity.toFixed(2)+'</span>'+mbar(s.toxicity,color)+'</td>'
-      +'<td class="col-sent" style="color:'+sc(s.sentiment)+'">'+sign(s.sentiment)+'</td>'
-      +'<td class="col-verd" style="color:'+vc(s.verdict)+'">'+s.verdict+'</td></tr>';
-  }).join('');
+  function rows(hasCtx){
+    return R.sentences.map(function(s,i){
+      const adjTox=s.adjusted_toxicity!=null?s.adjusted_toxicity:s.toxicity;
+      const color=tc(adjTox);
+      const cc=s.context_check;
+      let ctxCell='';
+      if(hasCtx){
+        if(cc&&!cc.error){
+          if(cc.genuine_harm===false) ctxCell='<td><span class="cc-cleared">\u2713 Cleared</span> <span class="cc-intent">'+cc.intent+'</span></td>';
+          else ctxCell='<td><span class="cc-confirmed">\u26a0 Confirmed</span></td>';
+        } else {
+          ctxCell='<td style="color:var(--muted);font-size:.7rem">—</td>';
+        }
+      }
+      let scoreCell='<td class="col-score"><span style="color:'+color+'">'+adjTox.toFixed(2)+'</span>'+mbar(adjTox,color);
+      if(cc&&!cc.error&&cc.genuine_harm===false) scoreCell+=' <span style="font-size:.6rem;color:var(--muted);font-family:var(--mono)">(was '+s.toxicity.toFixed(2)+')</span>';
+      scoreCell+='</td>';
+      return'<tr id="sent-'+i+'">'
+        +'<td class="col-time" onclick="scrollToSent('+i+')">'+fmt(s.start)+'</td>'
+        +'<td class="col-text">'+s.text+'</td>'
+        +scoreCell
+        +ctxCell
+        +'<td class="col-sent" style="color:'+sc(s.sentiment)+'">'+sign(s.sentiment)+'</td>'
+        +'<td class="col-verd" style="color:'+vc(s.verdict)+'">'+s.verdict+'</td></tr>';
+    }).join('');
+  }
 
+  const hasCtx=R.sentences.some(s=>s.context_check);
   return'<div class="section" id="sec-all">'
     +'<div class="section-hdr">All Sentences</div>'
     +'<div class="s-table-wrap"><table class="s-table"><thead><tr>'
-    +'<th>Time</th><th>Text</th><th>Toxicity</th><th>Sentiment</th><th>Verdict</th>'
-    +'</tr></thead><tbody>'+rows+'</tbody></table></div></div>';
+    +'<th>Time</th><th>Text</th><th>Toxicity</th>'
+    +(hasCtx?'<th>Context</th>':'')
+    +'<th>Sentiment</th><th>Verdict</th>'
+    +'</tr></thead><tbody>'+rows(hasCtx)+'</tbody></table></div></div>';
 }
 
 /* ── Main Render ──────────────────────────────────────── */
