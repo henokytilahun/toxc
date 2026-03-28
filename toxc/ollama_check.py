@@ -92,6 +92,40 @@ def is_available(model: str = "llama3.2") -> tuple[bool, str]:
     return True, pulled[0]
 
 
+def _parse_json_lenient(raw: str) -> dict:
+    """Try json.loads, then attempt common LLM-output repairs."""
+    try:
+        return json.loads(raw)
+    except json.JSONDecodeError:
+        pass
+
+    fixed = raw
+    fixed = re.sub(r",\s*([}\]])", r"\1", fixed)
+    fixed = re.sub(r"(?<![\\])\'", '"', fixed)
+    fixed = re.sub(r'\bTrue\b', 'true', fixed)
+    fixed = re.sub(r'\bFalse\b', 'false', fixed)
+    fixed = re.sub(r'\bNone\b', 'null', fixed)
+    fixed = re.sub(r'(?<=": ")(.*?)(?="[,}\]])', lambda m: m.group(0).replace('\n', '\\n'), fixed)
+    try:
+        return json.loads(fixed)
+    except json.JSONDecodeError:
+        pass
+
+    depth = 0
+    start = fixed.find('{')
+    if start == -1:
+        raise json.JSONDecodeError("No JSON object found", raw, 0)
+    for i in range(start, len(fixed)):
+        if fixed[i] == '{':
+            depth += 1
+        elif fixed[i] == '}':
+            depth -= 1
+        if depth == 0:
+            return json.loads(fixed[start:i + 1])
+
+    raise json.JSONDecodeError("Could not repair JSON", raw, 0)
+
+
 def contextual_check(
     sentence: str,
     context_before: str,
@@ -135,7 +169,12 @@ def contextual_check(
         raw = re.sub(r"^```(?:json)?\s*", "", raw, flags=re.MULTILINE)
         raw = re.sub(r"\s*```\s*$",       "", raw, flags=re.MULTILINE)
 
-        result = json.loads(raw)
+        # If the model added prose before/after the JSON object, extract it
+        obj_match = re.search(r'\{.*\}', raw, re.DOTALL)
+        if obj_match:
+            raw = obj_match.group(0)
+
+        result = _parse_json_lenient(raw)
 
         # Sanitise / clamp fields
         result["adjusted_score"] = max(

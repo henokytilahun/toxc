@@ -150,7 +150,12 @@ def _segment_whisper_result(result: dict) -> list[dict]:
     return all_mapped
 
 
-def _diarize(audio_path: str, hf_token: str) -> list[tuple[float, float, str]]:
+def _diarize(
+    audio_path: str,
+    hf_token: str,
+    min_speakers: int | None = None,
+    max_speakers: int | None = None,
+) -> list[tuple[float, float, str]]:
     """
     Run pyannote speaker diarization on `audio_path`.
     Returns a list of (start, end, speaker_label) tuples sorted by start time.
@@ -177,17 +182,28 @@ def _diarize(audio_path: str, hf_token: str) -> list[tuple[float, float, str]]:
 
     with _console.status("[dim]Running speaker diarization…[/dim]", spinner="dots"):
         import subprocess, torchaudio
-        # Convert to WAV first — torchaudio can't decode webm/opus natively
+        # Convert to WAV (mono PCM) so torchaudio can load it.
+        # Preserve original sample rate for better speaker discrimination.
         wav_tmp = tempfile.NamedTemporaryFile(suffix=".wav", delete=False)
         wav_tmp.close()
         try:
             subprocess.run(
-                ["ffmpeg", "-i", str(audio_path), "-ar", "16000", "-ac", "1",
+                ["ffmpeg", "-i", str(audio_path), "-ac", "1",
+                 "-acodec", "pcm_s16le",
                  "-y", "-loglevel", "error", wav_tmp.name],
                 capture_output=True, check=True,
             )
             waveform, sample_rate = torchaudio.load(wav_tmp.name)
-            diarization = pipeline({"waveform": waveform, "sample_rate": sample_rate})
+            # Pass waveform dict to bypass pyannote's torchcodec decoder
+            diarize_kwargs = {}
+            if min_speakers is not None:
+                diarize_kwargs["min_speakers"] = min_speakers
+            if max_speakers is not None:
+                diarize_kwargs["max_speakers"] = max_speakers
+            diarization = pipeline(
+                {"waveform": waveform, "sample_rate": sample_rate},
+                **diarize_kwargs,
+            )
         finally:
             if os.path.exists(wav_tmp.name):
                 os.unlink(wav_tmp.name)
@@ -206,7 +222,19 @@ def _diarize(audio_path: str, hf_token: str) -> list[tuple[float, float, str]]:
     turns = []
     for turn, _, speaker in annotation.itertracks(yield_label=True):
         turns.append((float(turn.start), float(turn.end), speaker))
-    return sorted(turns, key=lambda t: t[0])
+    sorted_turns = sorted(turns, key=lambda t: t[0])
+
+    speakers = set(t[2] for t in sorted_turns)
+    _console.print(
+        f"[dim]  Diarization: {len(speakers)} speaker(s) detected, "
+        f"{len(sorted_turns)} turn(s)[/dim]"
+    )
+    for spk in sorted(speakers):
+        spk_turns = [t for t in sorted_turns if t[2] == spk]
+        total_s = sum(t[1] - t[0] for t in spk_turns)
+        _console.print(f"[dim]    {spk}: {len(spk_turns)} turns, {total_s:.0f}s total[/dim]")
+
+    return sorted_turns
 
 
 def _assign_speakers(sentences: list[dict], turns: list[tuple[float, float, str]]) -> list[dict]:
@@ -241,6 +269,8 @@ def transcribe_and_segment(
     audio_path: str,
     model_size: str = "small",
     hf_token: str | None = None,
+    min_speakers: int | None = None,
+    max_speakers: int | None = None,
 ) -> tuple[list[dict], float]:
     """
     Transcribe audio and segment into sentences with timestamps.
@@ -263,7 +293,7 @@ def transcribe_and_segment(
 
     if hf_token:
         try:
-            turns = _diarize(audio_path, hf_token)
+            turns = _diarize(audio_path, hf_token, min_speakers=min_speakers, max_speakers=max_speakers)
             mapped = _assign_speakers(mapped, turns)
         except Exception as e:
             _console.print(f"[yellow]⚠ Speaker diarization failed: {e}[/yellow]")

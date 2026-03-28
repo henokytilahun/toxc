@@ -41,10 +41,16 @@ def config_set(
     videos_per_month: Optional[int]  = typer.Option(None, "--videos-per-month"),
     category:        Optional[str]   = typer.Option(None, "--category"),
     past_strikes:    Optional[int]   = typer.Option(None, "--past-strikes"),
+    hf_token:        Optional[str]   = typer.Option(None, "--hf-token", help="HuggingFace token for speaker diarization (pyannote)"),
 ):
     """Update one or more profile fields without re-running full setup."""
     from toxc.profile import load_profile, save_profile
     profile = load_profile() or {}
+
+    if hf_token is not None:
+        from toxc.profile import save_hf_token
+        save_hf_token(hf_token)
+        console.print(f"  [green]✓[/green] HuggingFace token saved")
 
     updates = {
         "channel_name":    channel_name,
@@ -56,14 +62,15 @@ def config_set(
         "past_strikes":    past_strikes,
     }
     changed = {k: v for k, v in updates.items() if v is not None}
-    if not changed:
+    if not changed and hf_token is None:
         console.print("[dim]No fields specified. Use --cpm 4.50 etc.[/dim]")
         raise typer.Exit()
 
-    profile.update(changed)
-    save_profile(profile)
-    for k, v in changed.items():
-        console.print(f"  [green]✓[/green] {k} = {v}")
+    if changed:
+        profile.update(changed)
+        save_profile(profile)
+        for k, v in changed.items():
+            console.print(f"  [green]✓[/green] {k} = {v}")
     console.print()
 
 
@@ -135,7 +142,11 @@ def voice_cmd(
     json: bool = typer.Option(False, "--json", help="Output as JSON"),
     no_profile: bool = typer.Option(False, "--no-profile", help="Skip channel profile / financial analysis"),
     context_check: bool = typer.Option(False, "--context-check", "-cc", help="Use local Ollama LLM to verify flagged sentences and generate safe rewrites"),
-    ollama_model: str = typer.Option("llama3.2", "--ollama-model", help="Ollama model to use for context checking"),
+    policy_review: bool = typer.Option(False, "--policy-review", "-pr", help="Use local Ollama LLM for a full YouTube policy review (reads guidelines, judges overall narrative, suggests rewrites)"),
+    ollama_model: str = typer.Option("llama3.2", "--ollama-model", help="Ollama model to use for context check and/or policy review"),
+    diarize: bool = typer.Option(False, "--diarize", "-d", help="Enable speaker diarization via pyannote (requires HuggingFace token — see: toxc config set --hf-token)"),
+    min_speakers: Optional[int] = typer.Option(None, "--min-speakers", help="Minimum number of speakers for diarization"),
+    max_speakers: Optional[int] = typer.Option(None, "--max-speakers", help="Maximum number of speakers for diarization"),
 ):
     from toxc.voice import transcribe_and_segment, is_youtube_url
     from toxc.report import aggregate, write_html
@@ -157,15 +168,20 @@ def voice_cmd(
 
     # Validate Ollama availability early so we fail before transcription starts
     resolved_ollama_model: str | None = None
-    if context_check:
+    resolved_policy_model: str | None = None
+    if context_check or policy_review:
         from toxc.ollama_check import is_available as _ollama_available
         ok, msg = _ollama_available(ollama_model)
         if ok:
-            resolved_ollama_model = msg
-            console.print(f"[dim]Context check: using [bold]{resolved_ollama_model}[/bold] via Ollama[/dim]")
+            if context_check:
+                resolved_ollama_model = msg
+                console.print(f"[dim]Context check: using [bold]{msg}[/bold] via Ollama[/dim]")
+            if policy_review:
+                resolved_policy_model = msg
+                console.print(f"[dim]Policy review: using [bold]{msg}[/bold] via Ollama[/dim]")
         else:
-            console.print(f"[yellow]⚠ Context check unavailable — {msg}[/yellow]")
-            console.print("[dim]Continuing without context check.[/dim]")
+            console.print(f"[yellow]⚠ Ollama unavailable — {msg}[/yellow]")
+            console.print("[dim]Continuing without LLM passes.[/dim]")
 
     # Load or prompt for channel profile
     profile: dict | None = None
@@ -174,8 +190,23 @@ def voice_cmd(
         if profile is None:
             profile = prompt_for_profile()
 
+    # Resolve HuggingFace token for diarization
+    hf_token: str | None = None
+    if diarize:
+        from toxc.profile import load_hf_token
+        hf_token = load_hf_token()
+        if not hf_token:
+            console.print("[yellow]⚠ Diarization requires a HuggingFace token.[/yellow]")
+            console.print("[dim]  1. Accept the model license at https://hf.co/pyannote/speaker-diarization-3.1[/dim]")
+            console.print("[dim]  2. Generate a token at https://hf.co/settings/tokens[/dim]")
+            console.print("[dim]  3. Run: toxc config set --hf-token hf_xxxx[/dim]")
+            console.print("[dim]Continuing without speaker diarization.[/dim]")
+
     try:
-        sentences, duration = transcribe_and_segment(audio_path, model)
+        sentences, duration = transcribe_and_segment(
+            audio_path, model, hf_token=hf_token,
+            min_speakers=min_speakers, max_speakers=max_speakers,
+        )
 
         if not sentences:
             typer.echo("No speech detected.", err=True)
@@ -188,9 +219,12 @@ def voice_cmd(
         for result, sentence in zip(results, sentences):
             result["start"] = sentence["start"]
             result["end"] = sentence["end"]
+            if "speaker" in sentence:
+                result["speaker"] = sentence["speaker"]
 
         data = aggregate(results, display_name, model, duration, profile=profile,
-                         ollama_model=resolved_ollama_model)
+                         ollama_model=resolved_ollama_model,
+                         policy_review_model=resolved_policy_model)
 
         if yt_meta:
             data["youtube"] = yt_meta
