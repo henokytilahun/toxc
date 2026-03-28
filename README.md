@@ -1,9 +1,15 @@
 # toxc
 [![DevProof Score](https://orenda.vision/api/badge/score/henokytilahun/toxc)](https://orenda.vision/score/henokytilahun/toxc)
 
-**CLI toxicity & sentiment analysis for text, audio, and video — with YouTube ad safety scoring and local LLM context verification.**
+**CLI toxicity & sentiment analysis for text, audio, and video — with YouTube ad safety scoring, speaker diarization, and local LLM policy review.**
 
-Analyze a string, a batch of lines, or a full video. toxc transcribes speech with Whisper, scores every sentence for toxicity and sentiment, maps the results to YouTube's advertiser-friendliness tiers, and renders an interactive HTML report that tells you exactly what a video will cost you if you upload it now — and the edits that fix it. An optional second pass through a local Ollama LLM separates genuine harm from hyperbole, sarcasm, and compliments, and generates ad-safe rewrites that preserve your voice.
+Analyze a string, a batch of lines, or a full video. toxc transcribes speech with Whisper, scores every sentence for toxicity and sentiment, maps the results to YouTube's advertiser-friendliness tiers, and renders an interactive HTML report that tells you exactly what a video will cost you if you upload it now — and the edits that fix it.
+
+Three optional LLM passes layer on top of the rule-based model:
+
+- **Pass 2 (`--context-check`)** — Ollama verifies each flagged sentence in context, separating genuine harm from hyperbole and sarcasm, then generates ad-safe rewrites that preserve your voice.
+- **Pass 3 (`--policy-review`)** — Ollama reads your full transcript against YouTube's actual Advertiser-Friendly Content Guidelines and renders a holistic verdict: overall monetization risk, specific policy violations, title safety, and voice-preserving rewrites.
+- **Speaker diarization (`--diarize`)** — pyannote identifies who said what, so per-speaker toxicity breakdowns tell you whether it's the host, the guest, or a clip being played back that's causing the flag.
 
 ```bash
 pip install toxc
@@ -102,12 +108,6 @@ toxc voice myvideo.mp4 --html report.html --context-check
 toxc voice myvideo.mp4 --html report.html --context-check --ollama-model mistral
 ```
 
-**Example terminal output:**
-```
-Context check: using llama3.2 via Ollama
-Checking 7 flagged sentences…
-```
-
 **Example report output (What to Fix section):**
 ```
 ✓ Context check ran with llama3.2 · 5 false positives cleared of 7 flagged · 2 confirmed genuine
@@ -128,33 +128,110 @@ Checking 7 flagged sentences…
 
 The adjusted scores flow through to the overall toxicity composite and risk level — so if context check clears most flags, the headline risk level drops accordingly.
 
-### Setting up Ollama
+---
+
+## AI Policy Review — LLM Holistic Verdict
+
+The `--policy-review` flag runs a third pass where Ollama reads the **full transcript** alongside YouTube's actual Advertiser-Friendly Content Guidelines and renders a verdict the same way a human reviewer would.
+
+This catches things rule-based models fundamentally can't:
+
+- **Policy-aware judgment** — the LLM reads the actual guidelines, not a proxy score
+- **Intent across the full narrative arc** — a video can have zero toxic sentences and still be demonetized for overall topic sensitivity
+- **Title risk assessment** — titles are held to stricter standards than video content; the LLM evaluates yours specifically
+- **Voice-preserving rewrites** — two options per flag: same energy (ad-safe) and a more conservative fallback
 
 ```bash
-# Install Ollama
-brew install ollama          # macOS
-# or: https://ollama.com/download
+toxc voice myvideo.mp4 --policy-review --html report.html
 
-# Pull a model (llama3.2 recommended, ~2 GB)
-ollama pull llama3.2
+# Combine all three passes for maximum accuracy
+toxc voice myvideo.mp4 --context-check --policy-review --diarize --html report.html
 
-# Start the server (runs as a background service after install)
-ollama serve
-
-# Install the Python client
-pip install ollama
+# Full analysis on a YouTube URL with speaker hints
+toxc voice "https://youtu.be/dQw4w9WgXcQ" --context-check --policy-review --diarize --min-speakers 2 --html report.html
 ```
 
-If Ollama is not running or not installed, `--context-check` is silently skipped with a warning — the report still generates normally using Detoxify scores.
+When `--context-check` has run first, the policy review receives the adjusted (de-false-positived) scores and Pass 2 intent labels — the LLM's verdict is correspondingly sharper.
 
-**Supported models** — any model pulled via `ollama pull`:
+**Example report output (AI Policy Review section):**
+```
+● Limited ads likely   87% confidence   Edit before publishing
 
-| Model | Size | Notes |
-|---|---|---|
-| `llama3.2` | ~2 GB | **Default** — fast, accurate |
-| `mistral` | ~4 GB | Strong reasoning |
-| `gemma2` | ~5 GB | Good at nuance |
-| `phi3` | ~2 GB | Lightweight alternative |
+"This video is largely clean commentary. The main risk is the title — 'STOPPED'
+in all caps combined with a named individual reads as confrontational to YouTube's
+classifiers. The content itself is fine."
+
+⚠ 2 policy flags
+  Harassment/Cyberbullying   1:12   medium
+  "Why Mike needs to be stopped"
+  → Safe: "Why Mike's take doesn't hold up"
+  → Conservative: "The problem with Mike's argument"
+
+  Clickbait / confrontational framing   title   medium
+  "Why Mike Israetel Needs To Be STOPPED"
+  → Safe: "Why Mike Israetel Is Wrong About This"
+  → Conservative: "Responding to Mike Israetel"
+
+✓ 5 cleared as false positives
+  "you're destroying this argument"
+  "insane value in this video"
+  ...
+```
+
+---
+
+## Speaker Diarization — Who Said What
+
+The `--diarize` flag runs pyannote speaker diarization alongside Whisper transcription, assigning a speaker label to every sentence. The report then shows per-speaker toxicity breakdowns:
+
+```
+── Speaker Analysis ──────────────────────────────
+  Speaker       Avg Toxicity   Sentences   Flagged   Verdict
+  SPEAKER_00    0.04           42          0         Clean
+  SPEAKER_01    0.31           31          3         Review
+
+⚠ Riskiest speaker: SPEAKER_01
+  · peak at "you don't know what you're talking about…"
+```
+
+This matters for three common creator formats:
+
+- **Podcast / interview** — the guest flags, the host is clean. You know exactly who to ask to re-record a line.
+- **Commentary over clips** — your voice is clean; the source audio isn't. Very different monetization risk.
+- **Debate / two-person video** — per-speaker breakdown tells you which side of the conversation needs edits.
+
+Speaker labels also flow into the AI Policy Review transcript — the LLM sees `[SPEAKER_00]` and `[SPEAKER_01]` prefixes on every line, which sharpens intent disambiguation significantly.
+
+### Setup
+
+Diarization requires a free HuggingFace token and a one-time model license acceptance:
+
+```bash
+# 1. Install the dependency
+pip install "toxc[diarize]"
+
+# 2. Accept the model license (free, one-time)
+#    https://hf.co/pyannote/speaker-diarization-3.1
+
+# 3. Generate a HuggingFace token
+#    https://hf.co/settings/tokens
+
+# 4. Save your token
+toxc config set --hf-token hf_xxxxxxxxxxxx
+```
+
+After that:
+```bash
+toxc voice interview.mp4 --diarize --html report.html
+
+# Hint expected speaker count (helps when pyannote merges similar voices)
+toxc voice podcast.mp4 --diarize --min-speakers 2 --html report.html
+toxc voice panel.mp4 --diarize --min-speakers 3 --max-speakers 5 --html report.html
+```
+
+After diarization completes, toxc prints a summary of detected speakers and their speaking time so you can verify the results at a glance.
+
+If the token is missing or pyannote fails, toxc continues without speaker labels and prints a warning — the report still generates normally.
 
 ---
 
@@ -202,6 +279,7 @@ This transforms the report from "here's what's toxic" into "here's exactly what 
 ```bash
 toxc config show                                 # view saved profile
 toxc config set --cpm 4.50 --subscribers 48000   # update individual fields
+toxc config set --hf-token hf_xxxx               # save HuggingFace token
 toxc config setup                                # re-run interactive setup
 toxc config reset                                # delete profile
 ```
@@ -217,9 +295,11 @@ The `--html` flag generates a full interactive dashboard organized into three ta
 | Panel | Contents |
 |---|---|
 | Hero cards | Toxicity score · Ad safety · Flagged sentences · Avg sentiment · Context cleared (when `--context-check` ran) |
-| Channel Risk Profile | Channel size, category, strike status, category-specific content note, escalation warning |
+| Speaker Analysis | Per-speaker toxicity table with avg score, sentence count, flagged count, verdict · riskiest speaker callout *(when `--diarize` ran)* |
+| Channel Risk Profile | Channel size, category, strike status, category-specific note, escalation warning |
 | Financial Impact | Three-tier revenue scenario (full / limited / demonetized) with current risk highlighted, revenue-at-risk and annual impact rows |
 | Consequence Breakdown | Monetization status · Strike risk · Age restriction · Advertiser opt-out risk — all color-coded by severity |
+| AI Policy Review | LLM verdict badge · confidence · publish recommendation · overall summary · policy violations with timestamps and rewrites · title risk · false positives cleared *(when `--policy-review` ran)* |
 | What to Fix | Confirmed genuine flags with intent label, LLM reason, dollar savings, and two copyable rewrites · Cleared false positives with original vs. adjusted score |
 | Risk Signals | Tiered by YouTube policy: Instant demonetization (identity attacks, threats, severe) · Limited ads (profanity) · Pattern signals (density, first-7s) — each with raw score |
 
@@ -251,8 +331,12 @@ Options:
   -m, --model         Whisper model: tiny | base | small | medium | large  [default: small]
   --fast              Use VADER only (skip Detoxify)
   --no-profile        Skip channel profile prompts
-  --context-check     Run local LLM (Ollama) to verify flagged sentences and generate safe rewrites
-  --ollama-model      Ollama model to use  [default: llama3.2]
+  -cc, --context-check  Run local LLM (Ollama) to verify flagged sentences and generate safe rewrites
+  -pr, --policy-review  Run local LLM (Ollama) for a full YouTube policy review
+  --ollama-model      Ollama model to use for context check / policy review  [default: llama3.2]
+  -d, --diarize       Enable speaker diarization via pyannote (requires HuggingFace token)
+  --min-speakers N    Minimum expected speakers for diarization (e.g. 2 for a podcast)
+  --max-speakers N    Maximum expected speakers for diarization
   --json              Output full analysis as JSON
 ```
 
@@ -280,6 +364,9 @@ Audio/Video file  ─OR─  YouTube URL
     ▼
 Whisper (transcription + word timestamps)
     │
+    ├── pyannote (optional, --diarize)
+    │   └─ speaker segments → assign SPEAKER_XX to each sentence
+    │
     ▼
 NLTK sentence segmentation → timed sentence list
     │
@@ -289,10 +376,23 @@ Detoxify ──► toxicity + 5 sub-dimensions per sentence
     │
     ▼
 Pass 2 (optional, --context-check)
-Ollama LLM ──► genuine harm vs. false positive per flagged sentence
-             ├─ intent classification (compliment / hyperbole / harmful / ...)
-             ├─ adjusted toxicity score
-             └─ two ad-safe rewrites preserving creator voice
+Ollama ──► genuine harm vs. false positive per flagged sentence
+           ├─ intent (compliment / hyperbole / sarcasm / harmful / ...)
+           ├─ adjusted toxicity score
+           └─ two ad-safe rewrites preserving creator voice
+    │
+    ▼
+Pass 3 (optional, --policy-review)
+Ollama ──► reads full transcript + YouTube Advertiser-Friendly Content Guidelines
+           ├─ holistic monetization verdict (green / yellow / red)
+           ├─ specific policy violations with timestamps
+           ├─ title risk assessment
+           ├─ false positives cleared at the narrative level
+           └─ voice-preserving rewrites for confirmed flags
+    │
+    ▼
+Per-speaker aggregation (if diarization ran)
+  avg toxicity · flagged count · peak sentence per speaker
     │
     ▼
 Composite toxicity score (using adjusted scores when available)
@@ -319,7 +419,8 @@ Financial impact calculations (if channel profile present)
 | [OpenAI Whisper](https://github.com/openai/whisper) | Speech-to-text with word timestamps | Depends on model size |
 | [VADER](https://github.com/cjhutto/vaderSentiment) | Sentiment scoring | Instant, offline |
 | [Detoxify](https://github.com/unitaryai/detoxify) | Toxicity + 5 sub-dimensions | ~1s first run (downloads DistilBERT) |
-| [Ollama](https://ollama.com) *(optional)* | Contextual false-positive detection + rewrites | ~1–3s/sentence locally |
+| [Ollama](https://ollama.com) *(optional)* | Pass 2 context check + Pass 3 policy review | ~1–3s/sentence locally |
+| [pyannote.audio](https://github.com/pyannote/pyannote-audio) *(optional)* | Speaker diarization | ~30–60s per video |
 
 **Toxicity dimensions:** `insult` · `obscene` · `threat` · `identity_attack` · `severe_toxicity`
 
@@ -353,12 +454,35 @@ pip install "toxc[voice]"
 # installs: openai-whisper, nltk, yt-dlp
 ```
 
-### Context check dependencies *(optional)*
+### LLM passes (context check + policy review)
 
 ```bash
 pip install ollama
 brew install ollama   # or https://ollama.com/download
 ollama pull llama3.2
+```
+
+If Ollama is not running or not installed, `--context-check` and `--policy-review` are silently skipped with a warning — the report still generates normally using Detoxify scores.
+
+**Supported models** — any model pulled via `ollama pull`:
+
+| Model | Size | Notes |
+|---|---|---|
+| `llama3.2` | ~2 GB | **Default** — fast, accurate |
+| `mistral` | ~4 GB | Strong reasoning |
+| `gemma2` | ~5 GB | Good at nuance |
+| `phi3` | ~2 GB | Lightweight alternative |
+
+### Speaker diarization
+
+```bash
+pip install "toxc[diarize]"
+# installs: pyannote.audio
+
+# One-time setup
+# 1. Accept model license: https://hf.co/pyannote/speaker-diarization-3.1
+# 2. Generate token: https://hf.co/settings/tokens
+toxc config set --hf-token hf_xxxxxxxxxxxx
 ```
 
 ---
@@ -386,8 +510,12 @@ Voice options:
   -m, --model         Whisper model size  [default: small]
   --fast              Use VADER only
   --no-profile        Skip channel profile prompts
-  --context-check     Verify flagged sentences with local Ollama LLM
+  -cc, --context-check  Verify flagged sentences with local Ollama LLM
+  -pr, --policy-review  Full YouTube policy review with local Ollama LLM
   --ollama-model      Ollama model to use  [default: llama3.2]
+  -d, --diarize       Speaker diarization via pyannote
+  --min-speakers N    Minimum expected speakers (helps separate similar voices)
+  --max-speakers N    Maximum expected speakers
   --json              Output full JSON analysis
 
 Config set options:
@@ -398,6 +526,7 @@ Config set options:
   --videos-per-month  Videos published per month
   --category          gaming / commentary / education / news / kids / other
   --past-strikes      0, 1, or 2
+  --hf-token          HuggingFace token for speaker diarization
 ```
 
 ---
@@ -409,7 +538,8 @@ Config set options:
 - [VADER](https://github.com/cjhutto/vaderSentiment) — rule-based sentiment
 - [NLTK](https://www.nltk.org/) — sentence segmentation
 - [yt-dlp](https://github.com/yt-dlp/yt-dlp) — YouTube audio download
-- [Ollama](https://ollama.com) — local LLM inference for context checking *(optional)*
+- [pyannote.audio](https://github.com/pyannote/pyannote-audio) — speaker diarization *(optional)*
+- [Ollama](https://ollama.com) — local LLM inference for context check and policy review *(optional)*
 - [Typer](https://typer.tiangolo.com/) — CLI framework
 - [Rich](https://github.com/Textualize/rich) — terminal formatting
 
@@ -419,7 +549,7 @@ Config set options:
 
 ### Near-term
 
-- **`--cloud` flag** — use the Claude API instead of Ollama for context checking. No local GPU required, better reasoning on edge cases, pay-per-use. Local stays the default.
+- **`--cloud` flag** — use the Claude API instead of Ollama for LLM passes. No local GPU required, better reasoning on edge cases, pay-per-use. Local stays the default.
 - **Progress bar for context check** — show per-sentence progress when checking long videos (currently shows a spinner)
 - **Thumbnail safety check** — extend `toxc check` to accept an image path or URL and flag text/imagery that violates YouTube's thumbnail policies
 - **CSV / JSON export from the report** — download button in the HTML report that exports the full sentence table as a spreadsheet
