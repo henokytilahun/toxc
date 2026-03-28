@@ -74,12 +74,7 @@ def _ensure_nltk():
         nltk.download("punkt_tab", quiet=True)
 
 
-def _extract_words(whisper_result: dict) -> list[dict]:
-    words = []
-    for segment in whisper_result["segments"]:
-        for word in segment.get("words", []):
-            words.append({"word": word["word"], "start": word["start"], "end": word["end"]})
-    return words
+_MAX_SENTENCE_WORDS = 50
 
 
 def _map_sentences(sentences: list[str], words: list[dict]) -> list[dict]:
@@ -110,6 +105,49 @@ def _map_sentences(sentences: list[str], words: list[dict]) -> list[dict]:
         })
 
     return results
+
+
+def _segment_whisper_result(result: dict) -> list[dict]:
+    """Split Whisper output into sentence-level chunks with timestamps.
+
+    Processes each Whisper segment individually so that long stretches
+    of unpunctuated speech don't collapse into a single giant block.
+    Applies a hard word-count cap as a final safety net.
+    """
+    all_mapped: list[dict] = []
+
+    for segment in result["segments"]:
+        seg_text = segment["text"].strip()
+        if not seg_text:
+            continue
+
+        seg_words = [
+            {"word": w["word"], "start": w["start"], "end": w["end"]}
+            for w in segment.get("words", [])
+        ]
+
+        sents = nltk.sent_tokenize(seg_text)
+
+        final_sents: list[str] = []
+        for s in sents:
+            tok = s.split()
+            if len(tok) > _MAX_SENTENCE_WORDS:
+                for i in range(0, len(tok), _MAX_SENTENCE_WORDS):
+                    final_sents.append(" ".join(tok[i : i + _MAX_SENTENCE_WORDS]))
+            else:
+                final_sents.append(s)
+
+        if seg_words:
+            all_mapped.extend(_map_sentences(final_sents, seg_words))
+        else:
+            for s in final_sents:
+                all_mapped.append({
+                    "text": s,
+                    "start": segment["start"],
+                    "end": segment["end"],
+                })
+
+    return all_mapped
 
 
 def _diarize(audio_path: str, hf_token: str) -> list[tuple[float, float, str]]:
@@ -221,13 +259,7 @@ def transcribe_and_segment(
         result = model.transcribe(str(audio_path), word_timestamps=True)
 
     duration = result["segments"][-1]["end"] if result["segments"] else 0.0
-    words = _extract_words(result)
-    sentences = nltk.sent_tokenize(result["text"].strip())
-
-    if not words:
-        mapped = [{"text": s, "start": 0.0, "end": duration} for s in sentences]
-    else:
-        mapped = _map_sentences(sentences, words)
+    mapped = _segment_whisper_result(result)
 
     if hf_token:
         try:
