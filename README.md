@@ -414,6 +414,32 @@ Config set options:
 
 ---
 
+## Roadmap
+
+### Near-term
+
+- **`--cloud` flag** — use the Claude API instead of Ollama for context checking. No local GPU required, better reasoning on edge cases, pay-per-use. Local stays the default.
+- **Progress bar for context check** — show per-sentence progress when checking long videos (currently shows a spinner)
+- **Thumbnail safety check** — extend `toxc check` to accept an image path or URL and flag text/imagery that violates YouTube's thumbnail policies
+- **CSV / JSON export from the report** — download button in the HTML report that exports the full sentence table as a spreadsheet
+
+### Mid-term
+
+- **Bulk channel analysis** — `toxc channel @handle --last 20` to scan a creator's recent uploads and surface which videos are currently at monetization risk
+- **Watch mode** — `toxc watch @handle` polls for new uploads and runs analysis automatically, good for teams reviewing content before it goes live
+- **GitHub Action** — `toxc-action` to add a toxicity gate to a CI pipeline for podcast shows, corporate content teams, or automated dubbing workflows
+- **Multi-language support** — Whisper already transcribes 90+ languages; extend thresholds and rewrite suggestions to Spanish, Portuguese, German, French
+- **Segment-level editing hints** — instead of flagging a whole sentence, highlight the specific word or phrase that triggered the score (requires token-level attribution)
+
+### Longer-term
+
+- **Browser extension** — run toxc inline on any YouTube video page, show the risk badge next to the title without leaving the browser
+- **TikTok / Twitch / podcast support** — platform-specific monetization policies differ from YouTube; model each one's advertiser-friendliness rules separately
+- **REST API** — self-hostable HTTP wrapper around `toxc voice` for integration with video editing tools, CMS platforms, and MCN dashboards
+- **Appeal letter generator** — when a video is already demonetized, use the context check data to draft a YouTube appeals submission with specific sentence-level evidence
+
+---
+
 ## Background
 
 Built on research from a comparative toxicity study across Twitter/X and Bluesky (~19k posts). The short finding: platform culture shapes toxicity patterns more than moderation rules do.
