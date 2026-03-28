@@ -112,10 +112,79 @@ def _map_sentences(sentences: list[str], words: list[dict]) -> list[dict]:
     return results
 
 
-def transcribe_and_segment(audio_path: str, model_size: str = "small") -> tuple[list[dict], float]:
+def _diarize(audio_path: str, hf_token: str) -> list[tuple[float, float, str]]:
     """
+    Run pyannote speaker diarization on `audio_path`.
+    Returns a list of (start, end, speaker_label) tuples sorted by start time.
+
+    Requires: pip install toxc[diarize]  and a HuggingFace token with
+              pyannote/speaker-diarization-3.1 access granted at
+              https://huggingface.co/pyannote/speaker-diarization-3.1
+    """
+    try:
+        from pyannote.audio import Pipeline
+    except ImportError:
+        raise RuntimeError(
+            "pyannote.audio is required for speaker diarization.\n"
+            "Install it with:  pip install toxc[diarize]\n"
+            "Then accept the model license at https://hf.co/pyannote/speaker-diarization-3.1\n"
+            "and save your token:  toxc config set --hf-token hf_xxxx"
+        )
+
+    with _console.status("[dim]Loading speaker diarization model…[/dim]", spinner="dots"):
+        pipeline = Pipeline.from_pretrained(
+            "pyannote/speaker-diarization-3.1",
+            token=hf_token,
+        )
+
+    with _console.status("[dim]Running speaker diarization…[/dim]", spinner="dots"):
+        diarization = pipeline(str(audio_path))
+
+    turns = []
+    for turn, _, speaker in diarization.itertracks(yield_label=True):
+        turns.append((float(turn.start), float(turn.end), speaker))
+    return sorted(turns, key=lambda t: t[0])
+
+
+def _assign_speakers(sentences: list[dict], turns: list[tuple[float, float, str]]) -> list[dict]:
+    """
+    Assign a speaker label to each sentence using midpoint-overlap lookup.
+    Falls back to nearest segment when the midpoint doesn't land inside any turn.
+    """
+    if not turns:
+        return sentences
+
+    for s in sentences:
+        mid = (s["start"] + s["end"]) / 2
+
+        # Primary: find the turn that contains the midpoint
+        speaker = None
+        for seg_start, seg_end, spk in turns:
+            if seg_start <= mid <= seg_end:
+                speaker = spk
+                break
+
+        # Fallback: nearest turn boundary
+        if speaker is None:
+            nearest = min(turns, key=lambda t: min(abs(t[0] - mid), abs(t[1] - mid)))
+            speaker = nearest[2]
+
+        s["speaker"] = speaker
+
+    return sentences
+
+
+def transcribe_and_segment(
+    audio_path: str,
+    model_size: str = "small",
+    hf_token: str | None = None,
+) -> tuple[list[dict], float]:
+    """
+    Transcribe audio and segment into sentences with timestamps.
+
     Returns (sentences, duration).
     Each sentence: {"text": str, "start": float, "end": float}
+    When hf_token is provided, each sentence also has "speaker": str.
     """
     _ensure_nltk()
 
@@ -131,6 +200,16 @@ def transcribe_and_segment(audio_path: str, model_size: str = "small") -> tuple[
     sentences = nltk.sent_tokenize(result["text"].strip())
 
     if not words:
-        return [{"text": s, "start": 0.0, "end": duration} for s in sentences], duration
+        mapped = [{"text": s, "start": 0.0, "end": duration} for s in sentences]
+    else:
+        mapped = _map_sentences(sentences, words)
 
-    return _map_sentences(sentences, words), duration
+    if hf_token:
+        try:
+            turns = _diarize(audio_path, hf_token)
+            mapped = _assign_speakers(mapped, turns)
+        except Exception as e:
+            _console.print(f"[yellow]⚠ Speaker diarization failed: {e}[/yellow]")
+            _console.print("[dim]Continuing without speaker labels.[/dim]")
+
+    return mapped, duration
